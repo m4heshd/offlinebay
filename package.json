@@ -1,0 +1,15 @@
+{
+  "name": "offlinebay",
+  "version": "2.0.0",
+  "description": "Offline version of The Pirate Bay",
+  "main": "app/main.js",
+  "scripts": {
+    "start": "electron ./app/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "TechTac",
+  "license": "AGPL-3.0",
+  "dependencies": {
+    "electron": "^1.8.4"
+  }
+}
