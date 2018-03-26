@@ -18,9 +18,73 @@
 </head>
 <body>
 
-<div class="grid-title"> </div> <!-- Title Bar Grid -->
+<div class="grid-title">
+    <div class="app-icon item-v-center">
+        <img tabindex="-1" src="img/icon.png">
+    </div> <!-- App icon -->
+    <div class="app-title item-v-center">
+        <img tabindex="-1" src="img/title.png">
+    </div> <!-- App title -->
+    <div></div>
+    <div>
+        <button tabindex="-1" class="btn-ctl btn-info" type="button">
+            <i class="zmdi zmdi-window-minimize" style="padding-bottom: 7px"></i>
+        </button> <!-- Minimize button -->
+    </div>
+    <div>
+        <button tabindex="-1" class="btn-ctl btn-warning" type="button">
+            <i class="zmdi zmdi-window-maximize"></i>
+        </button> <!-- Maximize/Restore button -->
+    </div>
+    <div>
+        <button tabindex="-1" class="btn-ctl btn-danger" type="button">
+            <i class="zmdi zmdi-close"></i>
+        </button> <!-- Close button -->
+    </div>
+</div> <!-- Title Bar Grid -->
 
-<div class="grid-menu"> </div> <!-- Menu Grid -->
+<div class="grid-menu">
+    <div class="dropdown">
+        <button class="mnu-itm" type="button" data-toggle="dropdown">Tools</button>
+        <ul class="dropdown-menu">
+            <li>
+                <a href="#">
+                    <i class="zmdi zmdi-archive mnu-ico"></i>
+                    <span class="mnu-txt">Import dump file</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="zmdi zmdi-rotate-right mnu-ico"></i>
+                    <span class="mnu-txt">Update Trackers</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="zmdi zmdi-format-list-bulleted mnu-ico"></i>
+                    <span class="mnu-txt">Show all Trackers</span>
+                </a>
+            </li>
+        </ul>
+    </div> <!-- Tools menu -->
+    <div class="dropdown">
+        <button class="mnu-itm" type="button" data-toggle="dropdown">Help</button>
+        <ul class="dropdown-menu">
+            <li>
+                <a href="#">
+                    <i class="zmdi zmdi-comment-edit mnu-ico"></i>
+                    <span class="mnu-txt">Contact TechTac</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="zmdi zmdi-info mnu-ico"></i>
+                    <span class="mnu-txt">About</span>
+                </a>
+            </li>
+        </ul>
+    </div> <!-- Help menu -->
+</div> <!-- Menu Grid -->
 
 <div class="grid-body" style="margin-top: 10px">
     <div class="top-search txtSearch">
@@ -165,7 +229,11 @@
     </div> <!-- TechTac Logo -->
 </div> <!-- Body Grid -->
 
-<div class="grid-stat-bar"> </div> <!-- Status bar Grid -->
+<div class="grid-stat-bar">
+    <div class="item-v-center">
+        <span class="txt-stat">{resCount} Results found.</span>
+    </div>
+</div> <!-- Status bar Grid -->
 
 </body>
 </html>
