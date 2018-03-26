@@ -1,4 +1,7 @@
 $(document).ready(function(){
+
+    /* Search bar animations
+    ----------------------------*/
     $(".top-search__input").on("focus", function() {
         $(".top-search").addClass("top-search--focused");
     });
@@ -11,6 +14,17 @@ $(document).ready(function(){
         !a.length > 0 && $(".top-search").removeClass("top-search--focused")
     });
 
+    /* Menu dropdown animations
+    ----------------------------*/
+    $('.dropdown').on('show.bs.dropdown', function() {
+        $(this).find('.dropdown-menu').first().stop(true, true).css({ opacity: 1, transition: 'opacity 0.2s' }).slideDown(200);
+    });
+    $('.dropdown').on('hide.bs.dropdown', function() {
+        $(this).find('.dropdown-menu').first().stop(true, true).css({ opacity: 0, transition: 'opacity 0.2s' }).slideUp(200);
+    });
+
+    /* Data table functions
+    ----------------------------*/
     var tbl = $("#tbl-main").bootgrid({
         //Override default icon classes
         css: {

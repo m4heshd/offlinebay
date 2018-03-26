@@ -312,6 +312,49 @@ fieldset[disabled] .checkbox label {
     color: #b4bfc3;
     background-color: #3e4b53;
 }
+/* Dropdown */
+.dropdown-menu {
+    position: absolute;
+    left: 0;
+    z-index: 9;
+    display: none;
+    min-width: 170px;
+    list-style: none;
+    font-size: 13px;
+    text-align: left;
+    background-color: #edeff0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    background-clip: padding-box;
+    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    padding: 10px 0;
+    border-radius: 3px;
+    top: -1px;
+    margin: 0;
+    border: 0;
+}
+
+.dropdown-menu > li > a {
+    display: block;
+    font-weight: 400;
+    color: #4a606d;
+    padding: 10px 20px;
+    text-decoration: none;
+    clear: both;
+    -webkit-transition: background-color;
+    -o-transition: background-color;
+    transition: background-color;
+    -webkit-transition-duration: 300ms;
+    transition-duration: 300ms;
+}
+.dropdown-menu>li>a:focus, .dropdown-menu>li>a:hover {
+    text-decoration: none;
+    color: #4a606d;
+    background-color: rgba(0,0,0,.04);
+}
+.dropup .dropdown-menu {
+    bottom: 0;
+    margin-bottom: 0;
+}
 /* Tables */
 .table > thead > tr > td.active,
 .table > tbody > tr > td.active,

@@ -5,14 +5,21 @@
 }
 body {
     display: grid;
+    grid-template-rows: 30px 30px minmax(0px, auto) 40px;
     height: 100vh;
     /*font-family: Roboto,sans-serif;*/
     font-size: 13px;
     line-height: 1.42857143;
     color: var(--txtclr);
     background-color: #1e2a31;
+    -webkit-user-select: none;
 }
-
+table {
+    -webkit-user-select: auto;
+}
+span, strong {
+    cursor: default;
+}
 /* Grid Layout
 --------------------*/
 .item-v-center{
@@ -20,6 +27,78 @@ body {
     align-items: center;
     flex: 1;
 }
+/* Title bar */
+.grid-title {
+    display: grid;
+    grid-template-columns: 25px 80px auto repeat(3, 48px);
+    grid-template-rows: 30px;
+    grid-template-areas:
+            "appIcon appTitle glue-title btnMin btnMax btnExit";
+    background-color: #2b3942;
+    -webkit-app-region: drag;
+}
+.app-icon {
+    margin-left: 10px;
+}
+.app-title {
+    margin-left: 10px;
+    margin-top: 5px;
+}
+.btn-ctl {
+    border: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #2b3942;
+    color: var(--txtclr);
+    -webkit-app-region: no-drag;
+}
+.btn-ctl i {
+    font-size: 17px;
+    /*font-weight: bold;*/
+}
+.btn-ctl:focus {
+    border: 1px;
+    outline-style: none;
+    box-shadow: none;
+}
+/* Menu bar */
+.grid-menu {
+    display: grid;
+    grid-template-columns: 60px 60px;
+    padding-top: 3px;
+    padding-left: 10px;
+    background: linear-gradient(to top, rgba(255,0,0,0), rgb(43, 57, 66));
+    /*-webkit-app-region: drag;*/
+}
+.mnu-itm {
+    border: 0;
+    height: 30px;
+    width: 100%;
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, 0);
+    color: var(--txtclr);
+    /*-webkit-app-region: no-drag;*/
+}
+.mnu-itm:focus, .mnu-itm:active {
+    outline-style: none;
+    box-shadow: none;
+}
+.mnu-itm:active {
+    background: #1e2a31;
+}
+.mnu-itm[aria-expanded="true"] {
+    background: linear-gradient(to bottom, rgba(255,0,0,0), rgb(43, 57, 66));
+}
+.mnu-ico {
+    font-size: 18px;
+    font-weight: bold;
+    vertical-align: middle;
+    padding-right: 10px;
+}
+.mnu-txt {
+    vertical-align: middle;
+}
+/* Body */
 .grid-body {
     display: grid;
     grid-template-columns: auto 180px;
@@ -34,8 +113,9 @@ body {
             "tbl glue-1"
             "tbl TTLogo";
     grid-column-gap: 20px;
-    height: 98vh;
-    padding: 20px;
+    /*height: 1fr;*/
+    padding: 23px;
+    padding-top: 5px;
 }
 
 .txtSearch {
@@ -44,8 +124,13 @@ body {
 .btnSearch {
     grid-area: btnSearch;
 }
-.searchTools {
+.grid-search-tools {
     grid-area: searchTools;
+    display: grid;
+    grid-template-columns: 130px 80px auto 60px auto;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 15px;
 }
 .tbl-grid {
     grid-area: tbl;
@@ -77,13 +162,17 @@ body {
     grid-area: TTLogo;
 }
 
-.grid-search-tools {
+/* Status bar */
+.grid-stat-bar {
     display: grid;
-    grid-template-columns: 130px 80px auto 60px auto;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 15px;
+    border-top: 1px solid #2b3942;
+    margin: 0 12px;
 }
+.txt-stat {
+    margin: 10px 0;
+    margin-left: 10px;
+}
+
 /* Global Elements
 --------------------*/
 /*Button*/
@@ -100,7 +189,7 @@ body {
 .btn-ico {
     font-size: 20px;
     vertical-align: middle;
-    padding-right: 2px;
+    padding-right: 5px;
 }
 
 /*Text box*/
@@ -159,7 +248,9 @@ body {
 .top-search__reset:after,
 .top-search__reset:before,
 .btn-ui, .txtbox,
-.table-hover tbody tr:hover {
+.table-hover tbody tr:hover,
+.btn-ctl,
+.mnu-itm{
     -webkit-transition: all;
     -o-transition: all;
     transition: all;
