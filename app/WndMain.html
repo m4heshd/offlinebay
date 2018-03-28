@@ -6,15 +6,9 @@
     <link rel="stylesheet" href="../node_modules/material-design-iconic-font/dist/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../node_modules/jquery-bootgrid/dist/jquery.bootgrid.css">
+    <!--<link rel="stylesheet" href="css/app.css">-->
     <link rel="stylesheet" href="css/comp-override.css">
     <link rel="stylesheet" href="css/WndMain.css">
-    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
-    <script src="../node_modules/jquery/dist/jquery.js"></script>
-    <script src="../node_modules/popper.js/dist/umd/popper.js"></script>
-    <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="../node_modules/jquery-bootgrid/dist/jquery.bootgrid.js"></script>
-    <script src="js/WndMain.js"></script>
-    <script>if (window.module) module = window.module;</script>
 </head>
 <body>
 
@@ -27,17 +21,17 @@
     </div> <!-- App title -->
     <div></div>
     <div>
-        <button tabindex="-1" class="btn-ctl btn-info" type="button">
+        <button id="btnMinimize" tabindex="-1" class="btn-ctl btn-info" type="button">
             <i class="zmdi zmdi-window-minimize" style="padding-bottom: 7px"></i>
         </button> <!-- Minimize button -->
     </div>
     <div>
-        <button tabindex="-1" class="btn-ctl btn-warning" type="button">
+        <button id="btnMaximize" tabindex="-1" class="btn-ctl btn-warning" type="button">
             <i class="zmdi zmdi-window-maximize"></i>
         </button> <!-- Maximize/Restore button -->
     </div>
     <div>
-        <button tabindex="-1" class="btn-ctl btn-danger" type="button">
+        <button id="btnClose" tabindex="-1" class="btn-ctl btn-danger" type="button">
             <i class="zmdi zmdi-close"></i>
         </button> <!-- Close button -->
     </div>
@@ -77,7 +71,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="#" data-toggle="modal" data-target="#abtModal">
                     <i class="zmdi zmdi-info mnu-ico"></i>
                     <span class="mnu-txt">About</span>
                 </a>
@@ -223,7 +217,7 @@
         <div class="tt-img">
             <span class="img-helper"></span>
             <a href="https://www.youtube.com/c/techtac?sub_confirmation=1">
-                <img id="tt-logo" src="img/tech_tac_alpha_127.png" alt="">
+                <img id="tt-logo" src="img/tech_tac_alpha_127.png">
             </a>
         </div>
     </div> <!-- TechTac Logo -->
@@ -235,5 +229,58 @@
     </div>
 </div> <!-- Status bar Grid -->
 
+
+<!-- MODALS -->
+<div class="modal fade" id="abtModal" role="dialog">
+    <div class="modal-dialog" style="min-width: 600px;">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-close">
+                    <button tabindex="-1" class="btn-ctl mdl-ctl btn-danger" type="button" data-dismiss="modal">
+                        <i class="zmdi zmdi-close"></i>
+                    </button> <!-- Close button -->
+                </div>
+                <div class="abt-modal-content">
+                    <div class="abt-title">
+                        <span>OfflineBay by TechTac</span>
+                    </div>
+                    <div class="tt-img">
+                        <span class="img-helper"></span>
+                        <a href="https://www.youtube.com/c/techtac?sub_confirmation=1">
+                            <img src="img/tech_tac_alpha_127.png">
+                        </a>
+                    </div>
+                    <div class="social-btns">
+                        <img src="img/patreon.png">
+                        <img src="img/fb.png">
+                        <img src="img/twitter.png">
+                    </div>
+                    <div class="text-center">
+                        <span class="h5" style="color: #ff8a8a">DISCLAIMER:</span>
+                        <span class="d-block">OfflineBay is Free and Open-source software licenced under MIT License.
+                        This software is created to parse CSV dump files created by a third party and any of the data
+                    other than this software is not provided by TechTac. Use the data at your own risk. TechTac will not
+                    be responsible for any of the data accuired by using the dump file.</span>
+                        <br>
+                        <span>Software version : 2.0.0</span>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- About Modal -->
+
+    </div>
+</div>
+
+<!-- Scripts -->
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+<script src="../node_modules/jquery/dist/jquery.js"></script>
+<script src="../node_modules/popper.js/dist/umd/popper.js"></script>
+<script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="../node_modules/jquery-bootgrid/dist/jquery.bootgrid.js"></script>
+<script src="js/WndMain.js"></script>
+<script>if (window.module) module = window.module;</script>
+<script src="renderers/RndMain.js"></script>
 </body>
 </html>

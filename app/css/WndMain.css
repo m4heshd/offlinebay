@@ -2,6 +2,7 @@
 --------------*/
 :root{
     --txtclr : #b4bfc3;
+    --bodyBack : #1e2a31;
 }
 body {
     display: grid;
@@ -77,7 +78,7 @@ span, strong {
     border-radius: 3px;
     background-color: rgba(0, 0, 0, 0);
     color: var(--txtclr);
-    /*-webkit-app-region: no-drag;*/
+    -webkit-app-region: no-drag;
 }
 .mnu-itm:focus, .mnu-itm:active {
     outline-style: none;
@@ -173,6 +174,30 @@ span, strong {
     margin-left: 10px;
 }
 
+/* About Modal */
+.abt-modal-content {
+    display: grid;
+    grid-template-rows: auto auto auto auto;
+    padding: 30px;
+    padding-top: 0;
+}
+.abt-title {
+    margin-bottom: 15px;
+    text-align: center;
+}
+.abt-title span {
+    font-size: 25px;
+    font-weight: bold;
+}
+.social-btns {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+.social-btns img {
+    margin: 0 10px;
+    cursor: pointer;
+}
 /* Global Elements
 --------------------*/
 /*Button*/
@@ -212,6 +237,40 @@ span, strong {
 }
 .txtbox:focus::-webkit-input-placeholder {
     color: #22313a
+}
+
+/*Modal*/
+.modal {
+    text-align: center;
+}
+.modal:before {
+    display: inline-block;
+    vertical-align: middle;
+    content: " ";
+    height: 100%;
+}
+.modal-close {
+    display: flex;
+    justify-content: flex-end;
+}
+.mdl-ctl {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: none;
+}
+.modal-dialog {
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.23);
+}
+.modal-body {
+    display: grid;
+    padding: 10px;
+}
+.modal-content {
+    background: var(--bodyBack);
 }
 
 /* Scrollbars
