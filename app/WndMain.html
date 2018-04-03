@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../node_modules/jquery-bootgrid/dist/jquery.bootgrid.css">
     <!--<link rel="stylesheet" href="css/app.css">-->
+    <link rel="stylesheet" href="css/animate.css">
     <link rel="stylesheet" href="css/comp-override.css">
     <link rel="stylesheet" href="css/WndMain.css">
 </head>
@@ -178,19 +179,19 @@
         </div>
     </div> <!-- tblMain -->
     <div class="btnOpenMag">
-        <button class="btn-ui btn-info" type="button">
+        <button id="btnOpenMag" class="btn-ui btn-info" type="button">
             <i class="zmdi zmdi-cloud-download btn-ico"></i>
             Open Magnet
         </button>
     </div> <!-- btnOpenMag -->
     <div class="btnCopyMag">
-        <button class="btn-ui btn-info" type="button">
+        <button id="btnCopyMag" class="btn-ui btn-info" type="button">
             <i class="zmdi zmdi-copy btn-ico"></i>
             Copy Magnet
         </button>
     </div> <!-- btnCopyMag -->
     <div class="btnHash">
-        <button class="btn-ui btn-info" type="button">
+        <button id="btnHash" class="btn-ui btn-info" type="button">
             <i class="zmdi zmdi-label btn-ico"></i>
             Copy Info Hash
         </button>
@@ -262,7 +263,7 @@
                         <span class="d-block">OfflineBay is Free and Open-source software licenced under MIT License.
                         This software is created to parse CSV dump files created by a third party and any of the data
                     other than this software is not provided by TechTac. Use the data at your own risk. TechTac will not
-                    be responsible for any of the data accuired by using the dump file.</span>
+                    be responsible for any of the data acquired by using the dump file.</span>
                         <br>
                         <span>Software version : 2.0.0</span>
                     </div>
@@ -279,8 +280,9 @@
 <script src="../node_modules/popper.js/dist/umd/popper.js"></script>
 <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="../node_modules/jquery-bootgrid/dist/jquery.bootgrid.js"></script>
+<script src="js/bootstrap-notify.js"></script>
+<script src="renderers/RndMain.js"></script>
 <script src="js/WndMain.js"></script>
 <script>if (window.module) module = window.module;</script>
-<script src="renderers/RndMain.js"></script>
 </body>
 </html>
