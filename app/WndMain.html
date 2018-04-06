@@ -87,7 +87,7 @@
         <i class="zmdi zmdi-search top-search__reset"></i>
     </div> <!-- txtSearch -->
     <div class="btnSearch" style="margin: 2px 0">
-        <button class="btn-ui btn-info" type="button">
+        <button id="btnSearch" class="btn-ui btn-info" type="button">
             <i class="zmdi zmdi-search btn-ico"></i>
             Search
         </button>
@@ -263,7 +263,7 @@
                         <span class="d-block">OfflineBay is Free and Open-source software licenced under MIT License.
                         This software is created to parse CSV dump files created by a third party and any of the data
                     other than this software is not provided by TechTac. Use the data at your own risk. TechTac will not
-                    be responsible for any of the data acquired by using the dump file.</span>
+                    be responsible for any of the data accuired by using the dump file.</span>
                         <br>
                         <span>Software version : 2.0.0</span>
                     </div>
@@ -272,6 +272,18 @@
         </div> <!-- About Modal -->
 
     </div>
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay">
+    <div></div>
+    <div>
+        <img src="img/load.svg">
+    </div>
+    <div>
+        <span id="olText">Loading...</span>
+    </div>
+    <div></div>
 </div>
 
 <!-- Scripts -->
