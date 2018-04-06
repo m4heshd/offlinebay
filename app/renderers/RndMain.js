@@ -21,6 +21,34 @@ $('#btnMaximize').on('click', function () {
 });
 
 /*-----------------------------*/
+
+/* Overlay
+-------------*/
+function showOL(text){
+    $('#olText').text(text);
+    $('#overlay').css({
+        visibility: 'visible',
+        opacity: 1
+    });
+}
+function hideOL(){
+    $('#overlay').css({
+        opacity: 0,
+        visibility: 'hidden'
+    });
+}
+
+$('#btnSearch').on('click', function () {
+    showOL('Searching..');
+});
+
+$('#overlay').on('click', function () {
+    hideOL();
+});
+
+
+/* Notification popups
+-------------------------*/
 function popMsg(txt, type) {
     return function () {
         $.notify({
