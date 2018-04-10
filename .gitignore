@@ -1,3 +1,6 @@
+# Dump files
+*.csv
+
 # Logs
 logs
 *.log
