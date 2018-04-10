@@ -1,6 +1,11 @@
 const electron = require('electron');
 const {ipcRenderer} = electron;
 
+/* Window Settings
+--------------------*/
+document.addEventListener('dragover', event => event.preventDefault());
+document.addEventListener('drop', event => event.preventDefault());
+
 /* Window controls
 --------------------*/
 ipcRenderer.on('maxed', function () {
@@ -19,19 +24,69 @@ $('#btnMinimize').on('click', function () {
 $('#btnMaximize').on('click', function () {
     ipcRenderer.send('app-max');
 });
-
 /*-----------------------------*/
+
+/* Menu bar
+-------------*/
+/* Import dump */
+$('#mnuImport').on('click', function () {
+    ipcRenderer.send('pop-import');
+});
+ipcRenderer.on('import-start', function () {
+    $("#olAnim").attr("src", "img/import.svg");
+    showOL('Validating..');
+});
+ipcRenderer.on('import-update', function (event, txt) {
+    $('#olText').text('Importing..' + txt + '%');
+});
+ipcRenderer.on('import-finalizing', function (event, txt) {
+    $('#olText').text('Finalizing..');
+});
+ipcRenderer.on('import-success', function () {
+    hideOL();
+    popMsg('Dump file imported successfully', 'success')();
+    $('#txtStat').text('Dump updated @ ' + moment().format('YYYY-MM-DD hh:mm:ss'));
+});
+ipcRenderer.on('import-failed', function (event, data) {
+    hideOL();
+    switch (data) {
+        case 'read':
+            popMsg('Dump file import failed. Unable to read opened file', 'danger')();
+            break;
+        case 'temp':
+            popMsg('Dump file import failed. Unable to access the staging file', 'danger')();
+            break;
+        case 'process':
+            popMsg('Dump file import failed. Didn\'t process correctly', 'danger')();
+            break;
+        case 'invalid':
+            popMsg('Dump file invalid. Mismatching header', 'danger')();
+            break;
+        case 'finalize':
+            popMsg('Dump file import failed. Unable to create the processed file', 'danger')();
+            break;
+        default:
+            popMsg('Dump file import failed. Unspecified error.', 'danger')();
+    }
+});
+
+/* Update trackers */
+$('#mnuUpdTrcks').on('click', function () {
+    $("#olAnim").attr("src", "img/update_trcks.svg");
+    showOL('Updating Trackers..');
+});
 
 /* Overlay
 -------------*/
-function showOL(text){
+function showOL(text) {
     $('#olText').text(text);
     $('#overlay').css({
         visibility: 'visible',
         opacity: 1
     });
 }
-function hideOL(){
+
+function hideOL() {
     $('#overlay').css({
         opacity: 0,
         visibility: 'hidden'
@@ -39,6 +94,7 @@ function hideOL(){
 }
 
 $('#btnSearch').on('click', function () {
+    $("#olAnim").attr("src", "img/load.svg");
     showOL('Searching..');
 });
 
@@ -46,9 +102,12 @@ $('#overlay').on('click', function () {
     hideOL();
 });
 
-
 /* Notification popups
 -------------------------*/
+ipcRenderer.on('notify', function (event, msg) {
+    popMsg(msg[0], msg[1])();
+});
+
 function popMsg(txt, type) {
     return function () {
         $.notify({

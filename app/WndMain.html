@@ -43,13 +43,13 @@
         <button class="mnu-itm" type="button" data-toggle="dropdown">Tools</button>
         <ul class="dropdown-menu">
             <li>
-                <a href="#">
+                <a id="mnuImport" href="#">
                     <i class="zmdi zmdi-archive mnu-ico"></i>
                     <span class="mnu-txt">Import dump file</span>
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a id="mnuUpdTrcks" href="#">
                     <i class="zmdi zmdi-rotate-right mnu-ico"></i>
                     <span class="mnu-txt">Update Trackers</span>
                 </a>
@@ -226,7 +226,7 @@
 
 <div class="grid-stat-bar">
     <div class="item-v-center">
-        <span class="txt-stat">{resCount} Results found.</span>
+        <span id="txtStat" class="txt-stat">{resCount} Results found.</span>
     </div>
 </div> <!-- Status bar Grid -->
 
@@ -278,7 +278,8 @@
 <div id="overlay">
     <div></div>
     <div>
-        <img src="img/load.svg">
+        <span class="img-helper"></span>
+        <img id="olAnim" style="vertical-align: bottom;" src="img/load.svg">
     </div>
     <div>
         <span id="olText">Loading...</span>
@@ -292,7 +293,8 @@
 <script src="../node_modules/popper.js/dist/umd/popper.js"></script>
 <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="../node_modules/jquery-bootgrid/dist/jquery.bootgrid.js"></script>
-<script src="js/bootstrap-notify.js"></script>
+<script src="js/bootstrap-notify.min.js"></script>
+<script src="js/moment.min.js"></script>
 <script src="renderers/RndMain.js"></script>
 <script src="js/WndMain.js"></script>
 <script>if (window.module) module = window.module;</script>
