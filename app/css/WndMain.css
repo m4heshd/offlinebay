@@ -15,12 +15,53 @@ body {
     background-color: #1e2a31;
     -webkit-user-select: none;
 }
+/* Table */
 table {
-    -webkit-user-select: auto;
+    cursor: default;
 }
+.table-responsive {
+    overflow-x: hidden;
+}
+thead > tr > th:hover {
+    background: rgba(255, 255, 255, 0.01);
+}
+thead {
+    background: #2b3942;
+}
+th[role=columnheader]:not(.no-sort) {
+    cursor: pointer;
+}
+
+th[role=columnheader]:not(.no-sort):after {
+    font: normal normal normal 14px/1 'Material-Design-Iconic-Font';
+    font-size: 18px;
+    content: '\f1cd';
+    float: right;
+    visibility: hidden;
+    opacity: 0;
+}
+
+th[aria-sort=descending]:not(.no-sort):after {
+    content: '\f1ce';
+}
+
+th[aria-sort]:not(.no-sort):after {
+    visibility: visible;
+    opacity: 0.4;
+}
+
+th[role=columnheader]:not(.no-sort):hover:after {
+    visibility: visible;
+    opacity: 1;
+}
+.floatThead-container {
+    border-radius: 4px;
+}
+
 span, strong {
     cursor: default;
 }
+
 /* Grid Layout
 --------------------*/
 .item-v-center{
@@ -214,7 +255,7 @@ span, strong {
     right: 0;
     bottom: 0;
     background-color: rgba(0,0,0,0.6);
-    z-index: 2;
+    z-index: 1002;
     cursor: wait;
     transition: all .2s ease;
 }
@@ -331,6 +372,7 @@ span, strong {
 .top-search__reset:before,
 .btn-ui, .txtbox,
 .table-hover tbody tr:hover,
+thead > tr > th:hover,
 .btn-ctl,
 .mnu-itm{
     -webkit-transition: all;

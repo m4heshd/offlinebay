@@ -5,7 +5,6 @@
     <title>OfflineBay by TechTac</title>
     <link rel="stylesheet" href="../node_modules/material-design-iconic-font/dist/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../node_modules/jquery-bootgrid/dist/jquery.bootgrid.css">
     <!--<link rel="stylesheet" href="css/app.css">-->
     <link rel="stylesheet" href="css/animate.css">
     <link rel="stylesheet" href="css/comp-override.css">
@@ -115,64 +114,75 @@
     </div>
     <div class="tbl-grid">
         <div class="table-responsive">
-            <table id="tbl-main" class="table table-striped table-hover">
+            <table id="tblMain" class="table table-striped table-hover">
                 <thead>
                 <tr>
-                    <th data-column-id="date" data-type="date" data-identifier="true" data-order="desc">Date Added</th>
-                    <th data-column-id="torname">Torrent Name</th>
-                    <th data-column-id="torsize">Torrent Size</th>
+                    <th data-sort-method='date'>Date Added</th>
+                    <th style="display: none">Hash</th>
+                    <th data-sort-method='string'>Torrent Name</th>
+                    <th data-sort-method='filesize'>Torrent Size</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr data-row-id="0">
-                    <td class="text-left" style="">2017-Dec-05 15:12:49</td>
-                    <td class="text-left" style="">ubuntu 12.04.1 (32 bit)</td>
-                    <td class="text-left" style="">1.5GB</td>
+                <tr>
+                    <td>2017-Dec-05 15:12:49</td>
+                    <td style="display: none">2017-Dec-05 15:12:49</td>
+                    <td>ubuntu 12.04.1 (32 bit)</td>
+                    <td>1.5 GB</td>
                 </tr>
-                <tr data-row-id="1">
-                    <td class="text-left" style="">2017-Dec-05 15:12:44</td>
-                    <td class="text-left" style="">Ubuntu 15.04 Desktop i386, [Iso - MultiLang] [TNTVillage]</td>
-                    <td class="text-left" style="">2.0GB</td>
+                <tr>
+                    <td>2017-Dec-05 15:12:44</td>
+                    <td style="display: none">2017-Dec-05 15:12:49</td>
+                    <td>Ubuntu 15.04 Desktop i386, [Iso - MultiLang] [TNTVillage]</td>
+                    <td>2.0 GB</td>
                 </tr>
-                <tr data-row-id="2">
-                    <td class="text-left" style="">2018-Dec-05 15:12:49</td>
-                    <td class="text-left" style="">Ubuntu 11.04 Desktop dvd -i386 (x86) .iso</td>
-                    <td class="text-left" style="">600MB</td>
+                <tr>
+                    <td>2018-Dec-05 15:12:49</td>
+                    <td style="display: none">2017-Dec-05 15:12:49</td>
+                    <td>Ubuntu 11.04 Desktop dvd -i386 (x86) .iso</td>
+                    <td>600 MB</td>
                 </tr>
-                <tr data-row-id="3">
-                    <td class="text-left" style="">2017-Mar-05 15:12:49</td>
-                    <td class="text-left" style="">Ubuntu 9.10 I386 Server</td>
-                    <td class="text-left" style="">1.6GB</td>
+                <tr>
+                    <td>2017-Mar-05 15:12:49</td>
+                    <td style="display: none">2017-Dec-05 15:12:49</td>
+                    <td>Ubuntu 9.10 I386 Server</td>
+                    <td>1.6 GB</td>
                 </tr>
-                <tr data-row-id="4">
-                    <td class="text-left" style="">2017-Nov-05 15:12:49</td>
-                    <td class="text-left" style="">ubuntu 16.04 ISO</td>
-                    <td class="text-left" style="">1.5GB</td>
+                <tr>
+                    <td>2017-Nov-05 15:12:49</td>
+                    <td style="display: none">2017-Dec-05 15:12:49</td>
+                    <td>ubuntu 16.04 ISO</td>
+                    <td>1.5 GB</td>
                 </tr>
-                <tr data-row-id="5">
-                    <td class="text-left" style="">2017-Dec-05 18:12:49</td>
-                    <td class="text-left" style="">ubuntu 12.04.1 (32 bit)</td>
-                    <td class="text-left" style="">1.5GB</td>
+                <tr>
+                    <td>2017-Dec-05 18:12:49</td>
+                    <td style="display: none">2017-Dec-05 15:12:49</td>
+                    <td>ubuntu 12.04.1 (32 bit)</td>
+                    <td>1.5 GB</td>
                 </tr>
-                <tr data-row-id="6">
-                    <td class="text-left" style="">2017-Dec-05 15:45:49</td>
-                    <td class="text-left" style="">Ubuntu server Essentials</td>
-                    <td class="text-left" style="">1.5GB</td>
+                <tr>
+                    <td>2017-Dec-05 15:45:49</td>
+                    <td style="display: none">2017-Dec-05 15:12:49</td>
+                    <td>Ubuntu server Essentials</td>
+                    <td>1.5 GB</td>
                 </tr>
-                <tr data-row-id="7">
-                    <td class="text-left" style="">2017-Dec-05 15:17:19</td>
-                    <td class="text-left" style="">ubuntu 12.04.1 (32 bit) Desktop</td>
-                    <td class="text-left" style="">1.5GB</td>
+                <tr>
+                    <td>2017-Dec-05 15:17:19</td>
+                    <td style="display: none">2017-Dec-05 15:12:49</td>
+                    <td>ubuntu 12.04.1 (32 bit) Desktop</td>
+                    <td>1.5 GB</td>
                 </tr>
-                <tr data-row-id="8">
-                    <td class="text-left" style="">2017-Dec-05 12:14:49</td>
-                    <td class="text-left" style="">ubuntu 12.04.1 (32 bit)</td>
-                    <td class="text-left" style="">1.5GB</td>
+                <tr>
+                    <td>2017-Dec-05 12:14:49</td>
+                    <td style="display: none">2017-Dec-05 15:12:49</td>
+                    <td>ubuntu 12.04.1 (32 bit)</td>
+                    <td>1.5 GB</td>
                 </tr>
-                <tr data-row-id="9">
-                    <td class="text-left" style="">2017-Dec-05 20:12:49</td>
-                    <td class="text-left" style="">ubuntu 12.04.1 (32 bit)</td>
-                    <td class="text-left" style="">1.5GB</td>
+                <tr>
+                    <td>2017-Dec-05 20:12:49</td>
+                    <td style="display: none">2017-Dec-05 15:12:49</td>
+                    <td>ubuntu 12.04.1 (32 bit)</td>
+                    <td>1.5 GB</td>
                 </tr>
                 </tbody>
             </table>
@@ -292,11 +302,14 @@
 <script src="../node_modules/jquery/dist/jquery.js"></script>
 <script src="../node_modules/popper.js/dist/umd/popper.js"></script>
 <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="../node_modules/jquery-bootgrid/dist/jquery.bootgrid.js"></script>
 <script src="js/bootstrap-notify.min.js"></script>
 <script src="js/moment.min.js"></script>
-<script src="renderers/RndMain.js"></script>
+<script src="js/tablesort.min.js"></script>
+<script src="js/tablesort.filesize.min.js"></script>
+<script src="js/tablesort.date.min.js"></script>
+<script src="js/jquery.floatThead.min.js"></script>
 <script src="js/WndMain.js"></script>
+<script src="renderers/RndMain.js"></script>
 <script>if (window.module) module = window.module;</script>
 </body>
 </html>
