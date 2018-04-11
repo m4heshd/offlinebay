@@ -390,6 +390,7 @@ fieldset[disabled] .checkbox label {
 }
 .table > thead > tr > th {
     border-bottom-width: 1px;
+    border-bottom-color: #b4bfc3;
     color: #b4bfc3;
     font-weight: 500;
 }
@@ -402,142 +403,6 @@ fieldset[disabled] .checkbox label {
     .table-striped:not(.table-bordered) > tbody > tr > td {
         vertical-align: middle;
     }
-}
-/* Bootgrid */
-.table-bootgrid > thead > tr > th {
-    padding: 0;
-}
-.table-bootgrid > thead > tr > th > a {
-    padding: 15px;
-    display: block;
-    position: relative;
-    -webkit-transition: background-color;
-    -o-transition: background-color;
-    transition: background-color;
-    -webkit-transition-duration: 300ms;
-    transition-duration: 300ms;
-}
-.table-bootgrid > thead > tr > th > a,
-.table-bootgrid > thead > tr > th > a:hover,
-.table-bootgrid > thead > tr > th > a:focus {
-    color: #b4bfc3;
-}
-.table-bootgrid > thead > tr > th > a:hover {
-    background-color: rgba(255, 255, 255, 0.01);
-}
-.table-bootgrid > thead > tr > th > a .table-bootgrid__icon {
-    position: absolute;
-    right: 10px;
-    bottom: 13px;
-}
-.table-bootgrid__header {
-    position: relative;
-}
-.table-bootgrid__search,
-.table-bootgrid__actions {
-    display: inline-block;
-    vertical-align: top;
-}
-@media (min-width: 768px) {
-    .table-bootgrid__search {
-        width: 300px;
-        display: inline-block;
-    }
-}
-@media (max-width: 767px) {
-    .table-bootgrid__search {
-        width: calc(100% - 110px);
-    }
-}
-.table-bootgrid__search .form-control {
-    padding-left: 27px;
-}
-.table-bootgrid__search .table-bootgrid__icon {
-    position: absolute;
-    left: 0;
-    top: 8px;
-}
-.table-bootgrid__icon {
-    font-size: 18px;
-    line-height: 100%;
-}
-@media (max-width: 767px) {
-    .table-bootgrid__actions {
-        position: absolute;
-        top: 0;
-        right: 0;
-    }
-}
-.table-bootgrid__actions > .dropdown {
-    width: 40px;
-    display: inline-block;
-    vertical-align: top;
-    margin-left: 15px;
-}
-.table-bootgrid__actions > .dropdown [data-toggle] {
-    color: #b4bfc3;
-    height: 35px;
-    display: block;
-    border-bottom: 1px solid #31424b;
-    padding: 7px 0 0 5px;
-}
-.table-bootgrid__showing {
-    text-align: right;
-}
-.table-bootgrid__showing > div {
-    border: 1px solid #31424b;
-    padding: 10px 15px;
-    display: inline-block;
-    margin-top: 16px;
-}
-@media (max-width: 767px) {
-    .table-bootgrid__footer {
-        margin-top: 30px;
-    }
-    .table-bootgrid__footer .col-sm-6 {
-        text-align: center;
-    }
-}
-.table-bootgrid__pagination {
-    margin-bottom: 0;
-}
-.table-bootgrid__pagination .first > a,
-.table-bootgrid__pagination .prev > a,
-.table-bootgrid__pagination .next > a,
-.table-bootgrid__pagination .last > a {
-    font-size: 0;
-}
-.table-bootgrid__pagination .first > a:before,
-.table-bootgrid__pagination .prev > a:before,
-.table-bootgrid__pagination .next > a:before,
-.table-bootgrid__pagination .last > a:before {
-    font-family: 'Material-Design-Iconic-Font';
-    font-size: 15px;
-    display: inline-block;
-}
-.table-bootgrid__pagination .first > a:before,
-.table-bootgrid__pagination .last > a:before {
-    content: '\f19c';
-}
-.table-bootgrid__pagination .prev > a:before {
-    content: '\f2ff';
-}
-.table-bootgrid__pagination .next > a:before {
-    content: '\f301';
-}
-@media (max-width: 767px) {
-    .table-bootgrid__pagination > li[class*="page-"] {
-        display: none;
-    }
-}
-.tabe-bootgrid__checkbox {
-    margin: 10px 20px;
-}
-th.select-cell .checkbox {
-    margin: 0 0 15px 15px;
-}
-td.select-cell .checkbox {
-    margin: 0;
 }
 /* Select 2 */
 .select2-container--default .select2-selection--single {
@@ -763,43 +628,4 @@ td.select-cell .checkbox {
 .noUi-horizontal .noUi-active,
 .noUi-vertical .noUi-active {
     box-shadow: 0 0 0 12px rgba(255, 255, 255, 0.055);
-}
-/* Pagination */
-.pagination {
-    border-radius: 0;
-}
-.pagination > li {
-    margin: 0 2px;
-    display: inline-block;
-    vertical-align: top;
-}
-.pagination > li > a,
-.pagination > li > span {
-    border-radius: 50% !important;
-    padding: 0;
-    width: 35px;
-    height: 35px;
-    line-height: 33px;
-    text-align: center;
-    font-size: 14px;
-    z-index: 1;
-    position: relative;
-    cursor: pointer;
-    -webkit-transition: all;
-    -o-transition: all;
-    transition: all;
-    -webkit-transition-duration: 300ms;
-    transition-duration: 300ms;
-}
-.pagination > li > a > .zmdi,
-.pagination > li > span > .zmdi {
-    font-size: 15px;
-}
-.pagination > li.disabled {
-    opacity: 0.4;
-    filter: alpha(opacity=40);
-}
-.pagination--alt {
-    text-align: center;
-    width: 100%;
 }

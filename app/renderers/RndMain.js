@@ -76,6 +76,11 @@ $('#mnuUpdTrcks').on('click', function () {
     showOL('Updating Trackers..');
 });
 
+/* Torrent Search
+------------------*/
+/* Table */
+let tbl = new Tablesort(document.getElementById('tblMain'));
+
 /* Overlay
 -------------*/
 function showOL(text) {
