@@ -18,10 +18,7 @@ body {
 /* Table */
 table {
     cursor: default;
-    transform: rotateX(0deg);
-}
-.table-responsive {
-    overflow-x: hidden;
+    /*transform: rotateX(0deg);*/
 }
 thead > tr > th:hover {
     background: rgba(255, 255, 255, 0.01);
@@ -57,6 +54,7 @@ th[role=columnheader]:not(.no-sort):hover:after {
 }
 .floatThead-container {
     border-radius: 4px;
+    overflow-y: auto;
 }
 
 span, strong {

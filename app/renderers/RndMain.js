@@ -1,6 +1,8 @@
 const electron = require('electron');
 const {ipcRenderer} = electron;
 
+let rows = [];
+
 /* Window Settings
 --------------------*/
 document.addEventListener('dragover', event => event.preventDefault());
@@ -80,7 +82,15 @@ $('#mnuUpdTrcks').on('click', function () {
 ------------------*/
 /* Table */
 let tbl = new Tablesort(document.getElementById('tblMain'));
-
+let clusterize = new Clusterize({
+    rows: rows,
+    scrollId: 'tblPane',
+    contentId: 'tblMainBody',
+    tag: 'tr',
+    show_no_data_row: false,
+    rows_in_block: 20
+    // blocks_in_cluster: 100
+});
 /* Search */
 function startSearch(){
     $("#olAnim").attr("src", "img/load.svg");
@@ -114,8 +124,11 @@ ipcRenderer.on('search-failed', function (event, data) {
 ipcRenderer.on('search-success', function (event, data) {
     hideOL();
     $('#txtStat').text(data.resCount + ' Results found');
-    $('#tblMainBody').html(data.results);
-    tbl.refresh();
+    // $('#tblMainBody').html(data.results);
+    rows = data.results;
+    clusterize.update(rows);
+    clusterize.refresh();
+    // tbl.refresh();
     $('#txtFilter').val('');
 });
 
