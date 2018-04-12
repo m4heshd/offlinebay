@@ -20,7 +20,7 @@ console.log(smart);
 let i = 1;
 let reg;
 let stream;
-let result = '';
+let result = [];
 
 let procData = smart ? smartSearch : regularSearch;
 
@@ -59,11 +59,12 @@ function smartSearch(results, parser) {
                 }
                 stop = true;
             } else {
-                result += '<tr><td>' + record['#ADDED'] +
+                let row = '<tr><td>' + record['#ADDED'] +
                     '</td><td class="d-none">' + record['HASH(B64)'] +
                     '</td><td>' + record['NAME'] +
                     '</td><td>' + formatBytes(record['SIZE(BYTES)'], 1) + '</td></tr>';
                  // console.log(i + ' ' + formatBytes(record['SIZE(BYTES)']));
+                result.push(row);
                 i++;
             }
         }
