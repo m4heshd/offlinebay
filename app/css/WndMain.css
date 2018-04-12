@@ -18,6 +18,7 @@ body {
 /* Table */
 table {
     cursor: default;
+    transform: rotateX(0deg);
 }
 .table-responsive {
     overflow-x: hidden;
@@ -450,7 +451,7 @@ thead > tr > th:hover,
 .top-search__reset:after, .top-search__reset:before {
     position: absolute;
     left: 20px;
-    top: 14px
+    top: 15px
 }
 
 .top-search__reset:after {

@@ -8,13 +8,16 @@ const {app, BrowserWindow, ipcMain, dialog} = electron;
 app.commandLine.appendSwitch('remote-debugging-port', '9222');
 
 let procImport;
+let procSearch;
 let awaitingQuit = false;
 let mainWindow;
 
 /* Process handles
 --------------------*/
 process.on('cont-quit', function () {
-    app.quit();
+    if (!procSearch && !procImport) {
+        app.quit();
+    }
 }); // Emitted if the window is waiting for child processes to exit
 
 // process.on('uncaughtException', function (error) {
@@ -46,6 +49,11 @@ ipcMain.on('pop-import', function (event) {
     initImport(event);
 }); // Import dump file open dialog
 
+/* Search */
+ipcMain.on('search-start', function (event, data) {
+    initSearch(data[0], data[1], data[2]);
+}); // Handle search event
+
 /* Notification senders
 ------------------------*/
 function popMsg(msg) {
@@ -57,9 +65,18 @@ function popSuccess(msg) {
 function popErr(msg) {
     mainWindow.webContents.send('notify', [msg, 'danger']);
 } // Show red background notification
+function popWarn(msg) {
+    mainWindow.webContents.send('notify', [msg, 'warning']);
+} //
 
 /* Misc Functions
 ------------------*/
+function waitProcess(event, _process, name) {
+    event.preventDefault();
+    _process.kill('SIGINT');
+    popWarn('Wait for background process ' + name + ' to finish');
+    awaitingQuit = true;
+}
 function startOB() {
     mainWindow = new BrowserWindow({
         width: 1200,
@@ -83,12 +100,11 @@ function startOB() {
 
     mainWindow.on('close', function (event) {
         if (procImport) {
-            event.preventDefault();
-            console.log('Killing child processes');
-            procImport.kill('SIGINT');
-            popErr('Wait for background process \'IMPORT\' to finish');
-            awaitingQuit = true;
-        } // Validation of any running child processes before closing
+            waitProcess(event, procImport, '\'IMPORT\'');
+        } // Validation of any running child processes before closing (Import)
+        if (procSearch) {
+            waitProcess(event, procSearch, '\'SEARCH\'');
+        } // Validation of any running child processes before closing (Search)
     });
     mainWindow.on('closed', function () {
         mainWindow = null;
@@ -130,8 +146,29 @@ function initImport(event) {
                 mainWindow.webContents.send(m[0], m[1]);
             });
         } else {
-            popErr('One Import process is already running');
+            popWarn('One Import process is already running');
         }
 
     }
 } // Show open dialog and initiate import child process
+
+function initSearch(query, count, smart) {
+    if (!procSearch) {
+        procSearch = cp.fork(path.join(__dirname, 'main-functions', 'search.js'), [query, count, smart], {
+            cwd: __dirname
+        });
+        procSearch.on('exit', function () {
+            console.log('Search process ended');
+            procSearch = null;
+            if (awaitingQuit){
+                process.emit('cont-quit');
+            }
+        });
+        procSearch.on('message', function (m) {
+            mainWindow.webContents.send(m[0], m[1]);
+        });
+    } else {
+        popWarn('One Search process is already running');
+        mainWindow.webContents.send('hide-ol');
+    }
+} // Initiate search child process

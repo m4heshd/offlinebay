@@ -81,8 +81,50 @@ $('#mnuUpdTrcks').on('click', function () {
 /* Table */
 let tbl = new Tablesort(document.getElementById('tblMain'));
 
+/* Search */
+function startSearch(){
+    $("#olAnim").attr("src", "img/load.svg");
+    showOL('Searching..');
+    let query = $('#txtSearch').val();
+    let count = parseInt($('#txtResCount').val());
+    let smart = $('#chkSmartSearch').prop('checked');
+    ipcRenderer.send('search-start', [query, count, smart]);
+}
+$('#btnSearch').on('click', function () {
+    startSearch();
+});
+$('#txtSearch').keypress(function(e) {
+    if(e.which === 13) {
+        startSearch();
+    }
+});
+ipcRenderer.on('search-failed', function (event, data) {
+    hideOL();
+    switch (data) {
+        case 'read':
+            popMsg('Failed to read the dump file. Possible corruption or file doesn\'t exist', 'danger')();
+            break;
+        case 'process':
+            popMsg('Search error. Mismatching data in dump file', 'danger')();
+            break;
+        default:
+            popMsg('Search failed. Unspecified error.', 'danger')();
+    }
+});
+ipcRenderer.on('search-success', function (event, data) {
+    hideOL();
+    $('#txtStat').text(data.resCount + ' Results found');
+    $('#tblMainBody').html(data.results);
+    tbl.refresh();
+    $('#txtFilter').val('');
+});
+
 /* Overlay
 -------------*/
+ipcRenderer.on('hide-ol', function () {
+    hideOL();
+});
+
 function showOL(text) {
     $('#olText').text(text);
     $('#overlay').css({
@@ -97,11 +139,6 @@ function hideOL() {
         visibility: 'hidden'
     });
 }
-
-$('#btnSearch').on('click', function () {
-    $("#olAnim").attr("src", "img/load.svg");
-    showOL('Searching..');
-});
 
 $('#overlay').on('click', function () {
     hideOL();

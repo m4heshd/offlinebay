@@ -82,7 +82,7 @@
 
 <div class="grid-body" style="margin-top: 10px">
     <div class="top-search txtSearch">
-        <input type="text" class="top-search__input" placeholder="Search torrents" autocomplete="off">
+        <input id="txtSearch" type="text" class="top-search__input" placeholder="Search torrents" autocomplete="off" value="game of thrones">
         <i class="zmdi zmdi-search top-search__reset"></i>
     </div> <!-- txtSearch -->
     <div class="btnSearch" style="margin: 2px 0">
@@ -103,7 +103,7 @@
             <span>Max Results:</span>
         </div> <!-- lblResCount -->
         <div>
-            <input type="text" class="txtbox" style="height: 32px" placeholder="Enter amount" autocomplete="off">
+            <input id="txtResCount" type="text" class="txtbox" style="height: 32px" placeholder="Enter amount" autocomplete="off" value="50">
         </div> <!-- txtResCount -->
         <div class="item-v-center">
             <span style="margin-left: 20px">Filter:</span>
@@ -123,7 +123,7 @@
                     <th data-sort-method='filesize'>Torrent Size</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="tblMainBody">
                 <tr>
                     <td>2017-Dec-05 15:12:49</td>
                     <td style="display: none">2017-Dec-05 15:12:49</td>
