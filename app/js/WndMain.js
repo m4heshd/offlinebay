@@ -29,16 +29,16 @@ $(document).ready(function () {
 
     /* Data table functions
     ----------------------------*/
-    $("#tblMain tbody tr").on('click', function () {
+    $("#tblMainBody").on('click', 'tr', function () {
         if (!$(this).hasClass('active')) {
             $('#tblMain .active').removeClass('active');
             $(this).addClass('active');
         }
     });
-    let $table = $('#tblMain');
-    $table.floatThead({
-        zIndex: 1
-    });
+    // let $table = $('#tblMain');
+    // $table.floatThead({
+    //     zIndex: 1
+    // });
 
     /* Filtering
     ----------------------------*/
