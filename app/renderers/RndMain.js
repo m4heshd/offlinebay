@@ -175,7 +175,7 @@ function filterTbl() {
         filter = input.value;
         let reg = new RegExp(regexify(filter), 'i');
         for (let i = 0; i < names.length; i++) {
-            if (names[i].match(reg)) {
+            if (reg.test(names[i])) {
                 results.push(rows[i]);
             }
         }
