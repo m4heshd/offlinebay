@@ -26,11 +26,11 @@ thead > tr > th:hover {
 thead {
     background: #2b3942;
 }
-th[role=columnheader]:not(.no-sort) {
+th[data-role=columnheader] {
     cursor: pointer;
 }
 
-th[role=columnheader]:not(.no-sort):after {
+th[data-role=columnheader]:after {
     font: normal normal normal 14px/1 'Material-Design-Iconic-Font';
     font-size: 18px;
     content: '\f1cd';
@@ -38,17 +38,17 @@ th[role=columnheader]:not(.no-sort):after {
     visibility: hidden;
     opacity: 0;
 }
-
-th[aria-sort=descending]:not(.no-sort):after {
+th[data-sort=desc]:after {
     content: '\f1ce';
 }
-
-th[aria-sort]:not(.no-sort):after {
+th[data-sort=asc]:after {
+    content: '\f1cd';
+}
+th[data-sort]:after {
     visibility: visible;
     opacity: 0.4;
 }
-
-th[role=columnheader]:not(.no-sort):hover:after {
+th[data-role=columnheader]:hover:after {
     visibility: visible;
     opacity: 1;
 }
