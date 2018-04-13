@@ -34,16 +34,13 @@ if (smart) {
 }
 
 function regularSearch(results, parser) {
-    let stop = false;
-    results.data.forEach(function (record) {
-        // console.log(record['NAME']);
+    for (let c = 0; c < results.data.length; c++) {
+        let record = results.data[c];
         if (record['NAME'].toUpperCase().indexOf(query.toUpperCase()) > -1) {
             if (i > count) {
-                if (!stop) {
-                    parser.abort();
-                    stream.close();
-                }
-                stop = true;
+                parser.abort();
+                stream.close();
+                break;
             } else {
                 let row = '<tr><td>' + record['#ADDED'] +
                     '</td><td class="d-none">' + record['HASH(B64)'] +
@@ -55,20 +52,44 @@ function regularSearch(results, parser) {
                 i++;
             }
         }
-    });
+    }
+}
+
+function regularInstSearch(results, parser) {
+    let chunk = [];
+    let nms = [];
+    for (let c = 0; c < results.data.length; c++) {
+        let record = results.data[c];
+        if (record['NAME'].toUpperCase().indexOf(query.toUpperCase()) > -1) {
+            if (i > count) {
+                parser.abort();
+                stream.close();
+                break;
+            } else {
+                let row = '<tr><td>' + record['#ADDED'] +
+                    '</td><td class="d-none">' + record['HASH(B64)'] +
+                    '</td><td>' + record['NAME'] +
+                    '</td><td>' + formatBytes(record['SIZE(BYTES)'], 1) + '</td></tr>';
+                // console.log(i + ' ' + formatBytes(record['SIZE(BYTES)']));
+                chunk.push(row);
+                nms.push(record['NAME']);
+                i++;
+            }
+        }
+    }
+    if (chunk.length > 0) {
+        process.send(['search-update', {chunk: chunk, names: nms}]); //mainWindow.webContents.send('search-failed', 'process');
+    }
 }
 
 function smartSearch(results, parser) {
-    let stop = false;
-    results.data.forEach(function (record) {
-        // console.log(record['NAME']);
-        if (record['NAME'].match(reg)) {
+    for (let c = 0; c < results.data.length; c++) {
+        let record = results.data[c];
+        if (reg.test(record['NAME'])) {
             if (i > count) {
-                if (!stop) {
-                    parser.abort();
-                    stream.close();
-                }
-                stop = true;
+                parser.abort();
+                stream.close();
+                break;
             } else {
                 let row = '<tr><td>' + record['#ADDED'] +
                     '</td><td class="d-none">' + record['HASH(B64)'] +
@@ -80,22 +101,19 @@ function smartSearch(results, parser) {
                 i++;
             }
         }
-    });
+    }
 }
 
 function smartInstSearch(results, parser) {
-    let stop = false;
     let chunk = [];
     let nms = [];
-    results.data.forEach(function (record) {
-        // console.log(record['NAME']);
-        if (record['NAME'].match(reg)) {
+    for (let c = 0; c < results.data.length; c++) {
+        let record = results.data[c];
+        if (reg.test(record['NAME'])) {
             if (i > count) {
-                if (!stop) {
-                    parser.abort();
-                    stream.close();
-                }
-                stop = true;
+                parser.abort();
+                stream.close();
+                break;
             } else {
                 let row = '<tr><td>' + record['#ADDED'] +
                     '</td><td class="d-none">' + record['HASH(B64)'] +
@@ -108,41 +126,12 @@ function smartInstSearch(results, parser) {
                 i++;
             }
         }
-    });
-    if (chunk.length > 0){
-        process.send(['search-update', {chunk: chunk, names:nms}]); //mainWindow.webContents.send('search-failed', 'process');
+    }
+    if (chunk.length > 0) {
+        process.send(['search-update', {chunk: chunk, names: nms}]); //mainWindow.webContents.send('search-failed', 'process');
     }
 }
 
-function regularInstSearch(results, parser) {
-    let chunk = [];
-    let nms = [];
-    let stop = false;
-    results.data.forEach(function (record) {
-        // console.log(record['NAME']);
-        if (record['NAME'].toUpperCase().indexOf(query.toUpperCase()) > -1) {
-            if (i > count) {
-                if (!stop) {
-                    parser.abort();
-                    stream.close();
-                }
-                stop = true;
-            } else {
-                let row = '<tr><td>' + record['#ADDED'] +
-                    '</td><td class="d-none">' + record['HASH(B64)'] +
-                    '</td><td>' + record['NAME'] +
-                    '</td><td>' + formatBytes(record['SIZE(BYTES)'], 1) + '</td></tr>';
-                // console.log(i + ' ' + formatBytes(record['SIZE(BYTES)']));
-                chunk.push(row);
-                nms.push(record['NAME']);
-                i++;
-            }
-        }
-    });
-    if (chunk.length > 0){
-        process.send(['search-update', {chunk: chunk, names:nms}]); //mainWindow.webContents.send('search-failed', 'process');
-    }
-}
 
 let finSearch = function () {
     if (inst) {
@@ -206,8 +195,8 @@ function regexify(text) {
     return final;
 }
 
-function formatBytes(bytes,decimals) {
-    if(bytes === 0) return '0 Bytes';
+function formatBytes(bytes, decimals) {
+    if (bytes === 0) return '0 Bytes';
     let k = 1024,
         dm = decimals || 2,
         sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
