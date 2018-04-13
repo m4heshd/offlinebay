@@ -168,7 +168,7 @@ span, strong {
 .grid-search-tools {
     grid-area: searchTools;
     display: grid;
-    grid-template-columns: 130px 95px 80px 100px 60px auto;
+    grid-template-columns: 130px 95px 80px minmax(auto, 100px) 60px auto;
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 15px;
