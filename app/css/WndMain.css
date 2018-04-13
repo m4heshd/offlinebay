@@ -168,7 +168,7 @@ span, strong {
 .grid-search-tools {
     grid-area: searchTools;
     display: grid;
-    grid-template-columns: 130px 80px auto 60px auto;
+    grid-template-columns: 130px 95px 80px 100px 60px auto;
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 15px;
@@ -360,6 +360,36 @@ span, strong {
 *::-webkit-scrollbar-corner,
 *::-webkit-scrollbar-track {
     background: #24303a !important;
+}
+/* Tooltip */
+.tooltiptext {
+    visibility: hidden;
+    position: absolute;
+    width: 120px;
+    background-color: #edeff0;
+    color: #4a606d;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity .6s;
+    bottom: 165%;
+    left: 50%;
+    margin-left: -60px;
+}
+.tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border: 5px solid transparent;
+    border-top-color: #edeff0;
+}
+.show-tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
 }
 
 /*------END GLOBAL------*/
