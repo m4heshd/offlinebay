@@ -1,28 +1,32 @@
 const electron = require('electron');
 const {ipcRenderer} = electron;
 
-let rows = [];
-
 /* Window Settings
 --------------------*/
+// Prevent OfflineBay from accepting drag and dropped files by user
 document.addEventListener('dragover', event => event.preventDefault());
 document.addEventListener('drop', event => event.preventDefault());
 
 /* Window controls
 --------------------*/
+// Fired on maximization of the main window
 ipcRenderer.on('maxed', function () {
     $('#btnMaximize i').removeClass('zmdi-window-maximize').addClass('zmdi-window-restore');
 });
+// Fired on restoration of the main window
 ipcRenderer.on('restored', function () {
     $('#btnMaximize i').removeClass('zmdi-window-restore').addClass('zmdi-window-maximize');
 });
 
+// Main window Close button event
 $('#btnClose').on('click', function () {
     ipcRenderer.send('app-close');
 });
+// Main window Minimize button event
 $('#btnMinimize').on('click', function () {
     ipcRenderer.send('app-min');
 });
+// Main window Maximize/Restore button event
 $('#btnMaximize').on('click', function () {
     ipcRenderer.send('app-max');
 });
@@ -34,21 +38,26 @@ $('#btnMaximize').on('click', function () {
 $('#mnuImport').on('click', function () {
     ipcRenderer.send('pop-import');
 });
+// Fired after open dialog is finished on main process
 ipcRenderer.on('import-start', function () {
     $("#olAnim").attr("src", "img/import.svg");
     showOL('Validating..');
 });
+// Fired on each chunk processed by the search process
 ipcRenderer.on('import-update', function (event, txt) {
     $('#olText').text('Importing..' + txt + '%');
 });
+// Fired prior to creating the processed.csv
 ipcRenderer.on('import-finalizing', function (event, txt) {
     $('#olText').text('Finalizing..');
 });
+// Fired after import process is successfully finished
 ipcRenderer.on('import-success', function () {
     hideOL();
     popMsg('Dump file imported successfully', 'success')();
     $('#txtStat').text('Dump updated @ ' + moment().format('YYYY-MM-DD hh:mm:ss'));
 });
+// Fired on any import error
 ipcRenderer.on('import-failed', function (event, data) {
     hideOL();
     switch (data) {
@@ -81,7 +90,8 @@ $('#mnuUpdTrcks').on('click', function () {
 /* Torrent Search
 ------------------*/
 /* Table */
-// let tbl = new Tablesort(document.getElementById('tblMain'));
+let rows = []; // Global array of table data to be used with all table related functions
+// Initiate clusterize on tblMain
 let clusterize = new Clusterize({
     rows: rows,
     scrollId: 'tblPane',
@@ -92,7 +102,17 @@ let clusterize = new Clusterize({
     // blocks_in_cluster: 100
 });
 
+// Get markup data from the search result object and push them into an array
+function pushTblData(rowdata) {
+    let result = [];
+    for (let c = 0; c < rowdata.length; c++) {
+        result.push(rowdata[c].markup);
+    }
+    return result;
+}
+
 /* Search */
+// Initiate search
 function startSearch() {
     $("#olAnim").attr("src", "img/load.svg");
     showOL('Searching..');
@@ -107,30 +127,33 @@ function startSearch() {
 $('#btnSearch').on('click', function () {
     startSearch();
 });
+// txtSearch Return key event
 $('#txtSearch').keypress(function (e) {
     if (e.which === 13) {
         startSearch();
     }
 });
+// Fired after validation on main process for running search processes
 ipcRenderer.on('search-init', function () {
+    rows = [];
     let inst = $('#chkInstSearch').prop('checked');
     if (inst) {
         clusterize.update([]);
         $('#txtFilter').val('');
     }
     $('#txtStat').text('Still searching....');
-    rows = [];
+
+    $('th[data-sort]').removeAttr('data-sort');
 });
+// Fired on each processed chunk if user checked instant search to update the table
 ipcRenderer.on('search-update', function (event, data) {
     hideOL();
     rows = rows.concat(data);
-    let result = [];
-    for (let c = 0; c < data.length; c++) {
-        result.push(data[c].markup);
-    }
+    let result = pushTblData(data);
     clusterize.append(result);
     clusterize.refresh();
 });
+// Fired on search errors
 ipcRenderer.on('search-failed', function (event, data) {
     hideOL();
     switch (data) {
@@ -144,20 +167,17 @@ ipcRenderer.on('search-failed', function (event, data) {
             popMsg('Search failed. Unspecified error.', 'danger')();
     }
 });
+// Fired at the end of search if user didn't check instant search
 ipcRenderer.on('search-success', function (event, data) {
     hideOL();
     $('#txtStat').text(data.resCount + ' Results found');
-    // $('#tblMainBody').html(data.results);
     rows = data.results;
-    let result = [];
-    for (let c = 0; c < rows.length; c++) {
-        result.push(rows[c].markup);
-    }
+    let result = pushTblData(rows);
     clusterize.update(result);
     clusterize.refresh();
-    // tbl.refresh();
     $('#txtFilter').val('');
 });
+// Fired at the end of search if user checked instant search
 ipcRenderer.on('search-success-inst', function (event, data) {
     hideOL();
     $('#txtStat').text(data.resCount + ' Results found');
@@ -168,8 +188,8 @@ $("#txtFilter").keyup(function () {
     filterTbl();
 });
 
+// Filter table using the user input
 function filterTbl() {
-
     let input, filter, smart, results;
     input = document.getElementById("txtFilter");
     filter = input.value.toUpperCase();
@@ -196,9 +216,9 @@ function filterTbl() {
         clusterize.update(results);
         clusterize.refresh();
     }
-
 }
 
+// Escape Regex special characters in the search query
 function escapeRegExp(text) {
     return text.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&');
 }
@@ -213,12 +233,128 @@ function regexify(text) {
     return final;
 }
 
+/* Sorting */
+
+$('th[data-role="columnheader"]').on('click', function () {
+    sortTbl($(this));
+});
+
+// Table sort initiator
+function sortTbl(comp) {
+    let sort = comp.attr('data-sort');
+    if (sort) {
+        rows.reverse();
+        filterTbl();
+        switch (sort) {
+            case 'asc':
+                comp.attr('data-sort', 'desc');
+                break;
+            case 'desc':
+                comp.attr('data-sort', 'asc');
+                break;
+        }
+    } else {
+        let type = comp.data('type');
+        switch (type) {
+            case 'date':
+                rows.sort(function (a, b) {
+                    return sortDate(a.added, b.added);
+                });
+                break;
+            case 'name':
+                rows.sort(function (a, b) {
+                    return sortName(a.name, b.name);
+                });
+                break;
+            case 'size':
+                rows.sort(function (a, b) {
+                    return sortSize(a.size, b.size);
+                });
+                break;
+        }
+        filterTbl();
+        $('th[data-sort]').removeAttr('data-sort');
+        comp.attr('data-sort', 'asc');
+    }
+}
+
+// Torrent added Timestamp comparator
+function sortDate(a, b) {
+    a = new Date(a);
+    b = new Date(b);
+    return a - b;
+}
+
+// Torrent name comparator
+function sortName(a, b) {
+    return a.trim().localeCompare(b.trim());
+}
+
+// Torrent size comparator
+function sortSize(a, b) {
+
+    let compareNumber = function (a, b) {
+        a = parseFloat(a);
+        b = parseFloat(b);
+
+        a = isNaN(a) ? 0 : a;
+        b = isNaN(b) ? 0 : b;
+
+        return a - b;
+    };
+
+    let cleanNumber = function (i) {
+        return i.replace(/[^\-?0-9.]/g, '');
+    };
+
+    let suffix2num = function (suffix) {
+        suffix = suffix.toLowerCase();
+        let base = 1024;
+
+        switch (suffix[0]) {
+            case 'k':
+                return Math.pow(base, 2);
+            case 'm':
+                return Math.pow(base, 3);
+            case 'g':
+                return Math.pow(base, 4);
+            case 't':
+                return Math.pow(base, 5);
+            case 'p':
+                return Math.pow(base, 6);
+            case 'e':
+                return Math.pow(base, 7);
+            case 'z':
+                return Math.pow(base, 8);
+            case 'y':
+                return Math.pow(base, 9);
+            default:
+                return base;
+        }
+    };
+
+    let filesize2num = function (filesize) {
+        let matches = filesize.match(/^(\d+(\.\d+)?) ?((K|M|G|T|P|E|Z|Y|B$)i?B?)$/i);
+
+        let num = parseFloat(cleanNumber(matches[1])),
+            suffix = matches[3];
+
+        return num * suffix2num(suffix);
+    };
+
+    a = filesize2num(a);
+    b = filesize2num(b);
+
+    return compareNumber(a, b);
+}
+
 /* Overlay
 -------------*/
 ipcRenderer.on('hide-ol', function () {
     hideOL();
 });
 
+// Show the dark window overlay with provided text
 function showOL(text) {
     $('#olText').text(text);
     $('#overlay').css({
@@ -227,6 +363,7 @@ function showOL(text) {
     });
 }
 
+// Hide window overlay
 function hideOL() {
     $('#overlay').css({
         opacity: 0,
@@ -240,10 +377,12 @@ $('#overlay').on('click', function () {
 
 /* Notification popups
 -------------------------*/
+// Fired on 'notify' event with message text and type from the main process. Then shows a notification.
 ipcRenderer.on('notify', function (event, msg) {
     popMsg(msg[0], msg[1])();
 });
 
+// Notification popup closure
 function popMsg(txt, type) {
     return function () {
         $.notify({
