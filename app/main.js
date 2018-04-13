@@ -81,7 +81,7 @@ function startOB() {
     mainWindow = new BrowserWindow({
         width: 1200,
         height: 800,
-        minWidth: 644,
+        minWidth: 762,
         minHeight: 698,
         show: false,
         frame: false,

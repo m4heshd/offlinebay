@@ -2,7 +2,6 @@ const electron = require('electron');
 const {ipcRenderer} = electron;
 
 let rows = [];
-let names = [];
 
 /* Window Settings
 --------------------*/
@@ -120,12 +119,16 @@ ipcRenderer.on('search-init', function () {
         $('#txtFilter').val('');
     }
     $('#txtStat').text('Still searching....');
+    rows = [];
 });
 ipcRenderer.on('search-update', function (event, data) {
     hideOL();
-    rows = rows.concat(data.chunk);
-    names = names.concat(data.names);
-    clusterize.append(data.chunk);
+    rows = rows.concat(data);
+    let result = [];
+    for (let c = 0; c < data.length; c++) {
+        result.push(data[c].markup);
+    }
+    clusterize.append(result);
     clusterize.refresh();
 });
 ipcRenderer.on('search-failed', function (event, data) {
@@ -146,9 +149,12 @@ ipcRenderer.on('search-success', function (event, data) {
     $('#txtStat').text(data.resCount + ' Results found');
     // $('#tblMainBody').html(data.results);
     rows = data.results;
-    clusterize.update(rows);
+    let result = [];
+    for (let c = 0; c < rows.length; c++) {
+        result.push(rows[c].markup);
+    }
+    clusterize.update(result);
     clusterize.refresh();
-    names = data.names;
     // tbl.refresh();
     $('#txtFilter').val('');
 });
@@ -174,17 +180,17 @@ function filterTbl() {
     if (smart) {
         filter = input.value;
         let reg = new RegExp(regexify(filter), 'i');
-        for (let i = 0; i < names.length; i++) {
-            if (reg.test(names[i])) {
-                results.push(rows[i]);
+        for (let i = 0; i < rows.length; i++) {
+            if (reg.test(rows[i].name)) {
+                results.push(rows[i].markup);
             }
         }
         clusterize.update(results);
         clusterize.refresh();
     } else {
-        for (let i = 0; i < names.length; i++) {
-            if (names[i].toUpperCase().indexOf(filter) > -1) {
-                results.push(rows[i]);
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].name.toUpperCase().indexOf(filter) > -1) {
+                results.push(rows[i].markup);
             }
         }
         clusterize.update(results);
