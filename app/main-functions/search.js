@@ -12,6 +12,7 @@ let query = args[0];
 let count = parseInt(args[1]);
 let smart = (args[2] === 'true');
 count = count > 0 ? count : 100;
+count = count > 10000 ? 10000 : count;
 
 console.log(count);
 console.log(query);
@@ -21,6 +22,7 @@ let i = 1;
 let reg;
 let stream;
 let result = [];
+let names = [];
 
 let procData = smart ? smartSearch : regularSearch;
 
@@ -36,11 +38,13 @@ function regularSearch(results, parser) {
                 }
                 stop = true;
             } else {
-                result += '<tr><td>' + record['#ADDED'] +
+                let row = '<tr><td>' + record['#ADDED'] +
                     '</td><td class="d-none">' + record['HASH(B64)'] +
                     '</td><td>' + record['NAME'] +
-                    '</td><td>' + record['SIZE(BYTES)'] + '</td></tr>';
-                // console.log(i + ' ' + record['NAME']);
+                    '</td><td>' + formatBytes(record['SIZE(BYTES)'], 1) + '</td></tr>';
+                // console.log(i + ' ' + formatBytes(record['SIZE(BYTES)']));
+                result.push(row);
+                names.push(record['NAME']);
                 i++;
             }
         }
@@ -65,6 +69,7 @@ function smartSearch(results, parser) {
                     '</td><td>' + formatBytes(record['SIZE(BYTES)'], 1) + '</td></tr>';
                  // console.log(i + ' ' + formatBytes(record['SIZE(BYTES)']));
                 result.push(row);
+                names.push(record['NAME']);
                 i++;
             }
         }
@@ -74,10 +79,11 @@ function smartSearch(results, parser) {
 let finSearch = function () {
     process.send(['search-success', {
         resCount: --i,
-        results: result
+        results: result,
+        names: names
     }]); //mainWindow.webContents.send('search-failed', 'process');
     console.log(process.uptime());
-    process.kill(process.pid);
+    process.exit(0);
 };
 
 
