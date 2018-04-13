@@ -2,6 +2,7 @@ const electron = require('electron');
 const {ipcRenderer} = electron;
 
 let rows = [];
+let names = [];
 
 /* Window Settings
 --------------------*/
@@ -88,11 +89,12 @@ let clusterize = new Clusterize({
     contentId: 'tblMainBody',
     tag: 'tr',
     show_no_data_row: false,
-    rows_in_block: 20
+    rows_in_block: 20,
     // blocks_in_cluster: 100
 });
+
 /* Search */
-function startSearch(){
+function startSearch() {
     $("#olAnim").attr("src", "img/load.svg");
     showOL('Searching..');
     let query = $('#txtSearch').val();
@@ -100,11 +102,12 @@ function startSearch(){
     let smart = $('#chkSmartSearch').prop('checked');
     ipcRenderer.send('search-start', [query, count, smart]);
 }
+
 $('#btnSearch').on('click', function () {
     startSearch();
 });
-$('#txtSearch').keypress(function(e) {
-    if(e.which === 13) {
+$('#txtSearch').keypress(function (e) {
+    if (e.which === 13) {
         startSearch();
     }
 });
@@ -128,9 +131,60 @@ ipcRenderer.on('search-success', function (event, data) {
     rows = data.results;
     clusterize.update(rows);
     clusterize.refresh();
+    names = data.names;
     // tbl.refresh();
     $('#txtFilter').val('');
 });
+
+/* Filtering */
+$("#txtFilter").keyup(function () {
+    filterTbl();
+});
+
+function filterTbl() {
+
+    let input, filter, smart, results;
+    input = document.getElementById("txtFilter");
+    filter = input.value.toUpperCase();
+    results = [];
+
+    smart = $('#chkSmartSearch').prop('checked');
+
+    if (smart) {
+        filter = input.value;
+        let reg = new RegExp(regexify(filter), 'i');
+        for (let i = 0; i < names.length; i++) {
+            if (names[i].match(reg)) {
+                results.push(rows[i]);
+            }
+        }
+        clusterize.update(results);
+        clusterize.refresh();
+    } else {
+        for (let i = 0; i < names.length; i++) {
+            if (names[i].toUpperCase().indexOf(filter) > -1) {
+                results.push(rows[i]);
+            }
+        }
+        clusterize.update(results);
+        clusterize.refresh();
+    }
+
+}
+
+function escapeRegExp(text) {
+    return text.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&');
+}
+
+function regexify(text) {
+    text = text.trim().replace(/(\s+)/g, ' ');
+    let words = text.split(' ');
+    let final = '';
+    words.forEach(function (item) {
+        final += '(?=.*' + escapeRegExp(item) + ')';
+    });
+    return final;
+}
 
 /* Overlay
 -------------*/
