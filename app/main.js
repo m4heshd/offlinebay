@@ -51,7 +51,7 @@ ipcMain.on('pop-import', function (event) {
 
 /* Search */
 ipcMain.on('search-start', function (event, data) {
-    initSearch(data[0], data[1], data[2]);
+    initSearch(data[0], data[1], data[2], data[3]);
 }); // Handle search event
 
 /* Notification senders
@@ -152,9 +152,9 @@ function initImport(event) {
     }
 } // Show open dialog and initiate import child process
 
-function initSearch(query, count, smart) {
+function initSearch(query, count, smart, inst) {
     if (!procSearch) {
-        procSearch = cp.fork(path.join(__dirname, 'main-functions', 'search.js'), [query, count, smart], {
+        procSearch = cp.fork(path.join(__dirname, 'main-functions', 'search.js'), [query, count, smart, inst], {
             cwd: __dirname
         });
         procSearch.on('exit', function () {
@@ -167,6 +167,7 @@ function initSearch(query, count, smart) {
         procSearch.on('message', function (m) {
             mainWindow.webContents.send(m[0], m[1]);
         });
+        mainWindow.webContents.send('search-init');
     } else {
         popWarn('One Search process is already running');
         mainWindow.webContents.send('hide-ol');

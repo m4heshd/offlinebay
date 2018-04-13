@@ -82,7 +82,7 @@ $('#mnuUpdTrcks').on('click', function () {
 /* Torrent Search
 ------------------*/
 /* Table */
-let tbl = new Tablesort(document.getElementById('tblMain'));
+// let tbl = new Tablesort(document.getElementById('tblMain'));
 let clusterize = new Clusterize({
     rows: rows,
     scrollId: 'tblPane',
@@ -100,7 +100,9 @@ function startSearch() {
     let query = $('#txtSearch').val();
     let count = parseInt($('#txtResCount').val());
     let smart = $('#chkSmartSearch').prop('checked');
-    ipcRenderer.send('search-start', [query, count, smart]);
+    let inst = $('#chkInstSearch').prop('checked');
+
+    ipcRenderer.send('search-start', [query, count, smart, inst]);
 }
 
 $('#btnSearch').on('click', function () {
@@ -110,6 +112,21 @@ $('#txtSearch').keypress(function (e) {
     if (e.which === 13) {
         startSearch();
     }
+});
+ipcRenderer.on('search-init', function () {
+    let inst = $('#chkInstSearch').prop('checked');
+    if (inst) {
+        clusterize.update([]);
+        $('#txtFilter').val('');
+    }
+    $('#txtStat').text('Still searching....');
+});
+ipcRenderer.on('search-update', function (event, data) {
+    hideOL();
+    rows = rows.concat(data.chunk);
+    names = names.concat(data.names);
+    clusterize.append(data.chunk);
+    clusterize.refresh();
 });
 ipcRenderer.on('search-failed', function (event, data) {
     hideOL();
@@ -134,6 +151,10 @@ ipcRenderer.on('search-success', function (event, data) {
     names = data.names;
     // tbl.refresh();
     $('#txtFilter').val('');
+});
+ipcRenderer.on('search-success-inst', function (event, data) {
+    hideOL();
+    $('#txtStat').text(data.resCount + ' Results found');
 });
 
 /* Filtering */

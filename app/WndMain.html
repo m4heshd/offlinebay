@@ -99,6 +99,14 @@
                 Smart Search
             </label>
         </div> <!-- chkSmartSearch -->
+        <div class="checkbox item-v-center">
+            <label class="show-tooltip">
+                <span class="tooltiptext">Not Recommended</span>
+                <input id="chkInstSearch" type="checkbox">
+                <i class="input-helper"></i>
+                Instant
+            </label>
+        </div> <!-- chkInstSearch -->
         <div class="item-v-center">
             <span>Max Results:</span>
         </div> <!-- lblResCount -->
@@ -114,78 +122,78 @@
     </div>
     <div id="tblPane" class="tbl-grid clusterize-scroll">
         <!--<div  class="table-responsive">-->
-            <table id="tblMain" class="table table-striped table-hover">
-                <thead>
-                <tr>
-                    <th data-sort-method='date'>Date Added</th>
-                    <th style="display: none">Hash</th>
-                    <th data-sort-method='string'>Torrent Name</th>
-                    <th data-sort-method='filesize'>Torrent Size</th>
-                </tr>
-                </thead>
-                <tbody id="tblMainBody" class="clusterize-content">
-                <tr>
-                    <td>2017-Dec-05 15:12:49</td>
-                    <td style="display: none">2017-Dec-05 15:12:49</td>
-                    <td>ubuntu 12.04.1 (32 bit)</td>
-                    <td>1.5 GB</td>
-                </tr>
-                <tr>
-                    <td>2017-Dec-05 15:12:44</td>
-                    <td style="display: none">2017-Dec-05 15:12:49</td>
-                    <td>Ubuntu 15.04 Desktop i386, [Iso - MultiLang] [TNTVillage]</td>
-                    <td>2.0 GB</td>
-                </tr>
-                <tr>
-                    <td>2018-Dec-05 15:12:49</td>
-                    <td style="display: none">2017-Dec-05 15:12:49</td>
-                    <td>Ubuntu 11.04 Desktop dvd -i386 (x86) .iso</td>
-                    <td>600 MB</td>
-                </tr>
-                <tr>
-                    <td>2017-Mar-05 15:12:49</td>
-                    <td style="display: none">2017-Dec-05 15:12:49</td>
-                    <td>Ubuntu 9.10 I386 Server</td>
-                    <td>1.6 GB</td>
-                </tr>
-                <tr>
-                    <td>2017-Nov-05 15:12:49</td>
-                    <td style="display: none">2017-Dec-05 15:12:49</td>
-                    <td>ubuntu 16.04 ISO</td>
-                    <td>1.5 GB</td>
-                </tr>
-                <tr>
-                    <td>2017-Dec-05 18:12:49</td>
-                    <td style="display: none">2017-Dec-05 15:12:49</td>
-                    <td>ubuntu 12.04.1 (32 bit)</td>
-                    <td>1.5 GB</td>
-                </tr>
-                <tr>
-                    <td>2017-Dec-05 15:45:49</td>
-                    <td style="display: none">2017-Dec-05 15:12:49</td>
-                    <td>Ubuntu server Essentials</td>
-                    <td>1.5 GB</td>
-                </tr>
-                <tr>
-                    <td>2017-Dec-05 15:17:19</td>
-                    <td style="display: none">2017-Dec-05 15:12:49</td>
-                    <td>ubuntu 12.04.1 (32 bit) Desktop</td>
-                    <td>1.5 GB</td>
-                </tr>
-                <tr>
-                    <td>2017-Dec-05 12:14:49</td>
-                    <td style="display: none">2017-Dec-05 15:12:49</td>
-                    <td>ubuntu 12.04.1 (32 bit)</td>
-                    <td>1.5 GB</td>
-                </tr>
-                <tr>
-                    <td>2017-Dec-05 20:12:49</td>
-                    <td style="display: none">2017-Dec-05 15:12:49</td>
-                    <td>ubuntu 12.04.1 (32 bit)</td>
-                    <td>1.5 GB</td>
-                </tr>
-                </tbody>
-            </table>
+        <table id="tblMain" class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th data-sort-method='date'>Date Added</th>
+                <th style="display: none">Hash</th>
+                <th data-sort-method='string'>Torrent Name</th>
+                <th data-sort-method='filesize'>Torrent Size</th>
+            </tr>
+            </thead>
+            <tbody id="tblMainBody" class="clusterize-content">
+            <tr>
+                <td>2017-Dec-05 15:12:49</td>
+                <td style="display: none">2017-Dec-05 15:12:49</td>
+                <td>ubuntu 12.04.1 (32 bit)</td>
+                <td>1.5 GB</td>
+            </tr>
+            <tr>
+                <td>2017-Dec-05 15:12:44</td>
+                <td style="display: none">2017-Dec-05 15:12:49</td>
+                <td>Ubuntu 15.04 Desktop i386, [Iso - MultiLang] [TNTVillage]</td>
+                <td>2.0 GB</td>
+            </tr>
+            <tr>
+                <td>2018-Dec-05 15:12:49</td>
+                <td style="display: none">2017-Dec-05 15:12:49</td>
+                <td>Ubuntu 11.04 Desktop dvd -i386 (x86) .iso</td>
+                <td>600 MB</td>
+            </tr>
+            <tr>
+                <td>2017-Mar-05 15:12:49</td>
+                <td style="display: none">2017-Dec-05 15:12:49</td>
+                <td>Ubuntu 9.10 I386 Server</td>
+                <td>1.6 GB</td>
+            </tr>
+            <tr>
+                <td>2017-Nov-05 15:12:49</td>
+                <td style="display: none">2017-Dec-05 15:12:49</td>
+                <td>ubuntu 16.04 ISO</td>
+                <td>1.5 GB</td>
+            </tr>
+            <tr>
+                <td>2017-Dec-05 18:12:49</td>
+                <td style="display: none">2017-Dec-05 15:12:49</td>
+                <td>ubuntu 12.04.1 (32 bit)</td>
+                <td>1.5 GB</td>
+            </tr>
+            <tr>
+                <td>2017-Dec-05 15:45:49</td>
+                <td style="display: none">2017-Dec-05 15:12:49</td>
+                <td>Ubuntu server Essentials</td>
+                <td>1.5 GB</td>
+            </tr>
+            <tr>
+                <td>2017-Dec-05 15:17:19</td>
+                <td style="display: none">2017-Dec-05 15:12:49</td>
+                <td>ubuntu 12.04.1 (32 bit) Desktop</td>
+                <td>1.5 GB</td>
+            </tr>
+            <tr>
+                <td>2017-Dec-05 12:14:49</td>
+                <td style="display: none">2017-Dec-05 15:12:49</td>
+                <td>ubuntu 12.04.1 (32 bit)</td>
+                <td>1.5 GB</td>
+            </tr>
+            <tr>
+                <td>2017-Dec-05 20:12:49</td>
+                <td style="display: none">2017-Dec-05 15:12:49</td>
+                <td>ubuntu 12.04.1 (32 bit)</td>
+                <td>1.5 GB</td>
+            </tr>
+            </tbody>
+        </table>
         <!--</div>-->
     </div> <!-- tblMain -->
     <div class="btnOpenMag">

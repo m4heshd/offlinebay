@@ -11,12 +11,13 @@ let args = process.argv.slice(2);
 let query = args[0];
 let count = parseInt(args[1]);
 let smart = (args[2] === 'true');
+let inst = (args[3] === 'true');
 count = count > 0 ? count : 100;
 count = count > 10000 ? 10000 : count;
 
 console.log(count);
 console.log(query);
-console.log(smart);
+console.log(inst);
 
 let i = 1;
 let reg;
@@ -24,7 +25,13 @@ let stream;
 let result = [];
 let names = [];
 
-let procData = smart ? smartSearch : regularSearch;
+let procData = smartSearch;
+
+if (smart) {
+    procData = inst ? smartInstSearch : smartSearch;
+} else {
+    procData = inst ? regularInstSearch : regularSearch;
+}
 
 function regularSearch(results, parser) {
     let stop = false;
@@ -67,7 +74,7 @@ function smartSearch(results, parser) {
                     '</td><td class="d-none">' + record['HASH(B64)'] +
                     '</td><td>' + record['NAME'] +
                     '</td><td>' + formatBytes(record['SIZE(BYTES)'], 1) + '</td></tr>';
-                 // console.log(i + ' ' + formatBytes(record['SIZE(BYTES)']));
+                // console.log(i + ' ' + formatBytes(record['SIZE(BYTES)']));
                 result.push(row);
                 names.push(record['NAME']);
                 i++;
@@ -76,12 +83,80 @@ function smartSearch(results, parser) {
     });
 }
 
+function smartInstSearch(results, parser) {
+    let stop = false;
+    let chunk = [];
+    let nms = [];
+    results.data.forEach(function (record) {
+        // console.log(record['NAME']);
+        if (record['NAME'].match(reg)) {
+            if (i > count) {
+                if (!stop) {
+                    parser.abort();
+                    stream.close();
+                }
+                stop = true;
+            } else {
+                let row = '<tr><td>' + record['#ADDED'] +
+                    '</td><td class="d-none">' + record['HASH(B64)'] +
+                    '</td><td>' + record['NAME'] +
+                    '</td><td>' + formatBytes(record['SIZE(BYTES)'], 1) + '</td></tr>';
+                // console.log(i + ' ' + formatBytes(record['SIZE(BYTES)']));
+                chunk.push(row);
+                // result.push(row);
+                nms.push(record['NAME']);
+                i++;
+            }
+        }
+    });
+    if (chunk.length > 0){
+        process.send(['search-update', {chunk: chunk, names:nms}]); //mainWindow.webContents.send('search-failed', 'process');
+    }
+}
+
+function regularInstSearch(results, parser) {
+    let chunk = [];
+    let nms = [];
+    let stop = false;
+    results.data.forEach(function (record) {
+        // console.log(record['NAME']);
+        if (record['NAME'].toUpperCase().indexOf(query.toUpperCase()) > -1) {
+            if (i > count) {
+                if (!stop) {
+                    parser.abort();
+                    stream.close();
+                }
+                stop = true;
+            } else {
+                let row = '<tr><td>' + record['#ADDED'] +
+                    '</td><td class="d-none">' + record['HASH(B64)'] +
+                    '</td><td>' + record['NAME'] +
+                    '</td><td>' + formatBytes(record['SIZE(BYTES)'], 1) + '</td></tr>';
+                // console.log(i + ' ' + formatBytes(record['SIZE(BYTES)']));
+                chunk.push(row);
+                nms.push(record['NAME']);
+                i++;
+            }
+        }
+    });
+    if (chunk.length > 0){
+        process.send(['search-update', {chunk: chunk, names:nms}]); //mainWindow.webContents.send('search-failed', 'process');
+    }
+}
+
 let finSearch = function () {
-    process.send(['search-success', {
-        resCount: --i,
-        results: result,
-        names: names
-    }]); //mainWindow.webContents.send('search-failed', 'process');
+    if (inst) {
+        process.send(['search-success-inst', {
+            resCount: --i
+        }]); //mainWindow.webContents.send('search-success-inst');
+    } else {
+        process.send(['search-success', {
+            resCount: --i,
+            results: result,
+            names: names
+        }]); //mainWindow.webContents.send('search-success');
+    }
+
     console.log(process.uptime());
     process.exit(0);
 };
