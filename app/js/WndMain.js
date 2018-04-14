@@ -35,5 +35,12 @@ $(document).ready(function () {
             $(this).addClass('active');
         }
     });
+    function resizeHeader() {
+        $('th[data-type="date"]').width($('#hdrDate').width());
+        $('th[data-type="name"]').width($('#hdrName').width());
+        $('th[data-type="size"]').width($('#hdrSize').width());
+        $('#tblMain').css('margin-top', '-' + $('#hdrDate').css('height'));
+    }
+    new ResizeObserver(resizeHeader).observe(hdrDate);
 
 });

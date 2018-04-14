@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>OfflineBay by TechTac</title>
-    <link rel="stylesheet" href="../node_modules/material-design-iconic-font/dist/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet"
+          href="../node_modules/material-design-iconic-font/dist/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link href="css/clusterize.css" rel="stylesheet">
     <link rel="stylesheet" href="css/animate.css">
@@ -82,7 +83,8 @@
 
 <div class="grid-body" style="margin-top: 10px">
     <div class="top-search txtSearch">
-        <input id="txtSearch" type="text" class="top-search__input" placeholder="Search torrents" autocomplete="off" value="game of thrones">
+        <input id="txtSearch" type="text" class="top-search__input" placeholder="Search torrents" autocomplete="off"
+               value="game of thrones">
         <i class="zmdi zmdi-search top-search__reset"></i>
     </div> <!-- txtSearch -->
     <div class="btnSearch" style="margin: 2px 0">
@@ -111,90 +113,42 @@
             <span>Max Results:</span>
         </div> <!-- lblResCount -->
         <div>
-            <input id="txtResCount" type="text" class="txtbox" style="height: 32px" placeholder="Enter amount" autocomplete="off" value="250">
+            <input id="txtResCount" type="text" class="txtbox" style="height: 32px" placeholder="Enter amount"
+                   autocomplete="off" value="250">
         </div> <!-- txtResCount -->
         <div class="item-v-center">
             <span style="margin-left: 20px">Filter:</span>
         </div> <!-- lblFilter -->
         <div>
-            <input id="txtFilter" type="text" class="txtbox" style="height: 32px" placeholder="Insert keywords" autocomplete="off">
+            <input id="txtFilter" type="text" class="txtbox" style="height: 32px" placeholder="Insert keywords"
+                   autocomplete="off">
         </div> <!-- txtFilter -->
     </div>
     <div id="tblPane" class="tbl-grid clusterize-scroll">
-        <!--<div  class="table-responsive">-->
+        <div class="sticky-top">
+            <table id="tblHead" class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th data-role="columnheader" data-type="date">Date Added</th>
+                    <th style="display: none">Hash</th>
+                    <th data-role="columnheader" data-type="name">Torrent Name</th>
+                    <th data-role="columnheader" data-type="size">Torrent Size</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
         <table id="tblMain" class="table table-striped table-hover">
             <thead>
             <tr>
-                <th data-role="columnheader" data-type="date">Date Added</th>
+                <th id="hdrDate">Date Added</th>
                 <th style="display: none">Hash</th>
-                <th data-role="columnheader" data-type="name">Torrent Name</th>
-                <th data-role="columnheader" data-type="size">Torrent Size</th>
+                <th id="hdrName">Torrent Name</th>
+                <th id="hdrSize">Torrent Size</th>
             </tr>
             </thead>
             <tbody id="tblMainBody" class="clusterize-content">
-            <tr>
-                <td>2017-Dec-05 15:12:49</td>
-                <td style="display: none">2017-Dec-05 15:12:49</td>
-                <td>ubuntu 12.04.1 (32 bit)</td>
-                <td>1.5 GB</td>
-            </tr>
-            <tr>
-                <td>2017-Dec-05 15:12:44</td>
-                <td style="display: none">2017-Dec-05 15:12:49</td>
-                <td>Ubuntu 15.04 Desktop i386, [Iso - MultiLang] [TNTVillage]</td>
-                <td>2.0 GB</td>
-            </tr>
-            <tr>
-                <td>2018-Dec-05 15:12:49</td>
-                <td style="display: none">2017-Dec-05 15:12:49</td>
-                <td>Ubuntu 11.04 Desktop dvd -i386 (x86) .iso</td>
-                <td>600 MB</td>
-            </tr>
-            <tr>
-                <td>2017-Mar-05 15:12:49</td>
-                <td style="display: none">2017-Dec-05 15:12:49</td>
-                <td>Ubuntu 9.10 I386 Server</td>
-                <td>1.6 GB</td>
-            </tr>
-            <tr>
-                <td>2017-Nov-05 15:12:49</td>
-                <td style="display: none">2017-Dec-05 15:12:49</td>
-                <td>ubuntu 16.04 ISO</td>
-                <td>1.5 GB</td>
-            </tr>
-            <tr>
-                <td>2017-Dec-05 18:12:49</td>
-                <td style="display: none">2017-Dec-05 15:12:49</td>
-                <td>ubuntu 12.04.1 (32 bit)</td>
-                <td>1.5 GB</td>
-            </tr>
-            <tr>
-                <td>2017-Dec-05 15:45:49</td>
-                <td style="display: none">2017-Dec-05 15:12:49</td>
-                <td>Ubuntu server Essentials</td>
-                <td>1.5 GB</td>
-            </tr>
-            <tr>
-                <td>2017-Dec-05 15:17:19</td>
-                <td style="display: none">2017-Dec-05 15:12:49</td>
-                <td>ubuntu 12.04.1 (32 bit) Desktop</td>
-                <td>1.5 GB</td>
-            </tr>
-            <tr>
-                <td>2017-Dec-05 12:14:49</td>
-                <td style="display: none">2017-Dec-05 15:12:49</td>
-                <td>ubuntu 12.04.1 (32 bit)</td>
-                <td>1.5 GB</td>
-            </tr>
-            <tr>
-                <td>2017-Dec-05 20:12:49</td>
-                <td style="display: none">2017-Dec-05 15:12:49</td>
-                <td>ubuntu 12.04.1 (32 bit)</td>
-                <td>1.5 GB</td>
-            </tr>
             </tbody>
         </table>
-        <!--</div>-->
     </div> <!-- tblMain -->
     <div class="btnOpenMag">
         <button id="btnOpenMag" class="btn-ui btn-info" type="button">
@@ -281,7 +235,7 @@
                         <span class="d-block">OfflineBay is Free and Open-source software licenced under MIT License.
                         This software is created to parse CSV dump files created by a third party and any of the data
                     other than this software is not provided by TechTac. Use the data at your own risk. TechTac will not
-                    be responsible for any of the data accuired by using the dump file.</span>
+                    be responsible for any of the data acquired using the dump file.</span>
                         <br>
                         <span>Software version : 2.0.0</span>
                     </div>
@@ -306,13 +260,15 @@
 </div>
 
 <!-- Scripts -->
-<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+<script>if (typeof module === 'object') {
+    window.module = module;
+    module = undefined;
+}</script>
 <script src="../node_modules/jquery/dist/jquery.js"></script>
 <script src="../node_modules/popper.js/dist/umd/popper.js"></script>
 <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="js/bootstrap-notify.min.js"></script>
 <script src="js/moment.min.js"></script>
-<script src="js/jquery.floatThead.min.js"></script>
 <script src="js/clusterize.min.js"></script>
 <script src="js/WndMain.js"></script>
 <script src="renderers/RndMain.js"></script>
