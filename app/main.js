@@ -85,7 +85,10 @@ function startOB() {
         minHeight: 698,
         show: false,
         frame: false,
-        backgroundColor: '#1e2a31'
+        backgroundColor: '#1e2a31',
+        webPreferences: {
+            experimentalFeatures: true
+        }
     });
 
     mainWindow.loadURL(url.format({

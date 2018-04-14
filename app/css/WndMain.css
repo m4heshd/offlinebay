@@ -52,9 +52,17 @@ th[data-role=columnheader]:hover:after {
     visibility: visible;
     opacity: 1;
 }
-.floatThead-container {
-    border-radius: 4px;
-    overflow-y: auto;
+#tblHead{
+    margin-bottom: 0;
+}
+#tblMain > thead > tr > th {
+    border-bottom: none;
+}
+#tblMain thead{
+    visibility: hidden;
+}
+.sticky-top{
+    z-index: 1;
 }
 
 span, strong {
