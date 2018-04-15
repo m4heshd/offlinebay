@@ -10,6 +10,7 @@
   "author": "TechTac",
   "license": "AGPL-3.0",
   "dependencies": {
+    "bittorrent-tracker": "^9.7.0",
     "bootstrap": "^4.0.0",
     "electron": "^1.8.4",
     "jquery": "^3.3.1",

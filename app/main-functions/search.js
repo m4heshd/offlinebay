@@ -35,7 +35,7 @@ if (smart) {
 function regularSearch(results, parser) {
     for (let c = 0; c < results.data.length; c++) {
         let record = results.data[c];
-        if (record['NAME'].toUpperCase().indexOf(query.toUpperCase()) > -1) {
+        if (record['NAME'] && record['NAME'].toUpperCase().indexOf(query.toUpperCase()) > -1) {
             if (i > count) {
                 parser.abort();
                 stream.close();
@@ -62,7 +62,7 @@ function regularInstSearch(results, parser) {
     let chunk = [];
     for (let c = 0; c < results.data.length; c++) {
         let record = results.data[c];
-        if (record['NAME'].toUpperCase().indexOf(query.toUpperCase()) > -1) {
+        if (record['NAME'] && record['NAME'].toUpperCase().indexOf(query.toUpperCase()) > -1) {
             if (i > count) {
                 parser.abort();
                 stream.close();

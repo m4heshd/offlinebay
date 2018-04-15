@@ -33,6 +33,9 @@ $(document).ready(function () {
         if (!$(this).hasClass('active')) {
             $('#tblMain .active').removeClass('active');
             $(this).addClass('active');
+            $('#pnlSeeds').css({
+                visibility: 'hidden'
+            });
         }
     });
     function resizeHeader() {
