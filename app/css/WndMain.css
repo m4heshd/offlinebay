@@ -203,6 +203,7 @@ span, strong {
 .seedPanel {
     grid-area: seedPanel;
     margin-top: 30px;
+    visibility: hidden;
 }
 .glue-1 {
     grid-area: glue-1;
@@ -539,7 +540,7 @@ thead > tr > th:hover,
     /*horiz-align: center;*/
 }
 .tt-img img:hover {
-    -webkit-transition: all 0.3s ease;
-    width: 132px;
+    -webkit-transition: transform 0.3s ease;
+    transform: scale(1.04);
     cursor: pointer;
 }

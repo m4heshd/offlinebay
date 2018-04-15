@@ -127,8 +127,8 @@ function startSearch() {
 $('#btnSearch').on('click', function () {
     startSearch();
 });
-// txtSearch Return key event
-$('#txtSearch').keypress(function (e) {
+// txtSearch and txtResCount Return key event
+$('#txtSearch, #txtResCount').keypress(function (e) {
     if (e.which === 13) {
         startSearch();
     }
@@ -347,6 +347,59 @@ function sortSize(a, b) {
 
     return compareNumber(a, b);
 }
+
+/* Seeds/Peers Scraping
+------------------------*/
+// Set the seeds and peer count arrays globally to make update, validation and reset easier
+let seeds = [];
+let peers = [];
+
+// Event for double click on any row inside the body of tblMain
+$("#tblMainBody").on('dblclick', 'tr', function () {
+    let hash = $(':nth-child(2)', this).html().trim();
+    // console.log(hash);
+    ipcRenderer.send('scrape-start', hash);
+
+});
+// Fired after validation for Scrape process
+ipcRenderer.on('scrape-init', function (event, data) {
+    seeds = [];
+    peers = [];
+    $('#lblSeeds').text('0');
+    $('#lblPeers').text('0');
+    $('.imgDots').css({
+        visibility: 'visible'
+    });
+    $('#pnlSeeds').css({
+        visibility: 'visible'
+    });
+});
+// Fired on each tracker that successfully scraped
+ipcRenderer.on('scrape-update', function (event, data) {
+    seeds.push(data.complete);
+    peers.push(data.incomplete);
+    seeds.sort(function (a, b) {
+        return b - a;
+    });
+    peers.sort(function (a, b) {
+        return b - a;
+    });
+    $('#lblSeeds').text(seeds[0]);
+    $('#lblPeers').text(peers[0]);
+});
+// Fired on errors when scraping
+ipcRenderer.on('scrape-failed', function () {
+    popMsg('Failed to read the dump file. Possible corruption or file doesn\'t exist', 'danger')();
+});
+// Fired after the exit of scraper process
+ipcRenderer.on('scrape-end', function () {
+    $('.imgDots').css({
+        visibility: 'hidden'
+    });
+    if (!seeds.length && !peers.length){
+        popMsg('Possible error trying to retrieve Seeds/Peers count. Check your internet connection', 'danger')();
+    }
+});
 
 /* Overlay
 -------------*/

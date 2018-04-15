@@ -84,7 +84,7 @@
 <div class="grid-body" style="margin-top: 10px">
     <div class="top-search txtSearch">
         <input id="txtSearch" type="text" class="top-search__input" placeholder="Search torrents" autocomplete="off"
-               value="game of thrones">
+               value="The.Big.Bang.Theory.S11E17.720p.HDTV.x264-AVS">
         <i class="zmdi zmdi-search top-search__reset"></i>
     </div> <!-- txtSearch -->
     <div class="btnSearch" style="margin: 2px 0">
@@ -114,7 +114,7 @@
         </div> <!-- lblResCount -->
         <div>
             <input id="txtResCount" type="text" class="txtbox" style="height: 32px" placeholder="Enter amount"
-                   autocomplete="off" value="250">
+                   autocomplete="off" value="2">
         </div> <!-- txtResCount -->
         <div class="item-v-center">
             <span style="margin-left: 20px">Filter:</span>
@@ -168,19 +168,19 @@
             Copy Info Hash
         </button>
     </div> <!-- btnHash -->
-    <div class="seedPanel">
+    <div id="pnlSeeds" class="seedPanel">
         <div style="text-align: center">
             <span>Seeds/Peers</span>
         </div>
         <div class="seeds" style="margin-top: 15px">
             <i class="zmdi zmdi-account-add btn-ico"></i>
-            <span>5623</span>
-            <img src="img/dots.svg" alt="">
+            <span id="lblSeeds">5623</span>
+            <img src="img/dots.svg" class="imgDots">
         </div>
         <div class="seeds">
             <i class="zmdi zmdi-accounts-alt btn-ico"></i>
-            <span>1200</span>
-            <img src="img/dots.svg" alt="">
+            <span id="lblPeers">1200</span>
+            <img src="img/dots.svg" class="imgDots">
         </div>
     </div> <!-- seedPanel -->
     <div class="ttLogo">
@@ -198,7 +198,7 @@
 
 <div class="grid-stat-bar">
     <div class="item-v-center">
-        <span id="txtStat" class="txt-stat">{resCount} Results found.</span>
+        <span id="txtStat" class="txt-stat">Ready.</span>
     </div>
 </div> <!-- Status bar Grid -->
 

@@ -9,14 +9,22 @@ app.commandLine.appendSwitch('remote-debugging-port', '9222');
 
 let procImport;
 let procSearch;
+let procScrape;
+let scrapeHash = '';
 let awaitingQuit = false;
+let awaitingScrape = false;
 let mainWindow;
 
 /* Process handles
 --------------------*/
 process.on('cont-quit', function () {
-    if (!procSearch && !procImport) {
+    if (!procSearch && !procImport && !procScrape) {
         app.quit();
+    }
+}); // Emitted if the window is waiting for child processes to exit
+process.on('cont-scrape', function () {
+    if (!procScrape) {
+        initScrape(scrapeHash);
     }
 }); // Emitted if the window is waiting for child processes to exit
 
@@ -54,6 +62,11 @@ ipcMain.on('search-start', function (event, data) {
     initSearch(data[0], data[1], data[2], data[3]);
 }); // Handle search event
 
+/* Scrape */
+ipcMain.on('scrape-start', function (event, data) {
+    initScrape(data);
+}); // Handle seed/peer count event
+
 /* Notification senders
 ------------------------*/
 function popMsg(msg) {
@@ -73,9 +86,9 @@ function popWarn(msg) {
 ------------------*/
 function waitProcess(event, _process, name) {
     event.preventDefault();
+    awaitingQuit = true;
     _process.kill('SIGINT');
     popWarn('Wait for background process ' + name + ' to finish');
-    awaitingQuit = true;
 }
 function startOB() {
     mainWindow = new BrowserWindow({
@@ -108,6 +121,9 @@ function startOB() {
         if (procSearch) {
             waitProcess(event, procSearch, '\'SEARCH\'');
         } // Validation of any running child processes before closing (Search)
+        if (procSearch) {
+            waitProcess(event, procScrape, '\'SCRAPE\'');
+        } // Validation of any running child processes before closing (Scrape)
     });
     mainWindow.on('closed', function () {
         mainWindow = null;
@@ -176,3 +192,32 @@ function initSearch(query, count, smart, inst) {
         mainWindow.webContents.send('hide-ol');
     }
 } // Initiate search child process
+
+function initScrape(hash) {
+    if (!procScrape) {
+        mainWindow.webContents.send('scrape-init');
+        procScrape = cp.fork(path.join(__dirname, 'main-functions', 'scrape.js'), [hash], {
+            cwd: __dirname
+        });
+        procScrape.on('exit', function () {
+            console.log('Scraping process ended');
+            procScrape = null;
+            if (awaitingQuit){
+                process.emit('cont-quit');
+            }
+            if (awaitingScrape){
+                process.emit('cont-scrape');
+                awaitingScrape = false;
+            } else {
+                mainWindow.webContents.send('scrape-end');
+            }
+        });
+        procScrape.on('message', function (m) {
+            mainWindow.webContents.send(m[0], m[1]);
+        });
+    } else {
+        awaitingScrape = true;
+        scrapeHash = hash;
+        procScrape.kill('SIGINT');
+    }
+}
