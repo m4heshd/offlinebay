@@ -1,4 +1,5 @@
 let Tracker = require('bittorrent-tracker');
+let DHT = require('bittorrent-dht');
 
 process.on('uncaughtException', function (error) {
     console.log(error);
@@ -7,6 +8,8 @@ process.on('uncaughtException', function (error) {
 
 let args = process.argv.slice(2);
 let hash = base64toHEX(args[0]);
+let isDHT = (args[1] === 'true');
+console.log(hash);
 
 let trackers = ['http://tracker.tfile.me:80/announce',
     'udp://bt.xxx-tracker.com:2710/announce',
@@ -34,23 +37,57 @@ let trackers = ['http://tracker.tfile.me:80/announce',
     'udp://public.popcorn-tracker.org:6969/announce',
     'udp://tracker.leechers-paradise.org:6969/announce'];
 
-let opts = {
-    infoHash: hash,
-    announce: trackers,
-    peerId: new Buffer('01234567890123456789'),
-    port: 6881
-};
+scrapeTrackers();
 
-let client = new Tracker(opts);
+if (isDHT) {
+    scrapeDHT();
+}
 
-client.scrape();
+function scrapeDHT() {
+    let dht = new DHT();
+    let timer;
 
-client.on('scrape', function (data, err) {
-    // console.log(data.complete);
-    process.send(['scrape-update', data]); //mainWindow.webContents.send('scrape-update', data);
-}).on('error', function (err) {
-    console.log(err);
-});
+    dht.listen(20000, function () {
+        console.log('now listening');
+    });
+
+    dht.on('peer', function () {
+        if (timer){
+            process.send(['scrape-update-DHT', 0]); //mainWindow.webContents.send('scrape-update-DHT');
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                dht.destroy();
+            }, 5000);
+        }
+    });
+
+    dht.lookup(hash);
+
+    timer = setTimeout(function () {
+        dht.destroy();
+    }, 5000);
+
+}
+
+function scrapeTrackers() {
+    let opts = {
+        infoHash: hash,
+        announce: trackers,
+        peerId: new Buffer('01234567890123456789'),
+        port: 6881
+    };
+
+    let client = new Tracker(opts);
+
+    client.scrape();
+
+    client.on('scrape', function (data, err) {
+        // console.log(data.complete);
+        process.send(['scrape-update', data]); //mainWindow.webContents.send('scrape-update', data);
+    }).on('error', function (err) {
+        console.log(err);
+    });
+}
 
 function base64toHEX(base64) {
     let raw = new Buffer(base64, 'base64').toString('binary');
