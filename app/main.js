@@ -10,7 +10,7 @@ app.commandLine.appendSwitch('remote-debugging-port', '9222');
 let procImport;
 let procSearch;
 let procScrape;
-let scrapeHash = '';
+let scrapeOpts = [];
 let awaitingQuit = false;
 let awaitingScrape = false;
 let mainWindow;
@@ -24,7 +24,7 @@ process.on('cont-quit', function () {
 }); // Emitted if the window is waiting for child processes to exit
 process.on('cont-scrape', function () {
     if (!procScrape) {
-        initScrape(scrapeHash);
+        initScrape(scrapeOpts[0], scrapeOpts[1]);
     }
 }); // Emitted if the window is waiting for child processes to exit
 
@@ -64,7 +64,7 @@ ipcMain.on('search-start', function (event, data) {
 
 /* Scrape */
 ipcMain.on('scrape-start', function (event, data) {
-    initScrape(data);
+    initScrape(data[0], data[1]);
 }); // Handle seed/peer count event
 
 /* Notification senders
@@ -193,10 +193,10 @@ function initSearch(query, count, smart, inst) {
     }
 } // Initiate search child process
 
-function initScrape(hash) {
+function initScrape(hash, isDHT) {
     if (!procScrape) {
         mainWindow.webContents.send('scrape-init');
-        procScrape = cp.fork(path.join(__dirname, 'main-functions', 'scrape.js'), [hash], {
+        procScrape = cp.fork(path.join(__dirname, 'main-functions', 'scrape.js'), [hash, isDHT], {
             cwd: __dirname
         });
         procScrape.on('exit', function () {
@@ -217,7 +217,7 @@ function initScrape(hash) {
         });
     } else {
         awaitingScrape = true;
-        scrapeHash = hash;
+        scrapeOpts = [hash, isDHT];
         procScrape.kill('SIGINT');
     }
 }

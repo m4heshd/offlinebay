@@ -1,6 +1,10 @@
 const electron = require('electron');
 const {ipcRenderer} = electron;
 
+let prefs = {
+    usedht: true
+};
+
 /* Window Settings
 --------------------*/
 // Prevent OfflineBay from accepting drag and dropped files by user
@@ -120,6 +124,9 @@ function startSearch() {
     let count = parseInt($('#txtResCount').val());
     let smart = $('#chkSmartSearch').prop('checked');
     let inst = $('#chkInstSearch').prop('checked');
+    $('#pnlSeeds').css({
+        visibility: 'hidden'
+    });
 
     ipcRenderer.send('search-start', [query, count, smart, inst]);
 }
@@ -351,6 +358,7 @@ function sortSize(a, b) {
 /* Seeds/Peers Scraping
 ------------------------*/
 // Set the seeds and peer count arrays globally to make update, validation and reset easier
+let peersDHT = 0;
 let seeds = [];
 let peers = [];
 
@@ -358,13 +366,14 @@ let peers = [];
 $("#tblMainBody").on('dblclick', 'tr', function () {
     let hash = $(':nth-child(2)', this).html().trim();
     // console.log(hash);
-    ipcRenderer.send('scrape-start', hash);
+    ipcRenderer.send('scrape-start', [hash, prefs.usedht]);
 
 });
 // Fired after validation for Scrape process
 ipcRenderer.on('scrape-init', function (event, data) {
+    peersDHT = 0;
     seeds = [];
-    peers = [];
+    prefs.usedht ? peers = [0] : peers = [];
     $('#lblSeeds').text('0');
     $('#lblPeers').text('0');
     $('.imgDots').css({
@@ -374,7 +383,7 @@ ipcRenderer.on('scrape-init', function (event, data) {
         visibility: 'visible'
     });
 });
-// Fired on each tracker that successfully scraped
+// Fired on each tracker that's successfully scraped
 ipcRenderer.on('scrape-update', function (event, data) {
     seeds.push(data.complete);
     peers.push(data.incomplete);
@@ -384,8 +393,17 @@ ipcRenderer.on('scrape-update', function (event, data) {
     peers.sort(function (a, b) {
         return b - a;
     });
+    let totPeers = peers[0] + peersDHT;
     $('#lblSeeds').text(seeds[0]);
-    $('#lblPeers').text(peers[0]);
+    $('#lblPeers').text(totPeers);
+});
+// Fired on each peer found on DHT
+ipcRenderer.on('scrape-update-DHT', function () {
+    peers.sort(function (a, b) {
+        return b - a;
+    });
+    let totPeers = peers[0] + ++peersDHT;
+    $('#lblPeers').text(totPeers);
 });
 // Fired on errors when scraping
 ipcRenderer.on('scrape-failed', function () {
@@ -396,7 +414,7 @@ ipcRenderer.on('scrape-end', function () {
     $('.imgDots').css({
         visibility: 'hidden'
     });
-    if (!seeds.length && !peers.length){
+    if (!seeds.length){
         popMsg('Possible error trying to retrieve Seeds/Peers count. Check your internet connection', 'danger')();
     }
 });
