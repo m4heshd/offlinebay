@@ -2,41 +2,110 @@ const cp = require('child_process');
 const electron = require('electron');
 const url = require('url');
 const path = require('path');
+const Datastore = require('nedb');
 
 const {app, BrowserWindow, ipcMain, dialog} = electron;
 
 app.commandLine.appendSwitch('remote-debugging-port', '9222');
 
+let prefs = {
+    maxed: false,
+    position: [0, 0],
+    size: [1200, 800],
+    rs_count: 100,
+    _id: '0'
+};
 let procImport;
 let procSearch;
 let procScrape;
 let scrapeOpts = [];
+let finalPrefs = false;
 let awaitingQuit = false;
 let awaitingScrape = false;
 let mainWindow;
 
 /* Process handles
 --------------------*/
+// Emitted if the window is waiting for child processes to exit
 process.on('cont-quit', function () {
     if (!procSearch && !procImport && !procScrape) {
         app.quit();
     }
-}); // Emitted if the window is waiting for child processes to exit
+});
+// Emitted if the window is waiting for child processes to exit
 process.on('cont-scrape', function () {
     if (!procScrape) {
         initScrape(scrapeOpts[0], scrapeOpts[1]);
     }
-}); // Emitted if the window is waiting for child processes to exit
+});
 
 // process.on('uncaughtException', function (error) {
 //     console.log(error);
 //     mainWindow.webContents.send('import-failed');
 // });
 
+/* DB functions
+----------------*/
+// Loads the configurations DB
+let config = new Datastore({
+    filename: path.join(__dirname, 'data', 'config.db'),
+    autoload: true
+});
+
+loadSession();
+
+// Update the prefs object
+function updatePrefs() {
+    prefs.maxed = mainWindow.isMaximized();
+    if (!prefs.maxed) {
+        prefs.position = mainWindow.getPosition();
+        prefs.size = mainWindow.getSize();
+    }
+}
+
+// Save the current prefs object to the config DB
+function saveSession() {
+    return new Promise((resolve, reject) => {
+        config.update({_id: '0'}, prefs, {}, function (err, numReplaced) {
+            if (err || numReplaced < 1) {
+                console.log(err);
+            }
+            finalPrefs = true;
+            resolve();
+        });
+    });
+}
+
+// Load prefs object from config DB and start OfflineBay
+function loadSession() {
+    config.findOne({_id: '0'}, function (err, dbPref) {
+        if (!err && dbPref) {
+            prefs = dbPref;
+        } else {
+            // let errto = popDbErr;
+            setTimeout(popDbErr, 1500);
+        }
+        startOB();
+    })
+}
+
+function popDbErr() {
+    if (mainWindow) {
+        popErr('DB error occurred. Please re-install OfflineBay');
+    }
+}
+
 /* Main App handles
 --------------------*/
-app.on('ready', function () {
-    startOB();
+app.on('ready', loadSession);
+
+// Save the instance data to config DB before quitting
+app.on('will-quit', async function (event) {
+    if (!finalPrefs) {
+        event.preventDefault();
+        await saveSession();
+        app.quit();
+    }
 });
 
 /* IPC Event handling
@@ -69,31 +138,40 @@ ipcMain.on('scrape-start', function (event, data) {
 
 /* Notification senders
 ------------------------*/
+// Show blue background notification
 function popMsg(msg) {
     mainWindow.webContents.send('notify', [msg, 'info']);
-} // Show blue background notification
+}
+// Show green background notification
 function popSuccess(msg) {
     mainWindow.webContents.send('notify', [msg, 'success']);
-} // Show green background notification
+}
+// Show red background notification
 function popErr(msg) {
     mainWindow.webContents.send('notify', [msg, 'danger']);
-} // Show red background notification
+}
+// Show yellow background notification
 function popWarn(msg) {
     mainWindow.webContents.send('notify', [msg, 'warning']);
-} //
+}
 
 /* Misc Functions
 ------------------*/
+// Initiate the waiting boolean and kill the corresponding child process
 function waitProcess(event, _process, name) {
     event.preventDefault();
     awaitingQuit = true;
-    _process.kill('SIGINT');
     popWarn('Wait for background process ' + name + ' to finish');
+    _process.kill('SIGINT');
 }
+
+// Create the main window and handle events
 function startOB() {
     mainWindow = new BrowserWindow({
-        width: 1200,
-        height: 800,
+        width: prefs.size[0],
+        height: prefs.size[1],
+        x: prefs.position[0],
+        y: prefs.position[1],
         minWidth: 762,
         minHeight: 698,
         show: false,
@@ -111,6 +189,9 @@ function startOB() {
     }));
 
     mainWindow.once('ready-to-show', function () {
+        if (prefs.maxed) {
+            mainWindow.maximize();
+        }
         mainWindow.show();
     });
 
@@ -131,12 +212,23 @@ function startOB() {
     });
     mainWindow.on('maximize', function () {
         mainWindow.webContents.send('maxed');
+        updatePrefs();
     });
     mainWindow.on('unmaximize', function () {
         mainWindow.webContents.send('restored');
+        updatePrefs();
     });
-} // Create the main window and handle events
+    // Using the following events will ensure that the prefs object is always updated.
+    // Handling this in the window close event may record incorrect data.
+    mainWindow.on('move', function () {
+        updatePrefs();
+    });
+    mainWindow.on('resize', function () {
+        updatePrefs();
+    });
+}
 
+// Show open dialog and initiate import child process
 function initImport(event) {
     let dlg = dialog.showOpenDialog(
         mainWindow,
@@ -157,7 +249,7 @@ function initImport(event) {
             procImport.on('exit', function () {
                 console.log('Import process ended');
                 procImport = null;
-                if (awaitingQuit){
+                if (awaitingQuit) {
                     process.emit('cont-quit');
                 }
             });
@@ -169,8 +261,9 @@ function initImport(event) {
         }
 
     }
-} // Show open dialog and initiate import child process
+}
 
+// Initiate search child process
 function initSearch(query, count, smart, inst) {
     if (!procSearch) {
         procSearch = cp.fork(path.join(__dirname, 'main-functions', 'search.js'), [query, count, smart, inst], {
@@ -179,7 +272,7 @@ function initSearch(query, count, smart, inst) {
         procSearch.on('exit', function () {
             console.log('Search process ended');
             procSearch = null;
-            if (awaitingQuit){
+            if (awaitingQuit) {
                 process.emit('cont-quit');
             }
         });
@@ -191,8 +284,9 @@ function initSearch(query, count, smart, inst) {
         popWarn('One Search process is already running');
         mainWindow.webContents.send('hide-ol');
     }
-} // Initiate search child process
+}
 
+// Initiate tracker scrape child process
 function initScrape(hash, isDHT) {
     if (!procScrape) {
         mainWindow.webContents.send('scrape-init');
@@ -202,10 +296,10 @@ function initScrape(hash, isDHT) {
         procScrape.on('exit', function () {
             console.log('Scraping process ended');
             procScrape = null;
-            if (awaitingQuit){
+            if (awaitingQuit) {
                 process.emit('cont-quit');
             }
-            if (awaitingScrape){
+            if (awaitingScrape) {
                 process.emit('cont-scrape');
                 awaitingScrape = false;
             } else {
