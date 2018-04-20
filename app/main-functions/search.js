@@ -15,9 +15,9 @@ let inst = (args[3] === 'true');
 count = count > 0 ? count : 100;
 count = count > 10000 ? 10000 : count;
 
-console.log(count);
-console.log(query);
-console.log(inst);
+// console.log(count);
+// console.log(query);
+// console.log(inst);
 
 let i = 1;
 let reg;

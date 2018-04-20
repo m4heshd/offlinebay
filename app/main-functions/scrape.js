@@ -1,5 +1,7 @@
-let Tracker = require('bittorrent-tracker');
-let DHT = require('bittorrent-dht');
+const Tracker = require('bittorrent-tracker');
+const DHT = require('bittorrent-dht');
+const path = require('path');
+const Datastore = require('nedb');
 
 process.on('uncaughtException', function (error) {
     console.log(error);
@@ -9,47 +11,49 @@ process.on('uncaughtException', function (error) {
 let args = process.argv.slice(2);
 let hash = base64toHEX(args[0]);
 let isDHT = (args[1] === 'true');
-console.log(hash);
+let trackers = [];
 
-let trackers = ['http://tracker.tfile.me:80/announce',
-    'udp://bt.xxx-tracker.com:2710/announce',
-    'http://alpha.torrenttracker.nl:443/announce',
-    'http://0d.kebhana.mx:443/announce',
-    'udp://tracker.torrent.eu.org:451/announce',
-    'udp://thetracker.org:80/announce',
-    'http://torrent.nwps.ws:80/announce',
-    'udp://inferno.demonoid.pw:3418/announce',
-    'udp://tracker.coppersurfer.tk:6969/announce',
-    'udp://open.stealth.si:80/announce',
-    'udp://tracker.opentrackr.org:1337/announce',
-    'udp://tracker.vanitycore.co:6969/announce',
-    'udp://retracker.lanta-net.ru:2710/announce',
-    'udp://tracker.justseed.it:1337/announce',
-    'udp://tracker.tiny-vps.com:6969/announce',
-    'udp://ipv4.tracker.harry.lu:80/announce',
-    'http://share.camoe.cn:8080/announce',
-    'udp://tracker.cypherpunks.ru:6969/announce',
-    'http://retracker.mgts.by:80/announce',
-    'http://tracker.city9x.com:2710/announce',
-    'http://torrentsmd.com:8080/announce',
-    'http://retracker.telecom.by:80/announce',
-    'http://torrentsmd.eu:8080/announce',
-    'udp://public.popcorn-tracker.org:6969/announce',
-    'udp://tracker.leechers-paradise.org:6969/announce'];
+let config = new Datastore({
+    filename: path.join(process.cwd(), 'data', 'config.db'),
+    autoload: true
+});
 
-scrapeTrackers();
+getTrackers().then(function (trcks) {
+    if (!trcks || !trcks.length) {
+        process.send(['scrape-warn', 'empty']); //mainWindow.webContents.send('scrape-warn', 'empty');
+    } else {
+        trackers = trcks;
+        scrapeTrackers();
+    }
+    if (isDHT) {
+        scrapeDHT();
+    }
+}).catch(function (err) {
+    process.send(['scrape-warn', 'db']); //mainWindow.webContents.send('scrape-warn', 'db');
+    console.log(err);
+    if (isDHT) {
+        scrapeDHT();
+    }
+});
 
-if (isDHT) {
-    scrapeDHT();
+// Get trackers list from DB
+function getTrackers() {
+    return new Promise((resolve, reject) => {
+        config.findOne({type: 'trackers'}, function (err, trck) {
+            if (!err && trck) {
+                resolve(trck.trackers);
+            } else {
+                reject();
+            }
+        })
+    });
 }
 
 function scrapeDHT() {
     let dht = new DHT();
     let timer;
 
-    dht.listen(20000, function () {
-        console.log('now listening');
-    });
+    dht.listen(20000);
 
     dht.on('peer', function () {
         if (timer){
