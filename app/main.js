@@ -3,16 +3,17 @@ const electron = require('electron');
 const url = require('url');
 const path = require('path');
 const Datastore = require('nedb');
+const webreq = require('tiny-json-http');
 
 const {app, BrowserWindow, ipcMain, dialog} = electron;
 
 app.commandLine.appendSwitch('remote-debugging-port', '9222');
 
 let prefs = {
+    type: 'win-state',
     maxed: false,
     position: [0, 0],
     size: [1200, 800],
-    rs_count: 100,
     _id: '0'
 };
 let procImport;
@@ -41,7 +42,9 @@ process.on('cont-scrape', function () {
 
 // process.on('uncaughtException', function (error) {
 //     console.log(error);
-//     mainWindow.webContents.send('import-failed');
+//     if (mainWindow){
+//         mainWindow.webContents.send('import-failed');
+//     }
 // });
 
 /* DB functions
@@ -51,8 +54,6 @@ let config = new Datastore({
     filename: path.join(__dirname, 'data', 'config.db'),
     autoload: true
 });
-
-loadSession();
 
 // Update the prefs object
 function updatePrefs() {
@@ -66,7 +67,7 @@ function updatePrefs() {
 // Save the current prefs object to the config DB
 function saveSession() {
     return new Promise((resolve, reject) => {
-        config.update({_id: '0'}, prefs, {}, function (err, numReplaced) {
+        config.update({type: 'win-state'}, prefs, {}, function (err, numReplaced) {
             if (err || numReplaced < 1) {
                 console.log(err);
             }
@@ -78,15 +79,40 @@ function saveSession() {
 
 // Load prefs object from config DB and start OfflineBay
 function loadSession() {
-    config.findOne({_id: '0'}, function (err, dbPref) {
+    config.findOne({type: 'win-state'}, function (err, dbPref) {
         if (!err && dbPref) {
             prefs = dbPref;
         } else {
-            // let errto = popDbErr;
             setTimeout(popDbErr, 1500);
         }
         startOB();
     })
+}
+
+// Get the endpoint URL to update trackers
+function getTrackerEP() {
+    return new Promise((resolve, reject) => {
+        config.findOne({type: 'trackers'}, function (err, trck) {
+            if (!err && trck) {
+                resolve(trck.url);
+            } else {
+                reject();
+            }
+        })
+    });
+}
+
+// Update trackers list on DB
+function setTrackers(trcks) {
+    return new Promise((resolve, reject) => {
+        config.update({type: 'trackers'}, { $set: { trackers: trcks } }, function (err, numReplaced) {
+            if (err || numReplaced < 1) {
+                reject();
+            } else {
+                resolve();
+            }
+        })
+    });
 }
 
 function popDbErr() {
@@ -135,6 +161,11 @@ ipcMain.on('search-start', function (event, data) {
 ipcMain.on('scrape-start', function (event, data) {
     initScrape(data[0], data[1]);
 }); // Handle seed/peer count event
+
+/* Trackers */
+ipcMain.on('upd-trackers', function () {
+    updTrackers();
+}); // Handle update trackers event
 
 /* Notification senders
 ------------------------*/
@@ -314,4 +345,29 @@ function initScrape(hash, isDHT) {
         scrapeOpts = [hash, isDHT];
         procScrape.kill('SIGINT');
     }
+}
+
+// Start tracker updating process
+function updTrackers(){
+    getTrackerEP().then(function (url) {
+        webreq.get({url}, function (err, result) {
+            if (err) {
+                mainWindow.webContents.send('upd-trackers-failed', 'net');
+            }
+            else {
+                let trcks = result.body.trim().split('\n\n');
+                if (trcks.length > 0) {
+                    setTrackers(trcks).then(function () {
+                        mainWindow.webContents.send('upd-trackers-success');
+                    }).catch(function () {
+                        mainWindow.webContents.send('upd-trackers-failed', 'update');
+                    });
+                } else {
+                    mainWindow.webContents.send('upd-trackers-failed', 'empty');
+                }
+            }
+        });
+    }).catch(function () {
+        mainWindow.webContents.send('upd-trackers-failed', 'ep');
+    });
 }

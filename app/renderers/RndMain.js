@@ -89,8 +89,34 @@ ipcRenderer.on('import-failed', function (event, data) {
 $('#mnuUpdTrcks').on('click', function () {
     $("#olAnim").attr("src", "img/update_trcks.svg");
     showOL('Updating Trackers..');
+    ipcRenderer.send('upd-trackers');
 });
-
+// Fired after trackers are successfully updated
+ipcRenderer.on('upd-trackers-success', function () {
+    hideOL();
+    popMsg('Trackers were updated successfully', 'success')();
+    $('#txtStat').text('Trackers updated @ ' + moment().format('YYYY-MM-DD hh:mm:ss'));
+});
+// Fired on any tracker update error
+ipcRenderer.on('upd-trackers-failed', function (event, data) {
+    hideOL();
+    switch (data) {
+        case 'ep':
+            popMsg('Failed to update trackers. Unable to retrieve URL from DB', 'danger')();
+            break;
+        case 'net':
+            popMsg('Failed to update trackers. Check your internet connection and URL', 'danger')();
+            break;
+        case 'empty':
+            popMsg('Failed to update trackers. Response is empty', 'danger')();
+            break;
+        case 'update':
+            popMsg('Failed to update trackers. Unable to update the DB', 'danger')();
+            break;
+        default:
+            popMsg('Failed to update trackers. Unknown error', 'danger')();
+    }
+});
 /* Torrent Search
 ------------------*/
 /* Table */
@@ -365,7 +391,6 @@ let peers = [];
 // Event for double click on any row inside the body of tblMain
 $("#tblMainBody").on('dblclick', 'tr', function () {
     let hash = $(':nth-child(2)', this).html().trim();
-    // console.log(hash);
     ipcRenderer.send('scrape-start', [hash, prefs.usedht]);
 
 });
@@ -408,6 +433,17 @@ ipcRenderer.on('scrape-update-DHT', function () {
 // Fired on errors when scraping
 ipcRenderer.on('scrape-failed', function () {
     popMsg('Failed to read the dump file. Possible corruption or file doesn\'t exist', 'danger')();
+});
+// Fired on warnings when scraping
+ipcRenderer.on('scrape-warn', function (event, data) {
+    switch (data){
+        case 'empty':
+            popMsg('No Trackers found. Try updating trackers or re-installing OfflineBay', 'warning')();
+            break;
+        case 'db':
+            popMsg('Unable to retrieve trackers from DB. Please re-install OfflineBay', 'warning')();
+            break;
+    }
 });
 // Fired after the exit of scraper process
 ipcRenderer.on('scrape-end', function () {
