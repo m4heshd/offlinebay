@@ -10,11 +10,10 @@ const {app, BrowserWindow, ipcMain, dialog} = electron;
 app.commandLine.appendSwitch('remote-debugging-port', '9222');
 
 let prefs = {
-    type: 'win-state',
     maxed: false,
     position: [0, 0],
     size: [1200, 800],
-    _id: '0'
+    rs_count: 100
 };
 let procImport;
 let procSearch;
@@ -64,24 +63,42 @@ function updatePrefs() {
     }
 }
 
-// Save the current prefs object to the config DB
+// Save the current prefs to config DB
 function saveSession() {
     return new Promise((resolve, reject) => {
-        config.update({type: 'win-state'}, prefs, {}, function (err, numReplaced) {
+        config.update({type: 'win-state'}, {
+            $set: {
+                maxed: prefs.maxed,
+                position: prefs.position,
+                size: prefs.size
+            }
+        }, {}, function (err, numReplaced) {
             if (err || numReplaced < 1) {
                 console.log(err);
             }
-            finalPrefs = true;
-            resolve();
+            config.update({type: 'search'}, {
+                $set: {
+                    rs_count: prefs.rs_count
+                }
+            }, {}, function (err, numReplaced) {
+                if (err || numReplaced < 1) {
+                    console.log(err);
+                }
+                finalPrefs = true;
+                console.log('Finished');
+                resolve();
+            });
         });
     });
 }
 
-// Load prefs object from config DB and start OfflineBay
+// Load prefs from config DB and start OfflineBay
 function loadSession() {
     config.findOne({type: 'win-state'}, function (err, dbPref) {
         if (!err && dbPref) {
-            prefs = dbPref;
+            prefs.maxed = dbPref.maxed;
+            prefs.position = dbPref.position;
+            prefs.size = dbPref.size;
         } else {
             setTimeout(popDbErr, 1500);
         }
@@ -156,6 +173,9 @@ ipcMain.on('pop-import', function (event) {
 ipcMain.on('search-start', function (event, data) {
     initSearch(data[0], data[1], data[2], data[3]);
 }); // Handle search event
+ipcMain.on('res-count', function (event, data) {
+    prefs.rs_count = data;
+}); // Handle max result count change event
 
 /* Scrape */
 ipcMain.on('scrape-start', function (event, data) {
