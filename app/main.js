@@ -5,7 +5,7 @@ const path = require('path');
 const Datastore = require('nedb');
 const webreq = require('tiny-json-http');
 
-const {app, BrowserWindow, ipcMain, dialog} = electron;
+const {app, BrowserWindow, ipcMain, dialog, shell} = electron;
 
 app.commandLine.appendSwitch('remote-debugging-port', '9222');
 
@@ -191,6 +191,15 @@ ipcMain.on('scrape-start', function (event, data) {
 ipcMain.on('upd-trackers', function () {
     updTrackers();
 }); // Handle update trackers event
+
+/* Open Magent */
+ipcMain.on('open-mag', function (event, data) {
+    shell.openExternal(data, function (err) {
+        if (err) {
+            popErr('Unable to open the Magnet link');
+        }
+    });
+}); // Handle open magnet event
 
 /* Notification senders
 ------------------------*/
@@ -383,7 +392,7 @@ function updTrackers(){
                 let trcks = result.body.trim().split('\n\n');
                 if (trcks.length > 0) {
                     setTrackers(trcks).then(function () {
-                        mainWindow.webContents.send('upd-trackers-success');
+                        mainWindow.webContents.send('upd-trackers-success', trcks);
                     }).catch(function () {
                         mainWindow.webContents.send('upd-trackers-failed', 'update');
                     });

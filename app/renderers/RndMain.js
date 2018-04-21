@@ -1,5 +1,5 @@
 const electron = require('electron');
-const {ipcRenderer} = electron;
+const {ipcRenderer, clipboard} = electron;
 const path = require('path');
 const Datastore = require('nedb');
 
@@ -23,6 +23,14 @@ function loadPrefs() {
             ipcRenderer.send('pref-change', ['rs_count', pref.rs_count]);
             ipcRenderer.send('pref-change', ['smart', pref.smart]);
             ipcRenderer.send('pref-change', ['inst', pref.inst]);
+        } else {
+            popMsg('Unable to read preferences from config DB', 'danger')();
+        }
+    });
+
+    config.findOne({type: 'trackers'}, function (err, trck) {
+        if (!err && trck) {
+            allTrackers = trck.trackers;
         } else {
             popMsg('Unable to read preferences from config DB', 'danger')();
         }
@@ -117,9 +125,10 @@ $('#mnuUpdTrcks').on('click', function () {
     ipcRenderer.send('upd-trackers');
 });
 // Fired after trackers are successfully updated
-ipcRenderer.on('upd-trackers-success', function () {
+ipcRenderer.on('upd-trackers-success', function (event, data) {
     hideOL();
     popMsg('Trackers were updated successfully', 'success')();
+    allTrackers = data;
     $('#txtStat').text('Trackers updated @ ' + moment().format('YYYY-MM-DD hh:mm:ss'));
 });
 // Fired on any tracker update error
@@ -441,7 +450,8 @@ function sortSize(a, b) {
 let peersDHT = 0;
 let seeds = [];
 let peers = [];
-let trackers = []; // To hold trackers sorted from best to worst
+let allTrackers = []; // To hold all trackers from DB
+let bestTrackers = []; // To hold trackers sorted from best to worst
 
 // Event for double click on any row inside the body of tblMain
 $("#tblMainBody").on('dblclick', 'tr', function () {
@@ -453,7 +463,7 @@ $("#tblMainBody").on('dblclick', 'tr', function () {
 ipcRenderer.on('scrape-init', function (event, data) {
     peersDHT = 0;
     seeds = [];
-    trackers = [];
+    bestTrackers = [];
     prefs.usedht ? peers = [0] : peers = [];
     $('#lblSeeds').text('0');
     $('#lblPeers').text('0');
@@ -477,8 +487,8 @@ ipcRenderer.on('scrape-update', function (event, data) {
     let totPeers = peers[0] + peersDHT;
     $('#lblSeeds').text(seeds[0]);
     $('#lblPeers').text(totPeers);
-    trackers.push(data);
-    trackers.sort(function (a, b) {
+    bestTrackers.push(data);
+    bestTrackers.sort(function (a, b) {
         return b.complete - a.complete;
     });
 });
@@ -514,6 +524,85 @@ ipcRenderer.on('scrape-end', function () {
         popMsg('Possible error trying to retrieve Seeds/Peers count. Check your internet connection', 'danger')();
     }
 });
+
+/* Buttons
+------------*/
+$('#btnHash').on('click', function () {
+    let selected = $('#tblMain .active');
+    if (selected.length > 0) {
+        let base64Hash = $(':nth-child(2)', selected).html().trim();
+        clipboard.writeText(getInfoHash(base64Hash));
+        popMsg('Info Hash copied to clipboard', 'info')();
+    } else {
+        popMsg('Please select a torrent to get the Info Hash', 'warning')();
+    }
+});
+
+$('#btnCopyMag').on('click', function () {
+    let selected = $('#tblMain .active');
+    if (selected.length > 0) {
+        let base64Hash = $(':nth-child(2)', selected).html().trim();
+        let name = $(':nth-child(3)', selected).html().trim();
+        clipboard.writeText(getMagnetLink(base64Hash, name));
+        popMsg('Magnet link copied to clipboard', 'info')();
+    } else {
+        popMsg('Please select a torrent to get the Magnet link', 'warning')();
+    }
+});
+
+
+$('#btnOpenMag').on('click', function () {
+    let selected = $('#tblMain .active');
+    if (selected.length > 0) {
+        let base64Hash = $(':nth-child(2)', selected).html().trim();
+        let name = $(':nth-child(3)', selected).html().trim();
+        // clipboard.writeText(getMagnetLink(base64Hash, name));
+        ipcRenderer.send('open-mag', getMagnetLink(base64Hash, name));
+        popMsg('Magnet link opened in default Torrent client', 'info')();
+    } else {
+        popMsg('Please select a torrent to open the Magnet link', 'warning')();
+    }
+});
+
+function getMagnetLink(base64, name) {
+    let base = 'magnet:?xt=urn:btih:' + getInfoHash(base64);
+    let withname = base + '&dn=' + urlencode(name);
+    if (bestTrackers.length > 4){
+        for (let c = 0; c < 5; c++) {
+            withname = withname + '&tr=' + urlencode(bestTrackers[c].announce)
+        }
+    } else {
+        if (allTrackers.length > 0) {
+            let i = allTrackers.length > 4 ? 5 : allTrackers.length;
+            allTrackers.sort(function(a, b){return 0.5 - Math.random()});
+            for (let c = 0; c < i; c++) {
+                withname = withname + '&tr=' + urlencode(allTrackers[c])
+            }
+        } else {
+            popMsg('No trackers were found. Magnet link won\'t contain any trackers. Try updating trackers', 'warning')();
+        }
+    }
+    return withname;
+}
+
+function getInfoHash(base64) {
+    let raw = atob(base64);
+    let HEX = '';
+    for (let i = 0; i < raw.length; i++) {
+        let _hex = raw.charCodeAt(i).toString(16)
+        HEX += (_hex.length == 2 ? _hex : '0' + _hex);
+    }
+    return HEX.toUpperCase();
+}
+
+function urlencode(text) {
+    return encodeURIComponent(text).replace(/!/g,  '%21')
+        .replace(/'/g,  '%27')
+        .replace(/\(/g, '%28')
+        .replace(/\)/g, '%29')
+        .replace(/\*/g, '%2A')
+        .replace(/%20/g, '+');
+}
 
 /* Overlay
 -------------*/
@@ -578,7 +667,3 @@ function popMsg(txt, type) {
         });
     }
 }
-
-$(document).ready(function () {
-    $('#btnOpenMag').on('click', popMsg('Magnet link opened in the default application', 'info'));
-});
