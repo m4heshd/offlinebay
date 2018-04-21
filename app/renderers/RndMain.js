@@ -441,6 +441,7 @@ function sortSize(a, b) {
 let peersDHT = 0;
 let seeds = [];
 let peers = [];
+let trackers = []; // To hold trackers sorted from best to worst
 
 // Event for double click on any row inside the body of tblMain
 $("#tblMainBody").on('dblclick', 'tr', function () {
@@ -452,6 +453,7 @@ $("#tblMainBody").on('dblclick', 'tr', function () {
 ipcRenderer.on('scrape-init', function (event, data) {
     peersDHT = 0;
     seeds = [];
+    trackers = [];
     prefs.usedht ? peers = [0] : peers = [];
     $('#lblSeeds').text('0');
     $('#lblPeers').text('0');
@@ -475,6 +477,10 @@ ipcRenderer.on('scrape-update', function (event, data) {
     let totPeers = peers[0] + peersDHT;
     $('#lblSeeds').text(seeds[0]);
     $('#lblPeers').text(totPeers);
+    trackers.push(data);
+    trackers.sort(function (a, b) {
+        return b.complete - a.complete;
+    });
 });
 // Fired on each peer found on DHT
 ipcRenderer.on('scrape-update-DHT', function () {
