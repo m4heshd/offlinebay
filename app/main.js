@@ -192,15 +192,6 @@ ipcMain.on('upd-trackers', function () {
     updTrackers();
 }); // Handle update trackers event
 
-/* Open Magent */
-ipcMain.on('open-mag', function (event, data) {
-    shell.openExternal(data, function (err) {
-        if (err) {
-            popErr('Unable to open the Magnet link');
-        }
-    });
-}); // Handle open magnet event
-
 /* Notification senders
 ------------------------*/
 // Show blue background notification
