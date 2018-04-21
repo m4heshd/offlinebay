@@ -17,8 +17,12 @@ function loadPrefs() {
 
     config.findOne({type: 'search'}, function (err, pref) {
         if (!err && pref) {
-            $('#txtResCount').val(pref.rs_count.toString())
-            ipcRenderer.send('res-count', pref.rs_count);
+            $('#txtResCount').val(pref.rs_count.toString());
+            $('#chkSmartSearch').prop('checked', pref.smart);
+            $('#chkInstSearch').prop('checked', pref.inst);
+            ipcRenderer.send('pref-change', ['rs_count', pref.rs_count]);
+            ipcRenderer.send('pref-change', ['smart', pref.smart]);
+            ipcRenderer.send('pref-change', ['inst', pref.inst]);
         } else {
             popMsg('Unable to read preferences from config DB', 'danger')();
         }
@@ -199,13 +203,13 @@ $('#txtResCount').keypress(function (e) {
     let count = parseInt($(this).val());
     if (count > 10000) {
         $(this).val('10000');
-        ipcRenderer.send('res-count', 10000);
+        ipcRenderer.send('pref-change', ['rs_count', 10000]);
     } else if (count < 1 || !count) {
         $(this).val('1');
         $(this).select();
-        ipcRenderer.send('res-count', 1);
+        ipcRenderer.send('pref-change', ['rs_count', 1]);
     } else {
-        ipcRenderer.send('res-count', count);
+        ipcRenderer.send('pref-change', ['rs_count', count]);
     }
 });
 // Fired after validation on main process for running search processes
@@ -256,6 +260,14 @@ ipcRenderer.on('search-success', function (event, data) {
 ipcRenderer.on('search-success-inst', function (event, data) {
     hideOL();
     $('#txtStat').text(data.resCount + ' Results found');
+});
+
+/* Search options */
+$('#chkSmartSearch').on('change', function () {
+    ipcRenderer.send('pref-change', ['smart', $(this).prop('checked')]);
+});
+$('#chkInstSearch').on('change', function () {
+    ipcRenderer.send('pref-change', ['inst', $(this).prop('checked')]);
 });
 
 /* Filtering */
