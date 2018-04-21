@@ -1,9 +1,30 @@
 const electron = require('electron');
 const {ipcRenderer} = electron;
+const path = require('path');
+const Datastore = require('nedb');
 
 let prefs = {
     usedht: true
 };
+
+/* DB functions
+--------------------*/
+function loadPrefs() {
+    let config = new Datastore({
+        filename: path.join(__dirname, 'data', 'config.db'),
+        autoload: true
+    });
+
+    config.findOne({type: 'search'}, function (err, pref) {
+        if (!err && pref) {
+            $('#txtResCount').val(pref.rs_count.toString())
+            ipcRenderer.send('res-count', pref.rs_count);
+        } else {
+            popMsg('Unable to read preferences from config DB', 'danger')();
+        }
+    });
+}
+loadPrefs();
 
 /* Window Settings
 --------------------*/
@@ -156,14 +177,35 @@ function startSearch() {
 
     ipcRenderer.send('search-start', [query, count, smart, inst]);
 }
-
 $('#btnSearch').on('click', function () {
     startSearch();
 });
-// txtSearch and txtResCount Return key event
-$('#txtSearch, #txtResCount').keypress(function (e) {
+// txtSearch Return key event
+$('#txtSearch').keypress(function (e) {
     if (e.which === 13) {
         startSearch();
+    }
+});
+// txtResCount validation and Return key event
+$('#txtResCount').keypress(function (e) {
+    let charCode = (e.which) ? e.which : e.keyCode;
+    if (charCode === 13) {
+        startSearch();
+    }
+    return !(charCode > 31 && (charCode < 48 || charCode > 57));
+}).on('paste',function (e) {
+    e.preventDefault();
+}).on('input',function (e) {
+    let count = parseInt($(this).val());
+    if (count > 10000) {
+        $(this).val('10000');
+        ipcRenderer.send('res-count', 10000);
+    } else if (count < 1 || !count) {
+        $(this).val('1');
+        $(this).select();
+        ipcRenderer.send('res-count', 1);
+    } else {
+        ipcRenderer.send('res-count', count);
     }
 });
 // Fired after validation on main process for running search processes
