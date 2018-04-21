@@ -247,6 +247,10 @@ span, strong {
     margin: 0 10px;
     cursor: pointer;
 }
+.social-btns img:hover {
+    -webkit-transition: transform 0.3s ease;
+    transform: scale(1.1);
+}
 
 /* Overlay */
 #overlay {
@@ -335,6 +339,7 @@ span, strong {
 }
 .modal-dialog {
     display: inline-block;
+    min-width: 600px;
     text-align: left;
     vertical-align: middle;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.23);

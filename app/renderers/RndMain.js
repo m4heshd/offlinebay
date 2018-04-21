@@ -1,5 +1,5 @@
 const electron = require('electron');
-const {ipcRenderer, clipboard} = electron;
+const {ipcRenderer, clipboard, shell} = electron;
 const path = require('path');
 const Datastore = require('nedb');
 
@@ -525,8 +525,8 @@ ipcRenderer.on('scrape-end', function () {
     }
 });
 
-/* Buttons
-------------*/
+/* Magnet and Info hash
+------------------------*/
 $('#btnHash').on('click', function () {
     let selected = $('#tblMain .active');
     if (selected.length > 0) {
@@ -556,9 +556,14 @@ $('#btnOpenMag').on('click', function () {
     if (selected.length > 0) {
         let base64Hash = $(':nth-child(2)', selected).html().trim();
         let name = $(':nth-child(3)', selected).html().trim();
-        // clipboard.writeText(getMagnetLink(base64Hash, name));
-        ipcRenderer.send('open-mag', getMagnetLink(base64Hash, name));
-        popMsg('Magnet link opened in default Torrent client', 'info')();
+        let magnet = getMagnetLink(base64Hash, name);
+        shell.openExternal(magnet, {}, function (err) {
+            if (err) {
+                popMsg('Unable to open the Magnet link', 'danger')();
+            }else {
+                popMsg('Magnet link opened in default Torrent client', 'info')();
+            }
+        },);
     } else {
         popMsg('Please select a torrent to open the Magnet link', 'warning')();
     }
@@ -602,6 +607,29 @@ function urlencode(text) {
         .replace(/\)/g, '%29')
         .replace(/\*/g, '%2A')
         .replace(/%20/g, '+');
+}
+
+/* External Links
+------------------*/
+$('#ttLogoMain, #ttLogoAbout, #mnuContact').on('click', function () {
+    openLink('https://www.youtube.com/c/techtac?sub_confirmation=1');
+});
+$('#ttPatreon').on('click', function () {
+    openLink('https://www.patreon.com/techtac');
+});
+$('#ttFB').on('click', function () {
+    openLink('https://www.facebook.com/techtacoriginal');
+});
+$('#ttTwitter').on('click', function () {
+    openLink('https://twitter.com/techtacoriginal');
+});
+
+function openLink(link) {
+    shell.openExternal(link, {}, function (err) {
+        if (err) {
+            popMsg('Unable to open the link', 'danger')();
+        }
+    });
 }
 
 /* Overlay
