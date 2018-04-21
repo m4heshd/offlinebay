@@ -13,7 +13,9 @@ let prefs = {
     maxed: false,
     position: [0, 0],
     size: [1200, 800],
-    rs_count: 100
+    rs_count: 100,
+    smart: true,
+    inst: false
 };
 let procImport;
 let procSearch;
@@ -78,14 +80,15 @@ function saveSession() {
             }
             config.update({type: 'search'}, {
                 $set: {
-                    rs_count: prefs.rs_count
+                    rs_count: prefs.rs_count,
+                    smart: prefs.smart,
+                    inst: prefs.inst
                 }
             }, {}, function (err, numReplaced) {
                 if (err || numReplaced < 1) {
                     console.log(err);
                 }
                 finalPrefs = true;
-                console.log('Finished');
                 resolve();
             });
         });
@@ -173,9 +176,11 @@ ipcMain.on('pop-import', function (event) {
 ipcMain.on('search-start', function (event, data) {
     initSearch(data[0], data[1], data[2], data[3]);
 }); // Handle search event
-ipcMain.on('res-count', function (event, data) {
-    prefs.rs_count = data;
-}); // Handle max result count change event
+
+/* Preferences */
+ipcMain.on('pref-change', function (event, data) {
+    prefs[data[0]] = data[1];
+}); // Handle any preference change event
 
 /* Scrape */
 ipcMain.on('scrape-start', function (event, data) {
