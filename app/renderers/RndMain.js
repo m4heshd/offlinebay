@@ -151,6 +151,16 @@ ipcRenderer.on('upd-trackers-failed', function (event, data) {
             popMsg('Failed to update trackers. Unknown error', 'danger')();
     }
 });
+
+/* Show all trackers */
+$('#mnuAllTrcks').on('click', function () {
+    let rows = '';
+    for (let c = 0; c < allTrackers.length; c++) {
+        rows += '<tr><td>' + allTrackers[c] + '</td></tr>';
+    }
+    $('#tblTrckBody').html(rows);
+});
+
 /* Torrent Search
 ------------------*/
 /* Table */
@@ -550,7 +560,6 @@ $('#btnCopyMag').on('click', function () {
     }
 });
 
-
 $('#btnOpenMag').on('click', function () {
     let selected = $('#tblMain .active');
     if (selected.length > 0) {
@@ -659,6 +668,27 @@ $('#overlay').on('click', function () {
     hideOL();
 });
 
+/* All trackers window
+------------------------*/
+$('#btnCopyTrck').on('click', function () {
+    let selected = $('#tblTrckBody .active');
+    if (selected.length > 0) {
+        let tracker = $('td', selected).html().trim();
+        clipboard.writeText(tracker);
+        popMsg('Tracker copied to clipboard', 'info')();
+    } else {
+        popMsg('Please select a Tracker to copy', 'warning')();
+    }
+});
+$('#btnCopyAllTrck').on('click', function () {
+    if (allTrackers.length > 0) {
+        clipboard.writeText(allTrackers.join('\n'));
+        popMsg('All Trackers copied to clipboard', 'info')();
+    } else {
+        popMsg('No Trackers to copy. Try updating Trackers', 'warning')();
+    }
+});
+
 /* Notification popups
 -------------------------*/
 // Fired on 'notify' event with message text and type from the main process. Then shows a notification.
@@ -673,6 +703,7 @@ function popMsg(txt, type) {
             message: txt
         }, {
             type: type,
+            z_index: 1051,
             placement: {
                 from: 'bottom',
                 align: 'right'

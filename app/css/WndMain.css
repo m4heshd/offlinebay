@@ -416,11 +416,11 @@ span, strong {
     background-image: url(../img/ui-icons_444444_256x240.png);
 }
 .ui-icon-gripsmall-diagonal-se {
-    background-position: -64px -224px;
+    background-position: -80px -224px;
 }
 .ui-resizable-se {
-    right: 3px;
-    bottom: 3px;
+    width: 16px;
+    height: 16px;
 }
 /* Scrollbars */
 *::-webkit-scrollbar {
