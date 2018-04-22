@@ -27,8 +27,20 @@ $(document).ready(function () {
         }).slideUp(200);
     });
 
+    /* Draggable Modal
+    --------------------*/
+    $('.mdl-drag .modal-content').resizable({
+        //alsoResize: ".modal-dialog",
+        minHeight: 300,
+        minWidth: 300
+    });
+    $('.mdl-drag').draggable({
+        handle: '.modal-titlebar'
+    });
+
     /* Data table functions
     ----------------------------*/
+    /* tblMain */
     $("#tblMainBody").on('click', 'tr', function () {
         if (!$(this).hasClass('active')) {
             $('#tblMain .active').removeClass('active');
@@ -45,5 +57,13 @@ $(document).ready(function () {
         $('#tblMain').css('margin-top', '-' + $('#hdrDate').css('height'));
     }
     new ResizeObserver(resizeHeader).observe(hdrDate);
+
+    /* tblTrackers */
+    $("#tblTrackers").on('click', 'tr', function () {
+        if (!$(this).hasClass('active')) {
+            $('#tblTrackers .active').removeClass('active');
+            $(this).addClass('active');
+        }
+    });
 
 });

@@ -6,7 +6,8 @@
     <link rel="stylesheet"
           href="../node_modules/material-design-iconic-font/dist/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <link href="css/clusterize.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/clusterize.css">
     <link rel="stylesheet" href="css/animate.css">
     <link rel="stylesheet" href="css/comp-override.css">
     <link rel="stylesheet" href="css/WndMain.css">
@@ -55,7 +56,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="#" data-toggle="modal" data-target="#mdlTrackers">
                     <i class="zmdi zmdi-format-list-bulleted mnu-ico"></i>
                     <span class="mnu-txt">Show all Trackers</span>
                 </a>
@@ -72,7 +73,7 @@
                 </a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#abtModal">
+                <a href="#" data-toggle="modal" data-target="#mdlAbout">
                     <i class="zmdi zmdi-info mnu-ico"></i>
                     <span class="mnu-txt">About</span>
                 </a>
@@ -113,7 +114,8 @@
             <span>Max Results:</span>
         </div> <!-- lblResCount -->
         <div>
-            <input id="txtResCount" type="number" class="txtbox" style="height: 32px" placeholder="Enter amount" autocomplete="off">
+            <input id="txtResCount" type="number" class="txtbox" style="height: 32px" placeholder="Enter amount"
+                   autocomplete="off">
         </div> <!-- txtResCount -->
         <div class="item-v-center">
             <span style="margin-left: 20px">Filter:</span>
@@ -203,7 +205,7 @@
 
 
 <!-- MODALS -->
-<div class="modal fade" id="abtModal" role="dialog">
+<div class="modal fade" id="mdlAbout" role="dialog">
     <div class="modal-dialog">
 
         <!-- Modal content-->
@@ -240,10 +242,51 @@
                     </div>
                 </div>
             </div>
-        </div> <!-- About Modal -->
+        </div>
 
     </div>
-</div>
+</div> <!-- About Modal -->
+
+<div class="modal fade" id="mdlTrackers" role="dialog">
+    <div class="modal-dialog mdl-drag">
+        <!-- Modal content-->
+        <div class="modal-content mdl-trackers">
+            <div class="modal-body modal-window">
+                <div class="modal-titlebar">
+                    <div class="modal-titlebar-txt">
+                        <i class="zmdi zmdi-format-list-bulleted mdl-ico"></i>
+                        <span>All Trackers</span>
+                    </div>
+                    <div>
+                        <button tabindex="-1" class="btn-ctl mdl-ctl btn-danger" type="button" data-dismiss="modal">
+                            <i class="zmdi zmdi-close"></i>
+                        </button> <!-- Close button -->
+                    </div>
+                </div>
+                <div class="trackers-modal-content">
+                    <div class="trackers-tbl">
+                        <table id="tblTrackers" class="table table-striped table-hover">
+                            <tbody id="tblTrckBody">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="btnCopyTrck">
+                        <button id="btnCopyTrck" class="btn-ui btn-info" type="button">
+                            <i class="zmdi zmdi-assignment-o btn-ico"></i>
+                            Copy
+                        </button>
+                    </div> <!-- btnCopyTrck -->
+                    <div class="btnCopyAllTrck">
+                        <button id="btnCopyAllTrck" class="btn-ui btn-info" type="button">
+                            <i class="zmdi zmdi-copy btn-ico"></i>
+                            Copy All
+                        </button>
+                    </div> <!-- btnCopyAllTrck -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- Trackers Modal -->
 
 <!-- OVERLAY -->
 <div id="overlay">
@@ -266,6 +309,7 @@
 <script src="../node_modules/jquery/dist/jquery.js"></script>
 <script src="../node_modules/popper.js/dist/umd/popper.js"></script>
 <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="js/jquery-ui.min.js"></script>
 <script src="js/bootstrap-notify.min.js"></script>
 <script src="js/moment.min.js"></script>
 <script src="js/clusterize.min.js"></script>

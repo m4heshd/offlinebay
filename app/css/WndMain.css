@@ -252,6 +252,36 @@ span, strong {
     transform: scale(1.1);
 }
 
+/* Trackers Modal */
+.mdl-trackers {
+    height: 500px;
+}
+.trackers-modal-content {
+    display: grid;
+    grid-template-columns: auto 120px;
+    grid-template-rows: 55px 55px minmax(0px, auto);
+    grid-template-areas:
+            "tbl btnCopyTrck"
+            "tbl btnCopyAllTrck"
+            "tbl .";
+    grid-column-gap: 20px;
+    padding: 20px 10px 10px;
+}
+.trackers-tbl {
+    grid-area: tbl;
+    overflow-y: auto;
+    border-radius: 4px;
+    background: #2b3942;
+}
+.btnCopyTrck {
+    grid-area: btnCopyTrck;
+}
+.btnCopyAllTrck {
+    grid-area: btnCopyAllTrck;
+}
+#tblTrackers td{
+    padding: 10px;
+}
 /* Overlay */
 #overlay {
     display: grid;
@@ -342,16 +372,56 @@ span, strong {
     min-width: 600px;
     text-align: left;
     vertical-align: middle;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.23);
 }
 .modal-body {
     display: grid;
     padding: 10px;
 }
+.modal-window {
+    height: 100%;
+    grid-template-rows: 30px minmax(0px, auto);
+}
 .modal-content {
     background: var(--bodyBack);
+    box-shadow: 0 3px 15px rgba(0,0,0,.5);
 }
-
+.modal-titlebar {
+    display: grid;
+    grid-template-columns: auto 30px;
+    grid-template-rows: 30px;
+    border-bottom: #2b3942 1px solid;
+    min-height: 35px;
+    cursor: -webkit-grab;
+    -webkit-app-region: no-drag;
+}
+.modal-titlebar:active, .modal-titlebar-txt span:active{
+    cursor: -webkit-grabbing;
+}
+.modal-titlebar-txt {
+    display: flex;
+    align-items: center;
+}
+.mdl-ico {
+    vertical-align: middle;
+    font-size: 18px;
+    padding-left: 5px;
+}
+.modal-titlebar-txt span{
+    font-weight: bold;
+    font-size: 15px;
+    padding-left: 10px;
+    cursor: -webkit-grab;
+}
+.ui-icon, .ui-widget-content .ui-icon {
+    background-image: url(../img/ui-icons_444444_256x240.png);
+}
+.ui-icon-gripsmall-diagonal-se {
+    background-position: -64px -224px;
+}
+.ui-resizable-se {
+    right: 3px;
+    bottom: 3px;
+}
 /* Scrollbars */
 *::-webkit-scrollbar {
     width: 10px !important;
