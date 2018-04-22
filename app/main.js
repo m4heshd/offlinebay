@@ -229,7 +229,7 @@ function startOB() {
         x: prefs.position[0],
         y: prefs.position[1],
         minWidth: 762,
-        minHeight: 698,
+        minHeight: 757,
         show: false,
         frame: false,
         backgroundColor: '#1e2a31',
