@@ -538,7 +538,7 @@ ipcRenderer.on('scrape-end', function () {
 /* Magnet and Info hash
 ------------------------*/
 $('#btnHash').on('click', function () {
-    let selected = $('#tblMain .active');
+    let selected = $('#tblMainBody .active');
     if (selected.length > 0) {
         let base64Hash = $(':nth-child(2)', selected).html().trim();
         clipboard.writeText(getInfoHash(base64Hash));
@@ -549,7 +549,7 @@ $('#btnHash').on('click', function () {
 });
 
 $('#btnCopyMag').on('click', function () {
-    let selected = $('#tblMain .active');
+    let selected = $('#tblMainBody .active');
     if (selected.length > 0) {
         let base64Hash = $(':nth-child(2)', selected).html().trim();
         let name = $(':nth-child(3)', selected).html().trim();
@@ -561,7 +561,7 @@ $('#btnCopyMag').on('click', function () {
 });
 
 $('#btnOpenMag').on('click', function () {
-    let selected = $('#tblMain .active');
+    let selected = $('#tblMainBody .active');
     if (selected.length > 0) {
         let base64Hash = $(':nth-child(2)', selected).html().trim();
         let name = $(':nth-child(3)', selected).html().trim();
@@ -575,6 +575,18 @@ $('#btnOpenMag').on('click', function () {
         },);
     } else {
         popMsg('Please select a torrent to open the Magnet link', 'warning')();
+    }
+});
+
+$('#btnGoogle').on('click', function () {
+    let selected = $('#tblMainBody .active');
+    if (selected.length > 0) {
+        let base64Hash = $(':nth-child(2)', selected).html().trim();
+        let search = 'http://www.google.com/search?q=' + urlencode(getInfoHash(base64Hash));
+        openLink(search);
+        popMsg('Search opened in the browser', 'info')();
+    } else {
+        popMsg('Please select a torrent to Google search', 'warning')();
     }
 });
 

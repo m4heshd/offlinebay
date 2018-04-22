@@ -151,13 +151,14 @@ span, strong {
 .grid-body {
     display: grid;
     grid-template-columns: auto 180px;
-    grid-template-rows: 49px 47px 65px 55px 55px 144px auto 163px;
+    grid-template-rows: 49px 47px 65px 55px 55px 55px 144px auto 163px;
     grid-template-areas:
             "txtSearch btnSearch"
             "searchTools ."
             "tbl btnOpenMag"
             "tbl btnCopyMag"
             "tbl btnHash"
+            "tbl btnGoogle"
             "tbl seedPanel"
             "tbl glue-1"
             "tbl TTLogo";
@@ -198,6 +199,10 @@ span, strong {
 }
 .btnHash {
     grid-area: btnHash;
+    margin-top: 10px;
+}
+.btnGoogle {
+    grid-area: btnGoogle;
     margin-top: 10px;
 }
 .seedPanel {
