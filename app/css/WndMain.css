@@ -220,12 +220,18 @@ span, strong {
 /* Status bar */
 .grid-stat-bar {
     display: grid;
+    grid-template-columns: auto auto;
     border-top: 1px solid #2b3942;
     margin: 0 12px;
 }
-.txt-stat {
-    margin: 10px 0;
-    margin-left: 10px;
+#txtStat {
+    margin: 10px 0 10px 10px;
+}
+#txtStatRight {
+    visibility: hidden;
+    width: 100%;
+    text-align: right;
+    margin: 10px 10px 10px 0;
 }
 
 /* About Modal */

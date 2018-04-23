@@ -1,6 +1,7 @@
 const request = require('request');
 const fs = require('fs');
 const path = require('path');
+const zlib = require('zlib');
 
 process.on('uncaughtException', function (error) {
     console.log(error);
@@ -32,7 +33,7 @@ function downloadDump(down_url, targetPath) {
             req.pipe(out);
 
             req.on('response', function (data) {
-                if((data.headers['content-type']) !== 'application/octet-stream'){
+                if((data.headers['content-type'].split('/')[0]) !== 'application'){
                     process.send(['upd-dump-failed', 'content']); //mainWindow.webContents.send('upd-dump-failed', 'content');
                     goodFile = false;
                     req.abort();
@@ -42,11 +43,12 @@ function downloadDump(down_url, targetPath) {
             req.on('data', function (chunk) {
                 received_bytes += chunk.length;
                 let progress = Math.round((received_bytes * 100) / total_bytes);
-                process.send(['upd-dump-update', progress]); //mainWindow.webContents.send('upd-dump-failed', progress);
+                process.send(['upd-dump-update', ['download', progress]]); //mainWindow.webContents.send('upd-dump-update', ['download', progress]);
             });
             req.on('end', function () {
                 if (goodFile) {
-                    process.send(['upd-dump-dl-success']); //mainWindow.webContents.send('upd-dump-dl-success');
+                    process.send(['upd-dump-success', 'download']); //mainWindow.webContents.send('upd-dump-success', 'download');
+                    decompressDump();
                 }
             });
             req.on('error', function (err) {
@@ -54,6 +56,38 @@ function downloadDump(down_url, targetPath) {
                 process.send(['upd-dump-failed', 'download']); //mainWindow.webContents.send('upd-dump-failed', 'download');
             });
 
+        });
+}
+
+function decompressDump() {
+    let extract = path.join(process.cwd(), 'data', 'downloads', 'torrent_dump_full.csv');
+    let size;
+
+    fs.stat(targetPath, function (err, data) {
+        size = data.size;
+    });
+
+    let out = fs.createWriteStream(extract)
+        .on('error', function (err) {
+            process.send(['upd-dump-failed', 'csv-create']); //mainWindow.webContents.send('upd-dump-failed', 'gz-extract');
+            console.log(err);
+        })
+        .on('open', function () {
+            let chLength = 0;
+            let read = fs.createReadStream(targetPath)
+                .on('data', function (chunk) {
+                    chLength += chunk.length;
+                    let progress = Math.round((chLength / size) * 100);
+                    process.send(['upd-dump-update', ['extract', progress]]); //mainWindow.webContents.send('upd-dump-update', ['extract', progress]);
+                })
+                .on('end', function () {
+                    process.send(['upd-dump-success', 'extract']); //mainWindow.webContents.send('upd-dump-success', 'extract');
+                    process.exit(0);
+                })
+                .on('error', function (err) {
+                    process.send(['upd-dump-failed', 'gz-extract']); //mainWindow.webContents.send('upd-dump-failed', 'gz-extract');
+                    console.log(err);
+                }).pipe(zlib.createGunzip()).pipe(out);
         });
 }
 

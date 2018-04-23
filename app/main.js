@@ -6,7 +6,7 @@ const Datastore = require('nedb');
 const webreq = require('tiny-json-http');
 const request = require('request');
 
-const {app, BrowserWindow, ipcMain, dialog, shell} = electron;
+const {app, BrowserWindow, ipcMain, dialog} = electron;
 
 app.commandLine.appendSwitch('remote-debugging-port', '9222');
 
@@ -201,7 +201,7 @@ ipcMain.on('upd-dump', function (event, data) {
     let user = data[2];
     let notify = data[3];
     if (check) {
-        checkUpdates(user, notify, data[0]);
+        checkDumpUpd(user, notify, data[0]);
     } else {
         initUpdDump(data[0]);
     }
@@ -444,14 +444,14 @@ function initUpdDump(dlURL) {
     }
 }
 
-function checkUpdates(user, notify, dlURL) {
+function checkDumpUpd(user, notify, dlURL) {
     let req = request({
         method: 'GET',
         uri: dlURL
     });
 
     req.on('response', function (data) {
-        if ((data.headers['content-type']) === 'application/octet-stream') {
+        if((data.headers['content-type'].split('/')[0]) === 'application'){
             let update = new Date(data.headers['last-modified']) - prefs.lastUpd;
             if (update > 0) {
                 if (user) {
