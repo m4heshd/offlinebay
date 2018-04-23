@@ -5,9 +5,10 @@ const Datastore = require('nedb');
 
 let prefs = {
     usedht: true,
-    updURL: 'https://thepiratebay.org/static/dump/csv/torrent_dump_2007.csv.gz',
-    lastUpd: new Date('2017-01-07T11:44:34.000Z')
-    // updLocation: 'https://thepiratebay.org/static/dump/csv/torrent_dump_full.csv.gz'
+    // updURL: 'https://thepiratebay.org/static/dump/csv/torrent_dump_2007.csv.gz',
+    updURL: 'http://127.0.0.1/tpb/torrent_dump_full.csv.gz',
+    lastUpd: new Date('2017-01-07T11:44:34.000Z'),
+    updStat: 'complete'
 };
 
 /* DB functions
@@ -156,14 +157,29 @@ ipcRenderer.on('upd-dump-init', function () {
     $("#olAnim").attr("src", "img/import.svg");
     showOL('Initializing Download..');
 });
-// Fired on each chunk downloaded by the dump update process
-ipcRenderer.on('upd-dump-update', function (event, txt) {
-    $('#olText').text('Downloading..' + txt + '%');
+// Fired on each chunk downloaded or extracted by the dump update process
+ipcRenderer.on('upd-dump-update', function (event, data) {
+    switch (data[0]) {
+        case 'download':
+            $('#olText').text('Downloading..' + data[1] + '%');
+            break;
+        case 'extract':
+            $('#olText').text('Extracting..' + data[1] + '%');
+            break;
+    }
 });
-// Fired after dump file is successfully downloaded
-ipcRenderer.on('upd-dump-dl-success', function () {
-    hideOL();
-    popMsg('Dump update downloaded successfully', 'success')();
+// Fired after dump file is successfully downloaded or successfully extracted
+ipcRenderer.on('upd-dump-success', function (event, data) {
+    switch (data) {
+        case 'download':
+            prefs.updStat = 'downloaded';
+            break;
+        case 'extract':
+            prefs.updStat = 'extracted';
+            hideOL();
+            popMsg('Dump update extracted successfully', 'success')();
+            break;
+    }
 });
 // Fired on any dump update error
 ipcRenderer.on('upd-dump-failed', function (event, data) {
@@ -178,8 +194,14 @@ ipcRenderer.on('upd-dump-failed', function (event, data) {
         case 'content':
             popMsg('Failed to download update. File unavailable. Try a mirror URL', 'danger')();
             break;
+        case 'csv-create':
+            popMsg('Failed to extract update. Unable to create csv file', 'danger')();
+            break;
+        case 'gz-extract':
+            popMsg('Failed to extract update. Unable to read downloaded file', 'danger')();
+            break;
         default:
-            popMsg('Failed to download update. Unknown error', 'danger')();
+            popMsg('Failed to update dump. Unknown error', 'danger')();
     }
 });
 
