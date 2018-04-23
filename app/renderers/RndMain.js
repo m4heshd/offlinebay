@@ -5,9 +5,9 @@ const Datastore = require('nedb');
 
 let prefs = {
     usedht: true,
-    updLocation: 'https://thepiratebay.org/static/dump/csv/',
-    // updFile: 'torrent_dump_full.csv.gz'
-    updFile: 'torrent_dump_2007.csv.gz'
+    updURL: 'https://thepiratebay.org/static/dump/csv/torrent_dump_2007.csv.gz',
+    lastUpd: new Date('2017-01-07T11:44:34.000Z')
+    // updLocation: 'https://thepiratebay.org/static/dump/csv/torrent_dump_full.csv.gz'
 };
 
 /* DB functions
@@ -122,10 +122,39 @@ ipcRenderer.on('import-failed', function (event, data) {
 });
 
 /* Update dump */
+$('#mnuCheckUpdDump').on('click', function () {
+    $("#olAnim").attr("src", "img/update_check.svg");
+    showOL('Checking..');
+    ipcRenderer.send('upd-dump', [prefs.updURL, true, true, false]); // [URL, check, user, notify]
+});
+// Fired after dump update is checked and none available
+ipcRenderer.on('upd-check-unavail', function () {
+    hideOL();
+    popMsg('Your dump file is up to date', 'success')();
+});
+// Fired on any dump update check error
+ipcRenderer.on('upd-check-failed', function (event, data) {
+    hideOL();
+    switch (data) {
+        case 'download':
+            popMsg('Failed to check updates. Check your internet connection and URL', 'danger')();
+            break;
+        case 'content':
+            popMsg('Failed to check updates. Try a mirror URL', 'danger')();
+            break;
+        default:
+            popMsg('Failed to check updates. Unknown error', 'danger')();
+    }
+});
 $('#mnuUpdDump').on('click', function () {
     $("#olAnim").attr("src", "img/import.svg");
     showOL('Looking up..');
-    ipcRenderer.send('upd-dump', prefs.updLocation + prefs.updFile);
+    ipcRenderer.send('upd-dump', [prefs.updURL, false, true, false]);
+});
+// Fired after checking for updates (only if user forced to check updates)
+ipcRenderer.on('upd-dump-init', function () {
+    $("#olAnim").attr("src", "img/import.svg");
+    showOL('Initializing Download..');
 });
 // Fired on each chunk downloaded by the dump update process
 ipcRenderer.on('upd-dump-update', function (event, txt) {

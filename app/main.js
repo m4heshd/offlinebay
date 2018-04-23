@@ -4,6 +4,7 @@ const url = require('url');
 const path = require('path');
 const Datastore = require('nedb');
 const webreq = require('tiny-json-http');
+const request = require('request');
 
 const {app, BrowserWindow, ipcMain, dialog, shell} = electron;
 
@@ -15,7 +16,8 @@ let prefs = {
     size: [1200, 800],
     rs_count: 100,
     smart: true,
-    inst: false
+    inst: false,
+    lastUpd: new Date('2017-01-06T11:44:34.000Z')
 };
 let procImport;
 let procSearch;
@@ -195,7 +197,14 @@ ipcMain.on('upd-trackers', function () {
 
 /* Update dump */
 ipcMain.on('upd-dump', function (event, data) {
-    initUpdDump(data);
+    let check = data[1];
+    let user = data[2];
+    let notify = data[3];
+    if (check) {
+        checkUpdates(user, notify, data[0]);
+    } else {
+        initUpdDump(data[0]);
+    }
 }); // Handle update dump event
 
 /* Notification senders
@@ -410,22 +419,70 @@ function updTrackers(){
 ----------------*/
 // Initialize dump update
 function initUpdDump(dlURL) {
-    if (!procUpd) {
-        procUpd = cp.fork(path.join(__dirname, 'main-functions', 'upd-dump.js'), [dlURL], {
-            cwd: __dirname
-        });
-        procUpd.on('exit', function () {
-            console.log('Dump update process ended');
-            procUpd = null;
-            if (awaitingQuit) {
-                process.emit('cont-quit');
-            }
-        });
-        procUpd.on('message', function (m) {
-            mainWindow.webContents.send(m[0], m[1]);
-        });
+    if (!procSearch && !procImport) {
+        if (!procUpd) {
+            procUpd = cp.fork(path.join(__dirname, 'main-functions', 'upd-dump.js'), [dlURL], {
+                cwd: __dirname
+            });
+            procUpd.on('exit', function () {
+                console.log('Dump update process ended');
+                procUpd = null;
+                if (awaitingQuit) {
+                    process.emit('cont-quit');
+                }
+            });
+            procUpd.on('message', function (m) {
+                mainWindow.webContents.send(m[0], m[1]);
+            });
+        } else {
+            popWarn('One update process is already running');
+            mainWindow.webContents.send('hide-ol');
+        }
     } else {
-        popWarn('One update process is already running');
+        popWarn('Dump file is busy at the moment');
         mainWindow.webContents.send('hide-ol');
     }
+}
+
+function checkUpdates(user, notify, dlURL) {
+    let req = request({
+        method: 'GET',
+        uri: dlURL
+    });
+
+    req.on('response', function (data) {
+        if ((data.headers['content-type']) === 'application/octet-stream') {
+            let update = new Date(data.headers['last-modified']) - prefs.lastUpd;
+            if (update > 0) {
+                if (user) {
+                    let res = dialog.showMessageBox(
+                        mainWindow,
+                        {
+                            type: 'question',
+                            buttons: ['Yes', 'No'],
+                            title: 'Update confirmation',
+                            message: 'An update is available. Do you want to proceed with the download?',
+                            cancelId: 1
+                        });
+
+                    if (res === 0) {
+                        mainWindow.webContents.send('upd-dump-init');
+                        initUpdDump(dlURL);
+                    } else {
+                        mainWindow.webContents.send('hide-ol');
+                    }
+                }
+            } else {
+                mainWindow.webContents.send('upd-check-unavail');
+            }
+        } else {
+            mainWindow.webContents.send('upd-check-failed', 'content');
+        }
+        req.abort();
+    });
+    req.on('error', function (err) {
+        console.log(err);
+        mainWindow.webContents.send('upd-check-failed', 'download');
+    });
+
 }

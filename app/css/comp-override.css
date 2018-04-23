@@ -314,7 +314,7 @@ fieldset[disabled] .checkbox label {
     left: 0;
     z-index: 9;
     display: none;
-    min-width: 170px;
+    min-width: 180px;
     list-style: none;
     font-size: 13px;
     text-align: left;
