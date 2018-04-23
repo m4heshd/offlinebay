@@ -1,5 +1,6 @@
 # Dump files
 *.csv
+app/data/downloads/
 
 # Logs
 logs

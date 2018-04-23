@@ -20,6 +20,7 @@ let prefs = {
 let procImport;
 let procSearch;
 let procScrape;
+let procUpd;
 let scrapeOpts = [];
 let finalPrefs = false;
 let awaitingQuit = false;
@@ -192,6 +193,11 @@ ipcMain.on('upd-trackers', function () {
     updTrackers();
 }); // Handle update trackers event
 
+/* Update dump */
+ipcMain.on('upd-dump', function (event, data) {
+    initUpdDump(data);
+}); // Handle update dump event
+
 /* Notification senders
 ------------------------*/
 // Show blue background notification
@@ -261,6 +267,9 @@ function startOB() {
         if (procSearch) {
             waitProcess(event, procScrape, '\'SCRAPE\'');
         } // Validation of any running child processes before closing (Scrape)
+        if (procUpd) {
+            waitProcess(event, procUpd, '\'UPDATE\'');
+        } // Validation of any running child processes before closing (Update)
     });
     mainWindow.on('closed', function () {
         mainWindow = null;
@@ -395,4 +404,28 @@ function updTrackers(){
     }).catch(function () {
         mainWindow.webContents.send('upd-trackers-failed', 'ep');
     });
+}
+
+/* Dump updates
+----------------*/
+// Initialize dump update
+function initUpdDump(dlURL) {
+    if (!procUpd) {
+        procUpd = cp.fork(path.join(__dirname, 'main-functions', 'upd-dump.js'), [dlURL], {
+            cwd: __dirname
+        });
+        procUpd.on('exit', function () {
+            console.log('Dump update process ended');
+            procUpd = null;
+            if (awaitingQuit) {
+                process.emit('cont-quit');
+            }
+        });
+        procUpd.on('message', function (m) {
+            mainWindow.webContents.send(m[0], m[1]);
+        });
+    } else {
+        popWarn('One update process is already running');
+        mainWindow.webContents.send('hide-ol');
+    }
 }
