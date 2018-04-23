@@ -4,7 +4,10 @@ const path = require('path');
 const Datastore = require('nedb');
 
 let prefs = {
-    usedht: true
+    usedht: true,
+    updLocation: 'https://thepiratebay.org/static/dump/csv/',
+    // updFile: 'torrent_dump_full.csv.gz'
+    updFile: 'torrent_dump_2007.csv.gz'
 };
 
 /* DB functions
@@ -115,6 +118,39 @@ ipcRenderer.on('import-failed', function (event, data) {
             break;
         default:
             popMsg('Dump file import failed. Unspecified error.', 'danger')();
+    }
+});
+
+/* Update dump */
+$('#mnuUpdDump').on('click', function () {
+    $("#olAnim").attr("src", "img/import.svg");
+    showOL('Looking up..');
+    ipcRenderer.send('upd-dump', prefs.updLocation + prefs.updFile);
+});
+// Fired on each chunk downloaded by the dump update process
+ipcRenderer.on('upd-dump-update', function (event, txt) {
+    $('#olText').text('Downloading..' + txt + '%');
+});
+// Fired after dump file is successfully downloaded
+ipcRenderer.on('upd-dump-dl-success', function () {
+    hideOL();
+    popMsg('Dump update downloaded successfully', 'success')();
+});
+// Fired on any dump update error
+ipcRenderer.on('upd-dump-failed', function (event, data) {
+    hideOL();
+    switch (data) {
+        case 'file':
+            popMsg('Failed to download update. Unable to create the file', 'danger')();
+            break;
+        case 'download':
+            popMsg('Failed to download update. Check your internet connection and URL', 'danger')();
+            break;
+        case 'content':
+            popMsg('Failed to download update. File unavailable. Try a mirror URL', 'danger')();
+            break;
+        default:
+            popMsg('Failed to download update. Unknown error', 'danger')();
     }
 });
 
