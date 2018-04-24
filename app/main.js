@@ -3,7 +3,6 @@ const electron = require('electron');
 const url = require('url');
 const path = require('path');
 const Datastore = require('nedb');
-const webreq = require('tiny-json-http');
 const request = require('request');
 
 const {app, BrowserWindow, ipcMain, dialog} = electron;
@@ -393,12 +392,12 @@ function initScrape(hash, isDHT) {
 // Start tracker updating process
 function updTrackers(){
     getTrackerEP().then(function (url) {
-        webreq.get({url}, function (err, result) {
+        request.get(url, function (err, res, body) {
             if (err) {
                 mainWindow.webContents.send('upd-trackers-failed', 'net');
             }
             else {
-                let trcks = result.body.trim().split('\n\n');
+                let trcks = body.trim().split('\n\n');
                 if (trcks.length > 0) {
                     setTrackers(trcks).then(function () {
                         mainWindow.webContents.send('upd-trackers-success', trcks);
