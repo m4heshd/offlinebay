@@ -93,7 +93,8 @@ ipcRenderer.on('import-finalizing', function (event, txt) {
     $('#olText').text('Finalizing..');
 });
 // Fired after import process is successfully finished
-ipcRenderer.on('import-success', function () {
+ipcRenderer.on('import-success', function (event, data) {
+    prefs.lastUpd = new Date(data);
     hideOL();
     popMsg('Dump file imported successfully', 'success')();
     $('#txtStat').text('Dump updated @ ' + moment().format('YYYY-MM-DD hh:mm:ss'));
@@ -126,7 +127,7 @@ ipcRenderer.on('import-failed', function (event, data) {
 $('#mnuCheckUpdDump').on('click', function () {
     $("#olAnim").attr("src", "img/update_check.svg");
     showOL('Checking..');
-    ipcRenderer.send('upd-dump', [prefs.updURL, true, true, false]); // [URL, check, user, notify]
+    ipcRenderer.send('upd-dump', [prefs.updURL, 'check']); // [URL, <type>]
 });
 // Fired after dump update is checked and none available
 ipcRenderer.on('upd-check-unavail', function () {
@@ -150,7 +151,7 @@ ipcRenderer.on('upd-check-failed', function (event, data) {
 $('#mnuUpdDump').on('click', function () {
     $("#olAnim").attr("src", "img/import.svg");
     showOL('Looking up..');
-    ipcRenderer.send('upd-dump', [prefs.updURL, false, true, false]);
+    ipcRenderer.send('upd-dump', [prefs.updURL, 'user']);
 });
 // Fired after checking for updates (only if user forced to check updates)
 ipcRenderer.on('upd-dump-init', function () {
@@ -180,6 +181,10 @@ ipcRenderer.on('upd-dump-success', function (event, data) {
             popMsg('Dump update extracted successfully', 'success')();
             break;
     }
+});
+// Fired after dump file is successfully downloaded or successfully extracted
+ipcRenderer.on('upd-dump-import', function (event, data) {
+    ipcRenderer.send('upd-import', data);
 });
 // Fired on any dump update error
 ipcRenderer.on('upd-dump-failed', function (event, data) {

@@ -11,7 +11,10 @@ process.on('uncaughtException', function (error) {
 });
 
 let args = process.argv.slice(2);
-let filePath = args[0];
+let isUpd = (args[0] === 'true');
+let filePath = args[1];
+let tempPath = args[2];
+let timestamp = args[3];
 let stagePath = path.join(process.cwd(), 'data', 'stage.csv');
 
 let totalLines = 0;
@@ -109,8 +112,25 @@ function finalize(){
         if (err){
             process.send(['import-failed', 'finalize']); //mainWindow.webContents.send('import-failed', 'finalize');
         } else {
-            process.send(['import-success', 'null']);// mainWindow.webContents.send('import-success');
-            console.log('FINALIZED');
+            if (isUpd) {
+                fs.unlink(tempPath, function (err) {
+                    if (err) {
+                        process.send(['notify', ['Unable to remove downloaded file', 'danger']]); //mainWindow.webContents.send('notify', ['Unable to remove downloaded file', 'danger']);
+                    }
+                    fs.unlink(filePath, function (err) {
+                        if (err) {
+                            process.send(['notify', ['Unable to remove extracted file', 'danger']]); //mainWindow.webContents.send('notify', ['Unable to remove downloaded file', 'danger']);
+                        }
+                        process.send(['import-success', timestamp]);// mainWindow.webContents.send('import-success');
+                    });
+                });
+            } else {
+                let tstamp = new Date().toString();
+                fs.stat(filePath, function (err, data) {
+                    tstamp = data.mtime;
+                    process.send(['import-success', tstamp]);// mainWindow.webContents.send('import-success');
+                });
+            }
         }
     });
 }
