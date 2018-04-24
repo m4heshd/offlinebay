@@ -169,10 +169,14 @@ ipcMain.on('app-max', function () {
     mainWindow.isMaximized() ? mainWindow.restore() : mainWindow.maximize();
 }); // Maximize/Restore button control
 
-/* Dialogs */
+/* Import */
 ipcMain.on('pop-import', function (event) {
-    initImport(event);
+    initImport(event, false, '', '', ''); // (event, isUpd, tempFile, csvFile, timestamp)
 }); // Import dump file open dialog
+
+ipcMain.on('upd-import', function (event, data) {
+    initImport(event, true, data[0], data[1], data[2]);
+}); // Import dump file after update is downloaded
 
 /* Search */
 ipcMain.on('search-start', function (event, data) {
@@ -196,13 +200,14 @@ ipcMain.on('upd-trackers', function () {
 
 /* Update dump */
 ipcMain.on('upd-dump', function (event, data) {
-    let check = data[1];
-    let user = data[2];
-    let notify = data[3];
-    if (check) {
-        checkDumpUpd(user, notify, data[0]);
-    } else {
-        initUpdDump(data[0]);
+    let type = data[1];
+    switch (type) {
+        case 'check':
+            checkDumpUpd(type, data[0]);
+            break;
+        case 'user':
+            initUpdDump(data[0]);
+            break;
     }
 }); // Handle update dump event
 
@@ -302,21 +307,42 @@ function startOB() {
 }
 
 // Show open dialog and initiate import child process
-function initImport(event) {
-    let dlg = dialog.showOpenDialog(
-        mainWindow,
-        {
-            properties: ['openFile'],
-            title: 'Open dump file (CSV)',
-            filters: [
-                {name: 'CSV Files', extensions: ['csv']}
-            ]
-        });
+function initImport(event, isUpd, tempFile, csvFile, timestamp) {
+    if (!isUpd) {
+        let dlg = dialog.showOpenDialog(
+            mainWindow,
+            {
+                properties: ['openFile'],
+                title: 'Open dump file (CSV)',
+                filters: [
+                    {name: 'CSV Files', extensions: ['csv']}
+                ]
+            });
 
-    if (typeof dlg !== "undefined") {
+        if (typeof dlg !== "undefined") {
+            if (!procImport) {
+                event.sender.send('import-start');
+                procImport = cp.fork(path.join(__dirname, 'main-functions', 'import-dump.js'), [false, dlg[0], '', ''], {
+                    cwd: __dirname
+                });
+                procImport.on('exit', function () {
+                    console.log('Import process ended');
+                    procImport = null;
+                    if (awaitingQuit) {
+                        process.emit('cont-quit');
+                    }
+                });
+                procImport.on('message', function (m) {
+                    mainWindow.webContents.send(m[0], m[1]);
+                });
+            } else {
+                popWarn('One Import process is already running');
+            }
+        }
+    } else {
         if (!procImport) {
             event.sender.send('import-start');
-            procImport = cp.fork(path.join(__dirname, 'main-functions', 'import-dump.js'), [dlg[0]], {
+            procImport = cp.fork(path.join(__dirname, 'main-functions', 'import-dump.js'), [true, csvFile, tempFile, timestamp], {
                 cwd: __dirname
             });
             procImport.on('exit', function () {
@@ -332,7 +358,6 @@ function initImport(event) {
         } else {
             popWarn('One Import process is already running');
         }
-
     }
 }
 
@@ -435,53 +460,54 @@ function initUpdDump(dlURL) {
             });
         } else {
             popWarn('One update process is already running');
-            mainWindow.webContents.send('hide-ol');
         }
     } else {
         popWarn('Dump file is busy at the moment');
-        mainWindow.webContents.send('hide-ol');
     }
 }
 
-function checkDumpUpd(user, notify, dlURL) {
-    let req = request({
-        method: 'GET',
-        uri: dlURL
-    });
+function checkDumpUpd(type, dlURL) {
+    if (!procUpd && !procImport) {
+        let req = request({
+            method: 'GET',
+            uri: dlURL
+        });
 
-    req.on('response', function (data) {
-        if((data.headers['content-type'].split('/')[0]) === 'application'){
-            let update = new Date(data.headers['last-modified']) - prefs.lastUpd;
-            if (update > 0) {
-                if (user) {
-                    let res = dialog.showMessageBox(
-                        mainWindow,
-                        {
-                            type: 'question',
-                            buttons: ['Yes', 'No'],
-                            title: 'Update confirmation',
-                            message: 'An update is available. Do you want to proceed with the download?',
-                            cancelId: 1
-                        });
+        req.on('response', function (data) {
+            if ((data.headers['content-type'].split('/')[0]) === 'application') {
+                let update = new Date(data.headers['last-modified']) - prefs.lastUpd;
+                if (update > 0) {
+                    if (type === 'check') {
+                        let res = dialog.showMessageBox(
+                            mainWindow,
+                            {
+                                type: 'question',
+                                buttons: ['Yes', 'No'],
+                                title: 'Update confirmation',
+                                message: 'An update is available. Do you want to proceed with the download?',
+                                cancelId: 1
+                            });
 
-                    if (res === 0) {
-                        mainWindow.webContents.send('upd-dump-init');
-                        initUpdDump(dlURL);
-                    } else {
-                        mainWindow.webContents.send('hide-ol');
+                        if (res === 0) {
+                            mainWindow.webContents.send('upd-dump-init');
+                            initUpdDump(dlURL);
+                        } else {
+                            mainWindow.webContents.send('hide-ol');
+                        }
                     }
+                } else {
+                    mainWindow.webContents.send('upd-check-unavail');
                 }
             } else {
-                mainWindow.webContents.send('upd-check-unavail');
+                mainWindow.webContents.send('upd-check-failed', 'content');
             }
-        } else {
-            mainWindow.webContents.send('upd-check-failed', 'content');
-        }
-        req.abort();
-    });
-    req.on('error', function (err) {
-        console.log(err);
-        mainWindow.webContents.send('upd-check-failed', 'download');
-    });
-
+            req.abort();
+        });
+        req.on('error', function (err) {
+            console.log(err);
+            mainWindow.webContents.send('upd-check-failed', 'download');
+        });
+    } else {
+        popWarn('An update process or import process is already running');
+    }
 }

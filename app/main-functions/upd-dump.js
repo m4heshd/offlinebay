@@ -11,6 +11,7 @@ process.on('uncaughtException', function (error) {
 let args = process.argv.slice(2);
 let down_url = args[0];
 let targetPath = path.join(process.cwd(), 'data', 'downloads', 'torrent_dump_full.csv.gz');
+let tstamp = new Date().toString();
 
 function downloadDump(down_url, targetPath) {
     let received_bytes = 0;
@@ -38,6 +39,7 @@ function downloadDump(down_url, targetPath) {
                     goodFile = false;
                     req.abort();
                 }
+                tstamp = data.headers['last-modified'];
                 total_bytes = parseInt(data.headers['content-length']);
             });
             req.on('data', function (chunk) {
@@ -81,6 +83,7 @@ function decompressDump() {
                     process.send(['upd-dump-update', ['extract', progress]]); //mainWindow.webContents.send('upd-dump-update', ['extract', progress]);
                 })
                 .on('end', function () {
+                    process.send(['upd-dump-import', [targetPath, extract, tstamp]]); //mainWindow.webContents.send('upd-dump-success', 'extract');
                     process.send(['upd-dump-success', 'extract']); //mainWindow.webContents.send('upd-dump-success', 'extract');
                     process.exit(0);
                 })
