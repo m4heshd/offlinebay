@@ -7,8 +7,8 @@ let prefs = {
     usedht: true,
     // updURL: 'https://thepiratebay.org/static/dump/csv/torrent_dump_2007.csv.gz',
     updURL: 'http://127.0.0.1/tpb/torrent_dump_full.csv.gz',
-    lastUpd: new Date('2017-01-07T11:44:34.000Z'),
-    updStat: 'complete'
+    lastUpd: '2017-01-07T11:44:34.000Z',
+    updStat: ['complete', '', '2017-01-07T11:44:34.000Z']
 };
 
 /* DB functions
@@ -105,10 +105,12 @@ ipcRenderer.on('import-finalizing', function (event, txt) {
 });
 // Fired after import process is successfully finished
 ipcRenderer.on('import-success', function (event, data) {
-    prefs.lastUpd = new Date(data);
+    prefs.lastUpd = new Date(data).toISOString();
+    prefs.updStat[0] = 'complete';
     hideOL();
     popMsg('Dump file imported successfully', 'success')();
     $('#txtStat').text('Dump updated @ ' + moment().format('YYYY-MM-DD hh:mm:ss'));
+    $('#txtStatRight').css('visibility', 'hidden');
 });
 // Fired on any import error
 ipcRenderer.on('import-failed', function (event, data) {
@@ -147,25 +149,41 @@ ipcRenderer.on('import-failed', function (event, data) {
 $('#mnuCheckUpdDump').on('click', function () {
     $("#olAnim").attr("src", "img/update_check.svg");
     showOL('Checking..');
+    setStatTxt('Checking for updates..');
     ipcRenderer.send('upd-dump', [prefs.updURL, 'check']); // [URL, <type>]
 });
 // Fired after dump update is checked and none available
-ipcRenderer.on('upd-check-unavail', function () {
-    hideOL();
-    popMsg('Your dump file is up to date', 'success')();
+ipcRenderer.on('upd-check-unavail', function (event, data) {
+    if (data === 'check') {
+        hideOL();
+        popMsg('Your dump file is up to date', 'success')();
+    }
 });
 // Fired on any dump update check error
 ipcRenderer.on('upd-check-failed', function (event, data) {
-    hideOL();
-    switch (data) {
-        case 'download':
-            popMsg('Failed to check updates. Check your internet connection and URL', 'danger')();
-            break;
-        case 'content':
-            popMsg('Failed to check updates. Try a mirror URL', 'danger')();
-            break;
-        default:
-            popMsg('Failed to check updates. Unknown error', 'danger')();
+    if (data[1] === 'check') {
+        hideOL();
+        switch (data[0]) {
+            case 'download':
+                popMsg('Failed to check updates. Check your internet connection and URL', 'danger')();
+                break;
+            case 'content':
+                popMsg('Failed to check updates. Try a mirror URL', 'danger')();
+                break;
+            default:
+                popMsg('Failed to check updates. Unknown error', 'danger')();
+        }
+    } else {
+        switch (data[0]) {
+            case 'download':
+                setStatErr('Failed to check updates. Check your internet connection and URL');
+                break;
+            case 'content':
+                setStatErr('Failed to check updates. Try a mirror URL');
+                break;
+            default:
+                setStatErr('Failed to check updates. Unknown error');
+        }
     }
 });
 $('#mnuUpdDump').on('click', function () {
@@ -174,34 +192,59 @@ $('#mnuUpdDump').on('click', function () {
     ipcRenderer.send('upd-dump', [prefs.updURL, 'user']);
 });
 // Fired after checking for updates (only if user forced to check updates)
-ipcRenderer.on('upd-dump-init', function () {
-    $("#olAnim").attr("src", "img/import.svg");
-    showOL('Initializing Download..');
+ipcRenderer.on('upd-dump-init', function (event, data) {
+    if (data === 'user') {
+        $("#olAnim").attr("src", "img/import.svg");
+        showOL('Initializing Download..');
+    } else {
+        setStatTxt('Update available. Initializing download..');
+    }
 });
 // Fired on each chunk downloaded by the dump update process
 ipcRenderer.on('upd-dump-update', function (event, data) {
-    $('#olText').text('Downloading..' + data + '%');
+    if (data[1] === 'user') {
+        $('#olText').text('Downloading..' + data[0] + '%');
+    } else {
+        setStatTxt('Downloading Update..' + data[0] + '%');
+    }
 });
 // Fired after dump file is successfully downloaded
 ipcRenderer.on('upd-dump-success', function (event, data) {
-    prefs.updStat = 'downloaded';
+    prefs.updStat = ['downloaded', data[0], data[1]];
+    setStatTxt('Update Downloaded..');
     ipcRenderer.send('upd-import', data);
 });
 // Fired on any dump update error
 ipcRenderer.on('upd-dump-failed', function (event, data) {
-    hideOL();
-    switch (data) {
-        case 'file':
-            popMsg('Failed to download update. Unable to create the file', 'danger')();
-            break;
-        case 'download':
-            popMsg('Failed to download update. Check your internet connection and URL', 'danger')();
-            break;
-        case 'content':
-            popMsg('Failed to download update. File unavailable. Try a mirror URL', 'danger')();
-            break;
-        default:
-            popMsg('Failed to update dump. Unknown error', 'danger')();
+    if (data[1] === 'user') {
+        hideOL();
+        switch (data[0]) {
+            case 'file':
+                popMsg('Failed to download update. Unable to create the file', 'danger')();
+                break;
+            case 'download':
+                popMsg('Failed to download update. Check your internet connection and URL', 'danger')();
+                break;
+            case 'content':
+                popMsg('Failed to download update. File unavailable. Try a mirror URL', 'danger')();
+                break;
+            default:
+                popMsg('Failed to update dump. Unknown error', 'danger')();
+        }
+    } else {
+        switch (data[0]) {
+            case 'file':
+                setStatErr('Failed to download update. Unable to create the file');
+                break;
+            case 'download':
+                setStatErr('Failed to download update. Check your internet connection and URL');
+                break;
+            case 'content':
+                setStatErr('Failed to download update. File unavailable. Try a mirror URL');
+                break;
+            default:
+                setStatErr('Failed to update dump. Unknown error');
+        }
     }
 });
 
@@ -824,4 +867,25 @@ function popMsg(txt, type) {
             '</div>'
         });
     }
+}
+
+/* Status text on right side
+-----------------------------*/
+$('#txtStatRight').on('click', function () {
+    $(this).css('visibility', 'hidden');
+});
+ipcRenderer.on('hide-stat', function () {
+    $('#txtStatRight').css('visibility', 'hidden');
+});
+function setStatTxt(txt) {
+    let lbl = $('#txtStatRight');
+    lbl.css('color', 'inherit');
+    lbl.css('visibility', 'visible');
+    lbl.text(txt);
+}
+function setStatErr(txt) {
+    let lbl = $('#txtStatRight');
+    lbl.css('color', 'red');
+    lbl.css('visibility', 'visible');
+    lbl.text(txt);
 }
