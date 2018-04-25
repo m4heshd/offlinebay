@@ -5,11 +5,12 @@ const path = require('path');
 // Keep the application from crashing on unexpected errors
 process.on('uncaughtException', function (error) {
     console.log(error);
-    process.send(['upd-dump-failed', 'general']); //mainWindow.webContents.send('upd-dump-failed', 'general');
+    process.send(['upd-dump-failed', ['general', type]]); //mainWindow.webContents.send('upd-dump-failed', ['general', type]);
 });
 
 let args = process.argv.slice(2);
-let down_url = args[0];
+let type = args[0];
+let down_url = args[1];
 let targetPath = path.join(process.cwd(), 'data', 'downloads', 'torrent_dump_full.csv.gz');
 let tstamp = new Date().toString();
 
@@ -24,7 +25,7 @@ function downloadDump(down_url, targetPath) {
     let out = fs.createWriteStream(targetPath)
         .on('error', function (err) {
             console.log(err);
-            process.send(['upd-dump-failed', 'file']); //mainWindow.webContents.send('upd-dump-failed', 'file');
+            process.send(['upd-dump-failed', ['file', type]]); //mainWindow.webContents.send('upd-dump-failed', ['file', type]);
         })
         .on('open', function () {
 
@@ -37,7 +38,7 @@ function downloadDump(down_url, targetPath) {
 
             req.on('response', function (data) {
                 if((data.headers['content-type'].split('/')[0]) !== 'application'){
-                    process.send(['upd-dump-failed', 'content']); //mainWindow.webContents.send('upd-dump-failed', 'content');
+                    process.send(['upd-dump-failed', ['content', type]]); //mainWindow.webContents.send('upd-dump-failed', ['content', type]);
                     goodFile = false;
                     req.abort();
                 }
@@ -47,11 +48,11 @@ function downloadDump(down_url, targetPath) {
             req.on('data', function (chunk) {
                 received_bytes += chunk.length;
                 let progress = Math.round((received_bytes * 100) / total_bytes);
-                process.send(['upd-dump-update', progress]); //mainWindow.webContents.send('upd-dump-update', ['download', progress]);
+                process.send(['upd-dump-update', [progress, type]]); //mainWindow.webContents.send('upd-dump-update', [progress, type]);
             });
             req.on('error', function (err) {
                 console.log(err);
-                process.send(['upd-dump-failed', 'download']); //mainWindow.webContents.send('upd-dump-failed', 'download');
+                process.send(['upd-dump-failed', ['download', type]]); //mainWindow.webContents.send('upd-dump-failed', ['download', type]);
             });
 
         })
@@ -60,7 +61,7 @@ function downloadDump(down_url, targetPath) {
             if (goodFile) {
                 let final = fs.openSync(targetPath, 'r+');
                 fs.fsyncSync(final); // This part is essential to ensure that file is completely written to the disk before extracting
-                process.send(['upd-dump-success', [targetPath, tstamp]]); //mainWindow.webContents.send('upd-dump-success', [targetPath, extract, tstamp]);
+                process.send(['upd-dump-success', [targetPath, tstamp]]); //mainWindow.webContents.send('upd-dump-success', [targetPath, tstamp]);
                 process.exit(0);
             }
         });

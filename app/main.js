@@ -16,7 +16,7 @@ let prefs = {
     rs_count: 100,
     smart: true,
     inst: false,
-    lastUpd: new Date('2017-01-06T11:44:34.000Z')
+    lastUpd: '2017-01-06T11:44:34.000Z'
 };
 let procImport;
 let procSearch;
@@ -206,7 +206,7 @@ ipcMain.on('upd-dump', function (event, data) {
             checkDumpUpd(type, data[0]);
             break;
         case 'user':
-            initUpdDump(data[0]);
+            initUpdDump(type, data[0]);
             break;
     }
 }); // Handle update dump event
@@ -442,10 +442,10 @@ function updTrackers(){
 /* Dump updates
 ----------------*/
 // Initialize dump update
-function initUpdDump(dlURL) {
+function initUpdDump(type, dlURL) {
     if (!procSearch && !procImport) {
         if (!procUpd) {
-            procUpd = cp.fork(path.join(__dirname, 'main-functions', 'upd-dump.js'), [dlURL], {
+            procUpd = cp.fork(path.join(__dirname, 'main-functions', 'upd-dump.js'), [type, dlURL], {
                 cwd: __dirname
             });
             procUpd.on('exit', function () {
@@ -475,7 +475,7 @@ function checkDumpUpd(type, dlURL) {
 
         req.on('response', function (data) {
             if ((data.headers['content-type'].split('/')[0]) === 'application') {
-                let update = new Date(data.headers['last-modified']) - prefs.lastUpd;
+                let update = new Date(data.headers['last-modified']) - new Date(prefs.lastUpd);
                 if (update > 0) {
                     if (type === 'check') {
                         let res = dialog.showMessageBox(
@@ -489,23 +489,24 @@ function checkDumpUpd(type, dlURL) {
                             });
 
                         if (res === 0) {
-                            mainWindow.webContents.send('upd-dump-init');
-                            initUpdDump(dlURL);
+                            mainWindow.webContents.send('upd-dump-init', 'user');
+                            initUpdDump('user', dlURL);
                         } else {
                             mainWindow.webContents.send('hide-ol');
+                            mainWindow.webContents.send('hide-stat');
                         }
                     }
                 } else {
-                    mainWindow.webContents.send('upd-check-unavail');
+                    mainWindow.webContents.send('upd-check-unavail', type);
                 }
             } else {
-                mainWindow.webContents.send('upd-check-failed', 'content');
+                mainWindow.webContents.send('upd-check-failed', ['content', type]);
             }
             req.abort();
         });
         req.on('error', function (err) {
             console.log(err);
-            mainWindow.webContents.send('upd-check-failed', 'download');
+            mainWindow.webContents.send('upd-check-failed', ['download', type]);
         });
     } else {
         popWarn('An update process or import process is already running');
