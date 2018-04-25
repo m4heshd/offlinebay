@@ -171,11 +171,11 @@ ipcMain.on('app-max', function () {
 
 /* Import */
 ipcMain.on('pop-import', function (event) {
-    initImport(event, false, '', '', ''); // (event, isUpd, tempFile, csvFile, timestamp)
+    initImport(event, false, '', ''); // (event, isUpd, filePath, timestamp)
 }); // Import dump file open dialog
 
 ipcMain.on('upd-import', function (event, data) {
-    initImport(event, true, data[0], data[1], data[2]);
+    initImport(event, true, data[0], data[1]);
 }); // Import dump file after update is downloaded
 
 /* Search */
@@ -307,7 +307,7 @@ function startOB() {
 }
 
 // Show open dialog and initiate import child process
-function initImport(event, isUpd, tempFile, csvFile, timestamp) {
+function initImport(event, isUpd, filePath, timestamp) {
     if (!isUpd) {
         let dlg = dialog.showOpenDialog(
             mainWindow,
@@ -322,7 +322,7 @@ function initImport(event, isUpd, tempFile, csvFile, timestamp) {
         if (typeof dlg !== "undefined") {
             if (!procImport) {
                 event.sender.send('import-start');
-                procImport = cp.fork(path.join(__dirname, 'main-functions', 'import-dump.js'), [false, dlg[0], '', ''], {
+                procImport = cp.fork(path.join(__dirname, 'main-functions', 'import-dump.js'), [false, dlg[0], ''], {
                     cwd: __dirname
                 });
                 procImport.on('exit', function () {
@@ -342,7 +342,7 @@ function initImport(event, isUpd, tempFile, csvFile, timestamp) {
     } else {
         if (!procImport) {
             event.sender.send('import-start');
-            procImport = cp.fork(path.join(__dirname, 'main-functions', 'import-dump.js'), [true, csvFile, tempFile, timestamp], {
+            procImport = cp.fork(path.join(__dirname, 'main-functions', 'import-dump.js'), [true, filePath, timestamp], {
                 cwd: __dirname
             });
             procImport.on('exit', function () {
