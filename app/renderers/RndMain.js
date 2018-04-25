@@ -79,16 +79,27 @@ $('#btnMaximize').on('click', function () {
 $('#mnuImport').on('click', function () {
     ipcRenderer.send('pop-import');
 });
-// Fired after open dialog is finished on main process
+// Fired after open dialog is finished on main process or dump download is successful
 ipcRenderer.on('import-start', function () {
     $("#olAnim").attr("src", "img/import.svg");
-    showOL('Validating..');
+    showOL('Setting up..');
 });
-// Fired on each chunk processed by the search process
-ipcRenderer.on('import-update', function (event, txt) {
-    $('#olText').text('Importing..' + txt + '%');
+// Fired before the validation process start on import process
+ipcRenderer.on('import-validate', function () {
+    $('#olText').text('Validating..');
 });
-// Fired prior to creating the processed.csv
+// Fired on each chunk processed or extracted by the import process
+ipcRenderer.on('import-update', function (event, data) {
+    switch (data[0]) {
+        case 'import':
+            $('#olText').text('Importing..' + data[1] + '%');
+            break;
+        case 'extract':
+            $('#olText').text('Extracting..' + data[1] + '%');
+            break;
+    }
+});
+// Fired prior to creating the processed.csv and clean up
 ipcRenderer.on('import-finalizing', function (event, txt) {
     $('#olText').text('Finalizing..');
 });
@@ -108,6 +119,15 @@ ipcRenderer.on('import-failed', function (event, data) {
             break;
         case 'temp':
             popMsg('Dump file import failed. Unable to access the staging file', 'danger')();
+            break;
+        case 'csv-create':
+            popMsg('Failed to extract dump. Unable to create csv file', 'danger')();
+            break;
+        case 'gz-extract':
+            popMsg('Failed to extract dump. Unable to read downloaded file', 'danger')();
+            break;
+        case 'after-extract':
+            popMsg('Failed to import. Unable to access extracted file', 'danger')();
             break;
         case 'process':
             popMsg('Dump file import failed. Didn\'t process correctly', 'danger')();
@@ -158,32 +178,13 @@ ipcRenderer.on('upd-dump-init', function () {
     $("#olAnim").attr("src", "img/import.svg");
     showOL('Initializing Download..');
 });
-// Fired on each chunk downloaded or extracted by the dump update process
+// Fired on each chunk downloaded by the dump update process
 ipcRenderer.on('upd-dump-update', function (event, data) {
-    switch (data[0]) {
-        case 'download':
-            $('#olText').text('Downloading..' + data[1] + '%');
-            break;
-        case 'extract':
-            $('#olText').text('Extracting..' + data[1] + '%');
-            break;
-    }
+    $('#olText').text('Downloading..' + data + '%');
 });
-// Fired after dump file is successfully downloaded or successfully extracted
+// Fired after dump file is successfully downloaded
 ipcRenderer.on('upd-dump-success', function (event, data) {
-    switch (data) {
-        case 'download':
-            prefs.updStat = 'downloaded';
-            break;
-        case 'extract':
-            prefs.updStat = 'extracted';
-            hideOL();
-            popMsg('Dump update extracted successfully', 'success')();
-            break;
-    }
-});
-// Fired after dump file is successfully downloaded or successfully extracted
-ipcRenderer.on('upd-dump-import', function (event, data) {
+    prefs.updStat = 'downloaded';
     ipcRenderer.send('upd-import', data);
 });
 // Fired on any dump update error
@@ -198,12 +199,6 @@ ipcRenderer.on('upd-dump-failed', function (event, data) {
             break;
         case 'content':
             popMsg('Failed to download update. File unavailable. Try a mirror URL', 'danger')();
-            break;
-        case 'csv-create':
-            popMsg('Failed to extract update. Unable to create csv file', 'danger')();
-            break;
-        case 'gz-extract':
-            popMsg('Failed to extract update. Unable to read downloaded file', 'danger')();
             break;
         default:
             popMsg('Failed to update dump. Unknown error', 'danger')();
