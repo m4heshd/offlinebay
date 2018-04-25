@@ -313,9 +313,9 @@ function initImport(event, isUpd, filePath, timestamp) {
             mainWindow,
             {
                 properties: ['openFile'],
-                title: 'Open dump file (CSV)',
+                title: 'Open dump file (CSV or GZ)',
                 filters: [
-                    {name: 'CSV Files', extensions: ['csv']}
+                    {name: 'Dump Files', extensions: ['csv', 'gz']}
                 ]
             });
 
