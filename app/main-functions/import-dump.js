@@ -149,7 +149,7 @@ function decompressDump() {
         .once('close', function () {
             try {
                 let final = fs.openSync(extract, 'r+'); // This step is needed because 'fd' retured by the 'open' event will be null at this point.
-                fs.fsyncSync(final); // This part is essential becuase the disk cache won't be flushed before importing and processed file will end up with missing bytes
+                fs.fsyncSync(final); // This part is essential because the disk cache won't be flushed before importing and processed file will end up with missing bytes
                 startCSV();
             } catch (error) {
                 console.log(error);
@@ -161,6 +161,9 @@ function decompressDump() {
 // Rename the stage.csv to processed.csv and clean up any unwanted data
 function finalize(){
     process.send(['import-finalizing', 'null']);// mainWindow.webContents.send('import-finalizing');
+
+    let final = fs.openSync(stagePath, 'r+');
+    fs.fsyncSync(final);
 
     let processed = path.join(process.cwd(), 'data', 'processed.csv');
 
