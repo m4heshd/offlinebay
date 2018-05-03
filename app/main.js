@@ -16,7 +16,7 @@ let prefs = {
     rs_count: 100,
     smart: true,
     inst: false,
-    lastUpd: '2017-01-06T11:44:34.000Z'
+    updLast: '2017-01-06T11:44:34.000Z'
 };
 let procImport;
 let procSearch;
@@ -175,7 +175,11 @@ ipcMain.on('pop-import', function (event) {
 }); // Import dump file open dialog
 
 ipcMain.on('upd-import', function (event, data) {
-    initImport(event, true, data[0], data[1]);
+    if (!procSearch) {
+        initImport(event, true, data[0], data[1]);
+    } else {
+        popWarn('Can\'t update the dump file in the middle of searching')
+    }
 }); // Import dump file after update is downloaded
 
 /* Search */
@@ -202,7 +206,9 @@ ipcMain.on('upd-trackers', function () {
 ipcMain.on('upd-dump', function (event, data) {
     let type = data[1];
     switch (type) {
+        case 'auto':
         case 'check':
+            // console.log(type);
             checkDumpUpd(type, data[0]);
             break;
         case 'user':
@@ -459,13 +465,18 @@ function initUpdDump(type, dlURL) {
                 mainWindow.webContents.send(m[0], m[1]);
             });
         } else {
-            popWarn('One update process is already running');
+            if (type === 'user') {
+                popWarn('One update process is already running');
+            }
         }
     } else {
-        popWarn('Dump file is busy at the moment');
+        if (type === 'user') {
+            popWarn('Can\'t update. Dump file is busy at the moment');
+        }
     }
 }
 
+// Check for dump file updates
 function checkDumpUpd(type, dlURL) {
     if (!procUpd && !procImport) {
         let req = request({
@@ -475,7 +486,7 @@ function checkDumpUpd(type, dlURL) {
 
         req.on('response', function (data) {
             if ((data.headers['content-type'].split('/')[0]) === 'application') {
-                let update = new Date(data.headers['last-modified']) - new Date(prefs.lastUpd);
+                let update = new Date(data.headers['last-modified']) - new Date(prefs.updLast);
                 if (update > 0) {
                     if (type === 'check') {
                         let res = dialog.showMessageBox(
@@ -495,6 +506,9 @@ function checkDumpUpd(type, dlURL) {
                             mainWindow.webContents.send('hide-ol');
                             mainWindow.webContents.send('hide-stat');
                         }
+                    } else if (type === 'auto'){
+                        mainWindow.webContents.send('upd-dump-init', type);
+                        initUpdDump(type, dlURL);
                     }
                 } else {
                     mainWindow.webContents.send('upd-check-unavail', type);
@@ -509,6 +523,8 @@ function checkDumpUpd(type, dlURL) {
             mainWindow.webContents.send('upd-check-failed', ['download', type]);
         });
     } else {
-        popWarn('An update process or import process is already running');
+        if (type === 'check') {
+            popWarn('An update process or import process is already running');
+        }
     }
 }

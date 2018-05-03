@@ -7,12 +7,14 @@ let prefs = {
     usedht: true,
     // updURL: 'https://thepiratebay.org/static/dump/csv/torrent_dump_2007.csv.gz',
     updURL: 'http://127.0.0.1/tpb/torrent_dump_full.csv.gz',
-    lastUpd: '2017-01-07T11:44:34.000Z',
-    updStat: ['complete', '', '2017-01-07T11:44:34.000Z']
+    updLast: '2017-01-07T11:44:34.000Z',
+    updType: 'off',
+    updStat: ['complete', '', '']
 };
 
 /* DB functions
 --------------------*/
+// Load all preferences related to renderer from config.db
 function loadPrefs() {
     let config = new Datastore({
         filename: path.join(__dirname, 'data', 'config.db'),
@@ -35,6 +37,23 @@ function loadPrefs() {
     config.findOne({type: 'trackers'}, function (err, trck) {
         if (!err && trck) {
             allTrackers = trck.trackers;
+        } else {
+            popMsg('Unable to read preferences from config DB', 'danger')();
+        }
+    });
+
+    config.findOne({type: 'dump'}, function (err, dmp) {
+        if (!err && dmp) {
+            prefs.updURL = dmp.updURL;
+            prefs.updLast = dmp.updLast;
+            prefs.updType = dmp.updType;
+            prefs.updStat = dmp.updStat;
+            ipcRenderer.send('pref-change', ['updLast', dmp.updLast]);
+
+            if (prefs.updType === 'auto') {
+                startAutoDump();
+            }
+
         } else {
             popMsg('Unable to read preferences from config DB', 'danger')();
         }
@@ -105,7 +124,8 @@ ipcRenderer.on('import-finalizing', function (event, txt) {
 });
 // Fired after import process is successfully finished
 ipcRenderer.on('import-success', function (event, data) {
-    prefs.lastUpd = new Date(data).toISOString();
+    prefs.updLast = new Date(data).toISOString();
+    ipcRenderer.send('pref-change', ['updLast', prefs.updLast]);
     prefs.updStat[0] = 'complete';
     hideOL();
     popMsg('Dump file imported successfully', 'success')();
@@ -157,6 +177,8 @@ ipcRenderer.on('upd-check-unavail', function (event, data) {
     if (data === 'check') {
         hideOL();
         popMsg('Your dump file is up to date', 'success')();
+    } else {
+        $('#txtStatRight').css('visibility', 'hidden');
     }
 });
 // Fired on any dump update check error
@@ -888,4 +910,27 @@ function setStatErr(txt) {
     lbl.css('color', 'red');
     lbl.css('visibility', 'visible');
     lbl.text(txt);
+}
+
+/* Dump updates
+----------------*/
+/* Auto update */
+let dmpTimer;
+
+// Set an interval to the dmpTimer variable
+function startAutoDump() {
+    dmpTimer = setInterval(function () {
+        if (prefs.updStat[0] === 'downloaded') {
+            setStatTxt('Update Downloaded..');
+            ipcRenderer.send('upd-import', [prefs.updStat[1], prefs.updStat[2]]);
+        } else {
+            setStatTxt('Checking for updates..');
+            ipcRenderer.send('upd-dump', [prefs.updURL, prefs.updType]); // [URL, <type>]
+        }
+    }, 8000);
+}
+
+// Clear dmpTimer interval
+function stopAutoDump(){
+    clearInterval(dmpTimer);
 }
