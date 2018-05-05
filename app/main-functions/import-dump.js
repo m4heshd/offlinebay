@@ -148,7 +148,7 @@ function decompressDump() {
         })
         .once('close', function () {
             try {
-                let final = fs.openSync(extract, 'r+'); // This step is needed because 'fd' retured by the 'open' event will be null at this point.
+                let final = fs.openSync(extract, 'r+'); // This step is needed because 'fd' returned by the 'open' event will be null at this point.
                 fs.fsyncSync(final); // This part is essential because the disk cache won't be flushed before importing and processed file will end up with missing bytes
                 startCSV();
             } catch (error) {

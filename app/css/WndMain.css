@@ -398,7 +398,9 @@ span, strong {
 .txtboxsm {
     height: 32px;
 }
-
+.txtinvalid, .txtinvalid:focus{
+    color: red;
+}
 /*Modal*/
 .modal {
     text-align: center;

@@ -4,11 +4,14 @@ const path = require('path');
 const Datastore = require('nedb');
 
 let prefs = {
-    usedht: true,
+    sysTray: false,
+    useDHT: true,
     // updURL: 'https://thepiratebay.org/static/dump/csv/torrent_dump_2007.csv.gz',
+    trckURL: 'https://newtrackon.com/api/stable',
     updURL: 'http://127.0.0.1/tpb/torrent_dump_full.csv.gz',
     updLast: '2017-01-07T11:44:34.000Z',
     updType: 'off',
+    updInt: 20,
     updStat: ['complete', '', '']
 };
 
@@ -36,6 +39,7 @@ function loadPrefs() {
 
     config.findOne({type: 'trackers'}, function (err, trck) {
         if (!err && trck) {
+            prefs.trckURL = trck.url;
             allTrackers = trck.trackers;
         } else {
             popMsg('Unable to read preferences from config DB', 'danger')();
@@ -47,6 +51,7 @@ function loadPrefs() {
             prefs.updURL = dmp.updURL;
             prefs.updLast = dmp.updLast;
             prefs.updType = dmp.updType;
+            prefs.updInt = dmp.updInt;
             prefs.updStat = dmp.updStat;
             ipcRenderer.send('pref-change', ['updLast', dmp.updLast]);
 
@@ -311,6 +316,11 @@ $('#mnuAllTrcks').on('click', function () {
         rows += '<tr><td>' + allTrackers[c] + '</td></tr>';
     }
     $('#tblTrckBody').html(rows);
+});
+
+/* Preferences Window */
+$('#mnuPrefs').on('click', function () {
+    setPrefsWindow();
 });
 
 /* Torrent Search
@@ -618,7 +628,7 @@ let bestTrackers = []; // To hold trackers sorted from best to worst
 // Event for double click on any row inside the body of tblMain
 $("#tblMainBody").on('dblclick', 'tr', function () {
     let hash = $(':nth-child(2)', this).html().trim();
-    ipcRenderer.send('scrape-start', [hash, prefs.usedht]);
+    ipcRenderer.send('scrape-start', [hash, prefs.useDHT]);
 
 });
 // Fired after validation for Scrape process
@@ -626,7 +636,7 @@ ipcRenderer.on('scrape-init', function (event, data) {
     peersDHT = 0;
     seeds = [];
     bestTrackers = [];
-    prefs.usedht ? peers = [0] : peers = [];
+    prefs.useDHT ? peers = [0] : peers = [];
     $('#lblSeeds').text('0');
     $('#lblPeers').text('0');
     $('.imgDots').css({
@@ -852,6 +862,74 @@ $('#btnCopyAllTrck').on('click', function () {
         popMsg('No Trackers to copy. Try updating Trackers', 'warning')();
     }
 });
+
+/* Preferences window
+------------------------*/
+// Set current values to preferences window components
+function setPrefsWindow(){
+    $('#chkTray').prop('checked', prefs.sysTray);
+    $('#txtTrckURL').removeClass('txtinvalid').val(prefs.trckURL);
+    $('#chkDHT').prop('checked', prefs.useDHT);
+    $('#txtDumpURL').removeClass('txtinvalid').val(prefs.updURL);
+    $('#rdoUpdType input[value="' + prefs.updType + '"]').prop('checked', true);
+    $('#txtUpdInt').val(prefs.updInt);
+    $('#txtLastUpd').text(prefs.updLast);
+    $('#btnSavePrefs').prop('disabled',false);
+}
+
+// txtUpdInt validation
+$('#txtUpdInt').keypress(function (e) {
+    let charCode = (e.which) ? e.which : e.keyCode;
+    return !(charCode > 31 && (charCode < 48 || charCode > 57));
+}).on('paste',function (e) {
+    e.preventDefault();
+}).on('input',function (e) {
+    let count = parseInt($(this).val());
+    if (count > 1440) {
+        $(this).val('1440');
+    } else if (count < 10 || !count) {
+        $(this).val('10');
+    }
+});
+
+$('#txtTrckURL, #txtDumpURL').on('paste',function (e) {
+    validatePrefs();
+}).on('input',function (e) {
+    validatePrefs();
+});
+
+// Validate all URLs and enable or disable the save button
+function validatePrefs() {
+    let txtTrck = $('#txtTrckURL');
+    let txtDmp = $('#txtDumpURL');
+    let trckVal = isUrlValid(txtTrck.val());
+    let dmpVal = isUrlValid(txtDmp.val());
+
+    if(trckVal){
+        txtTrck.removeClass('txtinvalid');
+        if (dmpVal) {
+            txtDmp.removeClass('txtinvalid');
+            $('#btnSavePrefs').prop('disabled',false);
+        } else {
+            txtDmp.addClass('txtinvalid');
+            $('#btnSavePrefs').prop('disabled',true);
+        }
+    } else {
+        txtTrck.addClass('txtinvalid');
+        $('#btnSavePrefs').prop('disabled',true);
+        if (dmpVal) {
+            txtDmp.removeClass('txtinvalid');
+        } else {
+            txtDmp.addClass('txtinvalid');
+        }
+    }
+}
+
+// Validate URLs
+function isUrlValid(url) {
+    let valid = url.match(/^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i);
+    return valid != null;
+}
 
 /* Notification popups
 -------------------------*/
