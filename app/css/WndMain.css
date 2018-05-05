@@ -113,7 +113,7 @@ span, strong {
 /* Menu bar */
 .grid-menu {
     display: grid;
-    grid-template-columns: 60px 60px;
+    grid-template-columns: 60px 70px 60px;
     padding-top: 3px;
     padding-left: 10px;
     background: linear-gradient(to top, rgba(255,0,0,0), rgb(43, 57, 66));
@@ -146,6 +146,7 @@ span, strong {
 }
 .mnu-txt {
     vertical-align: middle;
+    cursor: pointer;
 }
 /* Body */
 .grid-body {
@@ -293,6 +294,43 @@ span, strong {
 #tblTrackers td{
     padding: 10px;
 }
+
+/* Preferences Modal */
+.mdl-prefs {
+    height: 500px;
+}
+.prefs-modal-content {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto 55px;
+    grid-row-gap: 20px;
+    padding: 20px 10px 10px;
+}
+.prefs-opts {
+    overflow-y: auto;
+}
+.prefs-section{
+    margin: 40px 0;
+}
+.prefs-itm {
+    margin-top: 20px;
+}
+.prefs-span-txt {
+    display: grid;
+    grid-template-columns: 90px auto;
+    margin-right: 10px;
+}
+.prefs-upd-int {
+    display: grid;
+    grid-template-columns: 177px 60px 50px;
+    grid-column-gap: 5px;
+}
+.prefs-btns {
+    display: grid;
+    grid-template-columns: auto 120px 120px;
+    grid-column-gap: 10px;
+}
+
 /* Overlay */
 #overlay {
     display: grid;
@@ -356,6 +394,9 @@ span, strong {
 }
 .txtbox:focus::-webkit-input-placeholder {
     color: #22313a
+}
+.txtboxsm {
+    height: 32px;
 }
 
 /*Modal*/

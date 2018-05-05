@@ -75,6 +75,17 @@
         </ul>
     </div> <!-- Tools menu -->
     <div class="dropdown">
+        <button class="mnu-itm" type="button" data-toggle="dropdown">Settings</button>
+        <ul class="dropdown-menu">
+            <li>
+                <a id="mnuPrefs" href="#" data-toggle="modal" data-target="#mdlPrefs">
+                    <i class="zmdi zmdi-wrench mnu-ico"></i>
+                    <span class="mnu-txt">Preferences</span>
+                </a>
+            </li>
+        </ul>
+    </div> <!-- Settings menu -->
+    <div class="dropdown">
         <button class="mnu-itm" type="button" data-toggle="dropdown">Help</button>
         <ul class="dropdown-menu">
             <li>
@@ -125,14 +136,14 @@
             <span>Max Results:</span>
         </div> <!-- lblResCount -->
         <div>
-            <input id="txtResCount" type="number" class="txtbox" style="height: 32px" placeholder="Enter amount"
+            <input id="txtResCount" type="number" class="txtbox txtboxsm" placeholder="Enter amount"
                    autocomplete="off">
         </div> <!-- txtResCount -->
         <div class="item-v-center">
             <span style="margin-left: 20px">Filter:</span>
         </div> <!-- lblFilter -->
         <div>
-            <input id="txtFilter" type="text" class="txtbox" style="height: 32px" placeholder="Insert keywords"
+            <input id="txtFilter" type="text" class="txtbox txtboxsm" placeholder="Insert keywords"
                    autocomplete="off">
         </div> <!-- txtFilter -->
     </div>
@@ -307,6 +318,134 @@
         </div>
     </div>
 </div> <!-- Trackers Modal -->
+
+<div class="modal fade" id="mdlPrefs" role="dialog">
+    <div class="modal-dialog mdl-drag">
+        <!-- Modal content-->
+        <div class="modal-content mdl-prefs">
+            <div class="modal-body modal-window">
+                <div class="modal-titlebar">
+                    <div class="modal-titlebar-txt">
+                        <i class="zmdi zmdi-wrench mdl-ico"></i>
+                        <span>Preferences</span>
+                    </div>
+                    <div>
+                        <button tabindex="-1" class="btn-ctl mdl-ctl btn-danger" type="button" data-dismiss="modal">
+                            <i class="zmdi zmdi-close"></i>
+                        </button> <!-- Close button -->
+                    </div>
+                </div>
+                <div class="prefs-modal-content">
+                    <div class="prefs-opts">
+                        <div class="prefs-section" style="margin-top: 0">
+                            <span class="font-weight-bold"><u>General</u></span>
+                            <div class="checkbox item-v-center prefs-itm">
+                                <label>
+                                    <input id="chkTray" type="checkbox" checked>
+                                    <i class="input-helper"></i>
+                                    Close to system tray
+                                </label>
+                            </div> <!-- chkTray -->
+                        </div>
+                        <div class="prefs-section">
+                            <span class="font-weight-bold"><u>Trackers</u></span>
+                            <div class="prefs-span-txt prefs-itm">
+                                <div class="item-v-center">
+                                    <span>Update URL :</span>
+                                </div>
+                                <div>
+                                    <input id="txtTrckURL" type="text" class="txtbox txtboxsm"
+                                           placeholder="Insert API URL"
+                                           autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="prefs-section">
+                            <span class="font-weight-bold"><u>Seeds/Peers</u></span>
+                            <div class="checkbox item-v-center prefs-itm">
+                                <label>
+                                    <input id="chkDHT" type="checkbox" checked>
+                                    <i class="input-helper"></i>
+                                    Use DHT (DHT + Trackers)
+                                </label>
+                            </div> <!-- chkDHT -->
+                        </div>
+                        <div class="prefs-section">
+                            <span class="font-weight-bold"><u>Dump Updates</u></span>
+                            <div class="prefs-span-txt prefs-itm">
+                                <div class="item-v-center">
+                                    <span>Update URL :</span>
+                                </div>
+                                <div>
+                                    <input id="txtDumpURL" type="text" class="txtbox txtboxsm"
+                                           placeholder="Insert Dump update URL"
+                                           autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="prefs-span-txt prefs-itm">
+                                <div class="item-v-center">
+                                    <span>Auto Update :</span>
+                                </div>
+                                <div>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="dmpUpdType" value="off">
+                                        <i class="input-helper"></i>
+                                        Off
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="dmpUpdType" value="notify">
+                                        <i class="input-helper"></i>
+                                        Notify
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" name="dmpUpdType" value="auto">
+                                        <i class="input-helper"></i>
+                                        Auto
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="prefs-upd-int prefs-itm">
+                                <div class="item-v-center">
+                                    <span>Check for dump updates every</span>
+                                </div>
+                                <div>
+                                    <input id="txtUpdInt" type="number" class="txtbox txtboxsm"
+                                           autocomplete="off">
+                                </div>
+                                <div class="item-v-center">
+                                    <span>Minutes</span>
+                                </div>
+                            </div>
+                            <div class="prefs-span-txt prefs-itm">
+                                <div>
+                                    <span>Last Updated :</span>
+                                </div>
+                                <div>
+                                    <span id="txtLastUpd">2017-01-07T11:44:34.000Z</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="prefs-btns">
+                        <div></div>
+                        <div>
+                            <button id="btnDiscardPrefs" class="btn-ui btn-info" type="button" data-dismiss="modal">
+                                <i class="zmdi zmdi-close-circle btn-ico"></i>
+                                Discard
+                            </button>
+                        </div><!-- btnDiscardPrefs -->
+                        <div>
+                            <button id="btnSavePrefs" class="btn-ui btn-info" type="button">
+                                <i class="zmdi zmdi-check-circle btn-ico"></i>
+                                Save
+                            </button>
+                        </div><!-- btnSavePrefs -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- Preferences Modal -->
 
 <!-- OVERLAY -->
 <div id="overlay">
