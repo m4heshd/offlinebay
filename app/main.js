@@ -137,6 +137,49 @@ function setTrackers(trcks) {
     });
 }
 
+// rndPrefs.sysTray = $('#chkTray').prop('checked');
+// rndPrefs.trckURL = $('#txtTrckURL').val();
+// rndPrefs.useDHT = $('#chkDHT').prop('checked');
+// rndPrefs.updURL = $('#txtDumpURL').val();
+// rndPrefs.updType = $('#rdoUpdType input[name="dmpUpdType"]:checked').val();
+// rndPrefs.updInt = parseInt($('#txtUpdInt').val());
+
+// Update preferences from renderer process
+function saveRndPrefs(rndPrefs) {
+    return new Promise((resolve, reject) => {
+        config.update({type: 'gen'}, {
+            $set: {
+                sysTray: rndPrefs.sysTray,
+                useDHT: rndPrefs.useDHT
+            }
+        }, function (err, numReplaced) {
+            if (err || numReplaced < 1) {
+                reject();
+            } else {
+                config.update({type: 'trackers'}, {$set: {url: rndPrefs.trckURL}}, function (err, numReplaced) {
+                    if (err || numReplaced < 1) {
+                        reject();
+                    } else {
+                        config.update({type: 'dump'}, {
+                            $set: {
+                                updURL: rndPrefs.updURL,
+                                updType: rndPrefs.updType,
+                                updInt: rndPrefs.updInt
+                            }
+                        }, function (err, numReplaced) {
+                            if (err || numReplaced < 1) {
+                                reject();
+                            } else {
+                                resolve();
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    });
+}
+
 function popDbErr() {
     if (mainWindow) {
         popErr('DB error occurred. Please re-install OfflineBay');
@@ -191,6 +234,13 @@ ipcMain.on('search-start', function (event, data) {
 ipcMain.on('pref-change', function (event, data) {
     prefs[data[0]] = data[1];
 }); // Handle any preference change event
+ipcMain.on('save-rnd-prefs', function (event, data) {
+    saveRndPrefs(data).then(function () {
+        popSuccess('Settings were saved successfully');
+    }).catch(function () {
+        popErr('Failed to save settings to the DB')
+    });
+}); // Handle saving of preferences from renderer process
 
 /* Scrape */
 ipcMain.on('scrape-start', function (event, data) {
