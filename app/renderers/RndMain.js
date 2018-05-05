@@ -24,6 +24,15 @@ function loadPrefs() {
         autoload: true
     });
 
+    config.findOne({type: 'gen'}, function (err, pref) {
+        if (!err && pref) {
+            prefs.sysTray = pref.sysTray;
+            prefs.useDHT = pref.useDHT;
+        } else {
+            popMsg('Unable to read preferences from config DB', 'danger')();
+        }
+    });
+
     config.findOne({type: 'search'}, function (err, pref) {
         if (!err && pref) {
             $('#txtResCount').val(pref.rs_count.toString());
@@ -55,7 +64,7 @@ function loadPrefs() {
             prefs.updStat = dmp.updStat;
             ipcRenderer.send('pref-change', ['updLast', dmp.updLast]);
 
-            if (prefs.updType === 'auto') {
+            if (prefs.updType === 'auto' || prefs.updType === 'notify') {
                 startAutoDump();
             }
 
@@ -865,6 +874,10 @@ $('#btnCopyAllTrck').on('click', function () {
 
 /* Preferences window
 ------------------------*/
+$('#btnSavePrefs').on('click', function () {
+    savePrefs();
+});
+
 // Set current values to preferences window components
 function setPrefsWindow(){
     $('#chkTray').prop('checked', prefs.sysTray);
@@ -875,6 +888,24 @@ function setPrefsWindow(){
     $('#txtUpdInt').val(prefs.updInt);
     $('#txtLastUpd').text(prefs.updLast);
     $('#btnSavePrefs').prop('disabled',false);
+}
+
+// Save settings to DB from Preferences window
+function savePrefs(){
+    prefs.sysTray = $('#chkTray').prop('checked');
+    prefs.trckURL = $('#txtTrckURL').val();
+    prefs.useDHT = $('#chkDHT').prop('checked');
+    prefs.updURL = $('#txtDumpURL').val();
+    prefs.updType = $('#rdoUpdType input[name="dmpUpdType"]:checked').val();
+    prefs.updInt = parseInt($('#txtUpdInt').val());
+
+    ipcRenderer.send('save-rnd-prefs', prefs);
+
+    if (prefs.updType === 'auto' || prefs.updType === 'notify') {
+        startAutoDump();
+    } else {
+        stopAutoDump();
+    }
 }
 
 // txtUpdInt validation
@@ -1005,7 +1036,7 @@ function startAutoDump() {
             setStatTxt('Checking for updates..');
             ipcRenderer.send('upd-dump', [prefs.updURL, prefs.updType]); // [URL, <type>]
         }
-    }, 8000);
+    }, (prefs.updInt * 60) * 1000);
 }
 
 // Clear dmpTimer interval
