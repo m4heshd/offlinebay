@@ -5,7 +5,7 @@ const path = require('path');
 const Datastore = require('nedb');
 const request = require('request');
 
-const {app, BrowserWindow, ipcMain, dialog} = electron;
+const {app, BrowserWindow, ipcMain, dialog, Menu, Tray} = electron;
 
 app.commandLine.appendSwitch('remote-debugging-port', '9222');
 app.setAppUserModelId("OfflineBay"); // To support Windows notifications
@@ -28,6 +28,7 @@ let finalPrefs = false;
 let awaitingQuit = false;
 let awaitingScrape = false;
 let mainWindow;
+let obTray;
 
 /* Process handles
 --------------------*/
@@ -203,8 +204,8 @@ app.on('will-quit', async function (event) {
 /* IPC Event handling
 ----------------------*/
 /* Window controls */
-ipcMain.on('app-close', function () {
-    app.quit();
+ipcMain.on('app-close', function (event, data) {
+    data ? mainWindow.hide() : app.quit();
 }); // Close button control
 ipcMain.on('app-min', function () {
     mainWindow.minimize();
@@ -269,6 +270,13 @@ ipcMain.on('upd-dump', function (event, data) {
             break;
         case 'user':
             initUpdDump(type, data[0]);
+            break;
+        case 'tray':
+            if (mainWindow.isMinimized() || !mainWindow.isVisible()) {
+                checkDumpUpd('notify', data[0]);
+            } else {
+                checkDumpUpd('check', data[0]);
+            }
             break;
     }
 }); // Handle update dump event
@@ -366,6 +374,48 @@ function startOB() {
     mainWindow.on('resize', function () {
         updatePrefs();
     });
+
+    setSysTray();
+}
+
+// Create system tray icon and functions
+function setSysTray() {
+    let trayICO;
+
+    if (process.platform === 'win32') {
+        trayICO = path.join(__dirname, 'img', 'icon.ico');
+    } else {
+        trayICO = path.join(__dirname, 'img', 'icon_16.png');
+    }
+
+    obTray = new Tray(trayICO);
+    const trayMnu = Menu.buildFromTemplate([
+        {label: 'OfflineBay', icon: path.join(__dirname, 'img', 'icon_16.png'), enabled: false},
+        {type: 'separator'},
+        {label: 'Show', click: showWindow},
+        {label: 'Center on screen', click: centerWindow},
+        {label: 'Check dump updates', click: updCheckRequest},
+        {type: 'separator'},
+        {label: 'Quit', click: app.quit}
+    ]);
+    obTray.setToolTip('OfflineBay');
+    obTray.setContextMenu(trayMnu);
+
+    obTray.on('click', showWindow);
+    obTray.on('double-click', showWindow);
+
+    function centerWindow(){
+        mainWindow.center();
+    }
+
+    function showWindow(){
+        mainWindow.show();
+        mainWindow.focus();
+    }
+
+    function updCheckRequest() {
+        mainWindow.webContents.send('upd-check-tray');
+    }
 }
 
 // Show open dialog and initiate import child process
