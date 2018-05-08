@@ -4,6 +4,7 @@ const url = require('url');
 const path = require('path');
 const Datastore = require('nedb');
 const request = require('request');
+const fs = require('fs');
 
 const {app, BrowserWindow, ipcMain, dialog, Menu, Tray} = electron;
 
@@ -29,6 +30,16 @@ let awaitingQuit = false;
 let awaitingScrape = false;
 let mainWindow;
 let obTray;
+let version = 'N/A';
+
+// Get current version from package.json
+fs.readFile(path.join(__dirname, '..', 'package.json'), 'utf8', function (err, data) {
+    if (err) {
+        console.log(err);
+    } else {
+        version = JSON.parse(data).version;
+    }
+});
 
 /* Process handles
 --------------------*/
@@ -337,6 +348,7 @@ function startOB() {
         if (prefs.maxed) {
             mainWindow.maximize();
         }
+        mainWindow.webContents.send('set-version', version);
         mainWindow.show();
     });
 
@@ -390,7 +402,7 @@ function setSysTray() {
 
     obTray = new Tray(trayICO);
     const trayMnu = Menu.buildFromTemplate([
-        {label: 'OfflineBay', icon: path.join(__dirname, 'img', 'icon_16.png'), enabled: false},
+        {label: 'OfflineBay ' + version, icon: path.join(__dirname, 'img', 'icon_16.png'), enabled: false},
         {type: 'separator'},
         {label: 'Show', click: showWindow},
         {label: 'Center on screen', click: centerWindow},
