@@ -8,6 +8,7 @@ const request = require('request');
 const {app, BrowserWindow, ipcMain, dialog} = electron;
 
 app.commandLine.appendSwitch('remote-debugging-port', '9222');
+app.setAppUserModelId("OfflineBay"); // To support Windows notifications
 
 let prefs = {
     maxed: false,
@@ -211,6 +212,10 @@ ipcMain.on('app-min', function () {
 ipcMain.on('app-max', function () {
     mainWindow.isMaximized() ? mainWindow.restore() : mainWindow.maximize();
 }); // Maximize/Restore button control
+ipcMain.on('show-win', function () {
+    mainWindow.show();
+    mainWindow.focus();
+}); // Show and focus mainWindow
 
 /* Import */
 ipcMain.on('pop-import', function (event) {
@@ -258,6 +263,7 @@ ipcMain.on('upd-dump', function (event, data) {
     switch (type) {
         case 'auto':
         case 'check':
+        case 'notify':
             // console.log(type);
             checkDumpUpd(type, data[0]);
             break;
@@ -556,7 +562,9 @@ function checkDumpUpd(type, dlURL) {
                             mainWindow.webContents.send('hide-ol');
                             mainWindow.webContents.send('hide-stat');
                         }
-                    } else if (type === 'auto'){
+                    } else if (type === 'notify') {
+                        mainWindow.webContents.send('upd-check-notify');
+                    } else if (type === 'auto') {
                         mainWindow.webContents.send('upd-dump-init', type);
                         initUpdDump(type, dlURL);
                     }
