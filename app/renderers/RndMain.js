@@ -145,6 +145,15 @@ ipcRenderer.on('import-success', function (event, data) {
     popMsg('Dump file imported successfully', 'success')();
     $('#txtStat').text('Dump updated @ ' + moment().format('YYYY-MM-DD hh:mm:ss'));
     $('#txtStatRight').css('visibility', 'hidden');
+    setStatTxt('An update is available..');
+    let ntf = new Notification('OfflineBay Dump update', {
+        body: 'A new Dump update was imported',
+        icon: path.join(__dirname, 'img', 'twitter.png')
+    });
+    ntf.onclick = function (evt) {
+        evt.preventDefault();
+        ipcRenderer.send('show-win');
+    }
 });
 // Fired on any import error
 ipcRenderer.on('import-failed', function (event, data) {
@@ -193,6 +202,20 @@ ipcRenderer.on('upd-check-unavail', function (event, data) {
         popMsg('Your dump file is up to date', 'success')();
     } else {
         $('#txtStatRight').css('visibility', 'hidden');
+    }
+});
+// Fired after dump update is checked and only if the update type is 'notify'
+ipcRenderer.on('upd-check-notify', function () {
+    setStatTxt('An update is available..');
+    let ntf = new Notification('OfflineBay Dump update', {
+        body: 'A new Dump update is available. Click to download',
+        icon: path.join(__dirname, 'img', 'twitter.png')
+    });
+    ntf.onclick = function (evt) {
+        evt.preventDefault();
+        ipcRenderer.send('show-win');
+        showOL('Looking up..');
+        ipcRenderer.send('upd-dump', [prefs.updURL, 'user']);
     }
 });
 // Fired on any dump update check error
