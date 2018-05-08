@@ -79,10 +79,10 @@ span, strong {
 /* Title bar */
 .grid-title {
     display: grid;
-    grid-template-columns: 25px 80px auto repeat(3, 48px);
+    grid-template-columns: 80px auto repeat(3, 48px);
     grid-template-rows: 30px;
     grid-template-areas:
-            "appIcon appTitle glue-title btnMin btnMax btnExit";
+            "appTitle glue-title btnMin btnMax btnExit";
     background-color: #2b3942;
     -webkit-app-region: drag;
 }

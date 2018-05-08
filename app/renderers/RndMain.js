@@ -148,7 +148,7 @@ ipcRenderer.on('import-success', function (event, data) {
     setStatTxt('An update is available..');
     let ntf = new Notification('OfflineBay Dump update', {
         body: 'A new Dump update was imported',
-        icon: path.join(__dirname, 'img', 'twitter.png')
+        icon: path.join(__dirname, 'img', 'icon_noshadow_48.png')
     });
     ntf.onclick = function (evt) {
         evt.preventDefault();
@@ -209,7 +209,7 @@ ipcRenderer.on('upd-check-notify', function () {
     setStatTxt('An update is available..');
     let ntf = new Notification('OfflineBay Dump update', {
         body: 'A new Dump update is available. Click to download',
-        icon: path.join(__dirname, 'img', 'twitter.png')
+        icon: path.join(__dirname, 'img', 'icon_noshadow_48.png')
     });
     ntf.onclick = function (evt) {
         evt.preventDefault();
