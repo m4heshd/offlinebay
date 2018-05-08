@@ -106,6 +106,12 @@ $('#btnMaximize').on('click', function () {
 });
 /*-----------------------------*/
 
+/* Initial settings
+--------------------*/
+ipcRenderer.on('set-version', function (event, data) {
+    $('#txtAppVersion').text('Software version : ' + data);
+}); // Set application version on about dialog
+
 /* Menu bar
 -------------*/
 /* Import dump */
