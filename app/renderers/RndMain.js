@@ -94,7 +94,7 @@ ipcRenderer.on('restored', function () {
 
 // Main window Close button event
 $('#btnClose').on('click', function () {
-    ipcRenderer.send('app-close');
+    ipcRenderer.send('app-close', prefs.sysTray);
 });
 // Main window Minimize button event
 $('#btnMinimize').on('click', function () {
@@ -194,6 +194,15 @@ $('#mnuCheckUpdDump').on('click', function () {
     showOL('Checking..');
     setStatTxt('Checking for updates..');
     ipcRenderer.send('upd-dump', [prefs.updURL, 'check']); // [URL, <type>]
+});
+// Fired on system tray update check menu click
+ipcRenderer.on('upd-check-tray', function () {
+    if (prefs.updType !== 'off') {
+        stopAutoDump();
+        startAutoDump();
+    }
+    setStatTxt('Checking for updates..');
+    ipcRenderer.send('upd-dump', [prefs.updURL, 'tray']); // [URL, <type>]
 });
 // Fired after dump update is checked and none available
 ipcRenderer.on('upd-check-unavail', function (event, data) {
