@@ -146,7 +146,7 @@ fieldset[disabled] .checkbox label {
 }
 .checkbox:not(.checkbox--dark) .input-helper:after,
 .checkbox-inline:not(.checkbox--dark) .input-helper:after {
-    color: #1e2a31;
+    color: var(--bodyBack);
 }
 .checkbox:not(.checkbox--dark) .input-helper:before,
 .checkbox-inline:not(.checkbox--dark) .input-helper:before {
@@ -154,14 +154,14 @@ fieldset[disabled] .checkbox label {
 }
 .checkbox:not(.checkbox--dark) input:checked + .input-helper:before,
 .checkbox-inline:not(.checkbox--dark) input:checked + .input-helper:before {
-    background-color: #edeff0;
-    border-color: #edeff0;
+    background-color: var(--compFocusBg);
+    border-color: var(--compFocusBg);
 }
 .checkbox--dark label {
-    color: #4a606d;
+    color: var(--mnuTxt);
 }
 .checkbox--dark .input-helper:after {
-    color: #edeff0;
+    color: var(--compFocusBg);
 }
 .checkbox--dark .input-helper:before {
     border-color: #3b4e5b;
@@ -210,17 +210,17 @@ fieldset[disabled] .checkbox label {
 }
 .radio:not(.radio--dark) input:checked + .input-helper:before,
 .radio-inline:not(.radio--dark) input:checked + .input-helper:before {
-    border-color: #edeff0;
+    border-color: var(--compFocusBg);
 }
 .radio:not(.radio--dark) input:checked + .input-helper:after,
 .radio-inline:not(.radio--dark) input:checked + .input-helper:after {
-    background: #edeff0;
+    background: var(--compFocusBg);
 }
 .radio--dark .input-helper:before {
-    border-color: #22313a;
+    border-color: var(--txtFocustxt);
 }
 .radio--dark .input-helper:after {
-    background: #22313a;
+    background: var(--txtFocustxt);
 }
 .checkbox-inline,
 .radio-inline {
@@ -272,7 +272,7 @@ fieldset[disabled] .checkbox label {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background-color: #3e4b53;
+    background-color: var(--chkHelper);
     opacity: 0;
     filter: alpha(opacity=0);
     -webkit-transition: all;
@@ -285,13 +285,13 @@ fieldset[disabled] .checkbox label {
     content: '\f279';
     z-index: 1;
     line-height: 37px;
-    color: #b4bfc3;
+    color: var(--txtclr);
 }
 .checkbox__helper:after {
     content: '\f26b';
     z-index: 2;
     line-height: 36px;
-    color: #edeff0;
+    color: var(--compFocusBg);
 }
 .checkbox__helper > i {
     position: absolute;
@@ -305,8 +305,8 @@ fieldset[disabled] .checkbox label {
     line-height: 36px;
     font-size: 19px;
     font-weight: 500;
-    color: #b4bfc3;
-    background-color: #3e4b53;
+    color: var(--txtclr);
+    background-color: var(--chkHelper);
 }
 /* Dropdown */
 .dropdown-menu {
@@ -318,7 +318,7 @@ fieldset[disabled] .checkbox label {
     list-style: none;
     font-size: 13px;
     text-align: left;
-    background-color: #edeff0;
+    background-color: var(--compFocusBg);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     background-clip: padding-box;
     -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
@@ -332,7 +332,7 @@ fieldset[disabled] .checkbox label {
 .dropdown-menu > li > a {
     display: block;
     font-weight: 400;
-    color: #4a606d;
+    color: var(--mnuTxt);
     padding: 10px 20px;
     text-decoration: none;
     clear: both;
@@ -344,7 +344,7 @@ fieldset[disabled] .checkbox label {
 }
 .dropdown-menu>li>a:focus, .dropdown-menu>li>a:hover {
     text-decoration: none;
-    color: #4a606d;
+    color: var(--mnuTxt);
     background-color: rgba(0,0,0,.04);
 }
 .dropup .dropdown-menu {
@@ -364,7 +364,7 @@ fieldset[disabled] .checkbox label {
 .table > thead > tr.active > th,
 .table > tbody > tr.active > th,
 .table > tfoot > tr.active > th {
-    background-color: #22313a;
+    background-color: var(--txtFocustxt);
 }
 .table-hover > tbody > tr > td.active:hover,
 .table-hover > tbody > tr > th.active:hover,
@@ -386,8 +386,8 @@ fieldset[disabled] .checkbox label {
 }
 .table > thead > tr > th {
     border-bottom-width: 1px;
-    border-bottom-color: #b4bfc3;
-    color: #b4bfc3;
+    border-bottom-color: var(--txtclr);
+    color: var(--txtclr);
     font-weight: 500;
 }
 .table--vmiddle th,
@@ -420,7 +420,7 @@ fieldset[disabled] .checkbox label {
     color: rgba(177, 188, 192, 0.47);
 }
 .select2-container--default .select2-selection--single .select2-selection__clear:hover {
-    color: #b4bfc3;
+    color: var(--txtclr);
 }
 .select2-container--default .select2-selection--single .select2-selection__placeholder {
     color: rgba(177, 188, 192, 0.47);
@@ -454,13 +454,13 @@ fieldset[disabled] .checkbox label {
 }
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
     background-color: rgba(0, 0, 0, 0.04);
-    color: #4a606d;
+    color: var(--mnuTxt);
 }
 .select2-container--default .select2-results__option[aria-selected=true] {
     position: relative;
     padding-right: 35px;
     background-color: rgba(0, 0, 0, 0.07);
-    color: #1e2a31;
+    color: var(--bodyBack);
     font-weight: 500;
 }
 .select2-container--default .select2-results__option[aria-selected=true]:before {
@@ -470,7 +470,7 @@ fieldset[disabled] .checkbox label {
     top: 7px;
     right: 13px;
     font-size: 18px;
-    color: #1e2a31;
+    color: var(--bodyBack);
 }
 .select2-container--default.select2-container--focus .select2-selection--multiple {
     border: 0;
@@ -487,14 +487,14 @@ fieldset[disabled] .checkbox label {
     border: 0;
     background-color: rgba(255, 255, 255, 0.09);
     padding: 5px 10px;
-    color: #b4bfc3;
+    color: var(--txtclr);
 }
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
     margin-right: 8px;
-    color: #b4bfc3;
+    color: var(--txtclr);
 }
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
-    color: #edeff0;
+    color: var(--compFocusBg);
 }
 .select2-container--default .select2-selection--multiple .select2-selection__rendered {
     padding: 0;
@@ -503,7 +503,7 @@ fieldset[disabled] .checkbox label {
     background-color: transparent;
 }
 .select2-dropdown {
-    background-color: #edeff0;
+    background-color: var(--compFocusBg);
     border: 0;
     border-radius: 2px;
     padding: 10px 0;
@@ -547,7 +547,7 @@ fieldset[disabled] .checkbox label {
     padding-left: 0;
     padding-right: 0;
     line-height: 1.42857143;
-    color: #b4bfc3;
+    color: var(--txtclr);
 }
 .select2-container .select2-search--inline .select2-search__field {
     margin-top: 10px;
@@ -583,7 +583,7 @@ fieldset[disabled] .checkbox label {
     border-radius: 0;
     box-shadow: none;
     border: 0;
-    background: #22313a;
+    background: var(--txtFocustxt);
 }
 .noUi-horizontal {
     height: 2px;
@@ -596,7 +596,7 @@ fieldset[disabled] .checkbox label {
     width: 3px;
 }
 .noUi-connect {
-    background: #b4bfc3;
+    background: var(--txtclr);
     box-shadow: none;
 }
 .noUi-horizontal .noUi-handle,
@@ -613,7 +613,7 @@ fieldset[disabled] .checkbox label {
     transition-duration: 200ms;
     cursor: pointer;
     position: relative;
-    background-color: #edeff0;
+    background-color: var(--compFocusBg);
 }
 .noUi-horizontal .noUi-handle:before,
 .noUi-vertical .noUi-handle:before,

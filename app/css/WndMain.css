@@ -1,9 +1,5 @@
 /* Global
 --------------*/
-:root{
-    --txtclr : #b4bfc3;
-    --bodyBack : #1e2a31;
-}
 body {
     display: grid;
     grid-template-rows: 30px 30px minmax(0px, auto) 40px;
@@ -12,7 +8,7 @@ body {
     font-size: 13px;
     line-height: 1.42857143;
     color: var(--txtclr);
-    background-color: #1e2a31;
+    background-color: var(--bodyBack);
     -webkit-user-select: none;
 }
 /* Table */
@@ -21,10 +17,10 @@ table {
     /*transform: rotateX(0deg);*/
 }
 thead > tr > th:hover {
-    background: rgba(255, 255, 255, 0.01);
+    background: var(--thHover);
 }
 thead {
-    background: #2b3942;
+    background: var(--compclr);
 }
 th[data-role=columnheader] {
     cursor: pointer;
@@ -83,7 +79,7 @@ span, strong {
     grid-template-rows: 30px;
     grid-template-areas:
             "appTitle glue-title btnMin btnMax btnExit";
-    background-color: #2b3942;
+    background-color: var(--compclr);
     -webkit-app-region: drag;
 }
 .app-icon {
@@ -97,7 +93,7 @@ span, strong {
     border: 0;
     height: 100%;
     width: 100%;
-    background-color: #2b3942;
+    background-color: var(--compclr);
     color: var(--txtclr);
     -webkit-app-region: no-drag;
 }
@@ -116,7 +112,7 @@ span, strong {
     grid-template-columns: 60px 70px 60px;
     padding-top: 3px;
     padding-left: 10px;
-    background: linear-gradient(to top, rgba(255,0,0,0), rgb(43, 57, 66));
+    background: linear-gradient(to top, var(--mnuGrade1), var(--mnuGrade2));
     /*-webkit-app-region: drag;*/
 }
 .mnu-itm {
@@ -124,7 +120,7 @@ span, strong {
     height: 30px;
     width: 100%;
     border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0);
+    background-color: var(--mnuBg);
     color: var(--txtclr);
     -webkit-app-region: no-drag;
 }
@@ -133,10 +129,10 @@ span, strong {
     box-shadow: none;
 }
 .mnu-itm:active {
-    background: #1e2a31;
+    background: var(--bodyBack);
 }
 .mnu-itm[aria-expanded="true"] {
-    background: linear-gradient(to bottom, rgba(255,0,0,0), rgb(43, 57, 66));
+    background: linear-gradient(to bottom, var(--mnuGrade1), var(--mnuGrade2));
 }
 .mnu-ico {
     font-size: 18px;
@@ -188,7 +184,7 @@ span, strong {
     overflow-y: auto;
     margin-top: 20px;
     border-radius: 4px;
-    background: #2b3942;
+    background: var(--compclr);
 }
 .btnOpenMag {
     grid-area: btnOpenMag;
@@ -222,7 +218,7 @@ span, strong {
 .grid-stat-bar {
     display: grid;
     grid-template-columns: auto auto;
-    border-top: 1px solid #2b3942;
+    border-top: 1px solid var(--compclr);
     margin: 0 12px;
 }
 #txtStat {
@@ -283,7 +279,7 @@ span, strong {
     grid-area: tbl;
     overflow-y: auto;
     border-radius: 4px;
-    background: #2b3942;
+    background: var(--compclr);
 }
 .btnCopyTrck {
     grid-area: btnCopyTrck;
@@ -345,7 +341,7 @@ span, strong {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0,0,0,0.6);
+    background-color: var(--overlay);
     z-index: 1002;
     cursor: wait;
     transition: all .2s ease;
@@ -364,7 +360,7 @@ span, strong {
     width: 100%;
     padding: 10px;
     border-radius: 4px;
-    background-color: #2b3942;
+    background-color: var(--compclr);
     font-size: 15px;
     color: var(--txtclr);
 }
@@ -372,6 +368,28 @@ span, strong {
     font-size: 20px;
     vertical-align: middle;
     padding-right: 5px;
+}
+.btn-themed:hover {
+    color: var(--btnTxtHover);
+    background-color: var(--btnBgHover);
+    border-color: var(--btnBorderHover);
+}
+.btn-themed:focus, .btn-themed.focus {
+    box-shadow: 0 0 0 0.2rem var(--btnFocusGlow);
+}
+.btn-themed.disabled, .btn-themed:disabled {
+    color: var(--txtclr);
+    background-color: var(--btnBgDisable);
+    border-color: var(--btnBorderDisable);
+}
+.btn-themed:not(:disabled):not(.disabled):active, .btn-themed:not(:disabled):not(.disabled).active,
+.show > .btn-themed.dropdown-toggle {
+    color: var(--btnTxtHover);
+    background-color: var(--btnBorderHover);
+}
+.btn-themed:not(:disabled):not(.disabled):active:focus, .btn-themed:not(:disabled):not(.disabled).active:focus,
+.show > .btn-themed.dropdown-toggle:focus {
+    box-shadow: 0 0 0 0.2rem var(--btnFocusGlow);
 }
 
 /*Text box*/
@@ -381,19 +399,19 @@ span, strong {
     padding: 10px 10px 10px 10px;
     border-radius: 4px;
     width: 100%;
-    background-color: #2b3942;
+    background-color: var(--compclr);
     font-size: 15px;
     color: var(--txtclr);
 }
 .txtbox:focus {
-    background: #edeff0;
-    color: #22313a;
+    background: var(--compFocusBg);
+    color: var(--txtFocustxt);
 }
 .txtbox::-webkit-input-placeholder {
-    color: #b4bfc3
+    color: var(--txtclr)
 }
 .txtbox:focus::-webkit-input-placeholder {
-    color: #22313a
+    color: var(--txtFocustxt)
 }
 .txtboxsm {
     height: 32px;
@@ -437,13 +455,13 @@ span, strong {
 }
 .modal-content {
     background: var(--bodyBack);
-    box-shadow: 0 3px 15px rgba(0,0,0,.5);
+    box-shadow: 0 3px 15px var(--modalGlow);
 }
 .modal-titlebar {
     display: grid;
     grid-template-columns: auto 30px;
     grid-template-rows: 30px;
-    border-bottom: #2b3942 1px solid;
+    border-bottom: var(--compclr) 1px solid;
     min-height: 35px;
     cursor: -webkit-grab;
     -webkit-app-region: no-drag;
@@ -480,8 +498,8 @@ span, strong {
 *::-webkit-scrollbar {
     width: 10px !important;
     height: 10px !important;
-    background: #24303a !important;
-    border: 1px solid #252525 !important;
+    background: var(--scrollBg) !important;
+    border: 1px solid var(--scrollBorder) !important;
 }
 *::-webkit-scrollbar-button {
     display: none !important;
@@ -493,19 +511,19 @@ span, strong {
 }
 *::-webkit-scrollbar-thumb {
     min-height: 28px !important;
-    background: #35464c !important;
+    background: var(--scrollThumb) !important;
 }
 *::-webkit-scrollbar-corner,
 *::-webkit-scrollbar-track {
-    background: #24303a !important;
+    background: var(--scrollBg) !important;
 }
 /* Tooltip */
 .tooltiptext {
     visibility: hidden;
     position: absolute;
     width: 120px;
-    background-color: #edeff0;
-    color: #4a606d;
+    background-color: var(--compFocusBg);
+    color: var(--mnuTxt);
     text-align: center;
     padding: 5px 0;
     border-radius: 6px;
@@ -523,7 +541,7 @@ span, strong {
     left: 50%;
     margin-left: -5px;
     border: 5px solid transparent;
-    border-top-color: #edeff0;
+    border-top-color: var(--compFocusBg);
 }
 .show-tooltip:hover .tooltiptext {
     visibility: visible;
@@ -562,21 +580,21 @@ thead > tr > th:hover,
     padding: 10px 20px 10px 50px;
     border-radius: 4px;
     width: 100%;
-    background-color: #2b3942;
+    background-color: var(--compclr);
     font-size: 15px;
-    color: #22313a
+    color: var(--txtFocustxt)
 }
 
 .top-search__input::-webkit-input-placeholder {
-    color: #b4bfc3
+    color: var(--txtclr)
 }
 
 .top-search--focused .top-search__input {
-    background-color: #edeff0
+    background-color: var(--compFocusBg)
 }
 
 .top-search--focused .top-search__input + .top-search__reset {
-    color: #edeff0
+    color: var(--compFocusBg)
 }
 
 .top-search--focused .top-search__input + .top-search__reset:before {
@@ -594,14 +612,14 @@ thead > tr > th:hover,
 }
 
 .top-search--focused .top-search__input::-webkit-input-placeholder {
-    color: #354c5a
+    color: var(--txtFocusPH)
 }
 
 
 .top-search__reset {
     left: 0;
     font-size: 20px;
-    color: #b4bfc3;
+    color: var(--txtclr);
     top: 0;
     position: absolute;
     cursor: pointer;
@@ -626,7 +644,7 @@ thead > tr > th:hover,
     -ms-transform: scale(0) rotate(-180deg);
     -o-transform: scale(0) rotate(-180deg);
     transform: scale(0) rotate(-180deg);
-    color: #22313a
+    color: var(--txtFocustxt)
 }
 
 /* Seeds

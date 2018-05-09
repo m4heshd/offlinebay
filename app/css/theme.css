@@ -1,0 +1,27 @@
+/* Theme color variables
+-------------------------*/
+:root{
+    --txtclr : #b4bfc3;
+    --bodyBack : #1e2a31;
+    --compclr : #2b3942;
+    --compFocusBg : #edeff0;
+    --txtFocustxt : #22313a;
+    --txtFocusPH : #354c5a;
+    --btnTxtHover : #fff;
+    --btnBgHover : #138496;
+    --btnFocusGlow : rgba(23, 162, 184, 0.5);
+    --btnBorderHover : #117a8b;
+    --btnBgDisable : #4e4e4e;
+    --btnBorderDisable : #17a2b8;
+    --chkHelper : #3e4b53;
+    --scrollBg : #24303a;
+    --scrollBorder : #252525;
+    --scrollThumb : #35464c;
+    --thHover: rgba(255, 255, 255, 0.01);
+    --mnuBg: rgba(0, 0, 0, 0);
+    --mnuTxt: #4a606d;
+    --mnuGrade1: rgba(255,0,0,0);
+    --mnuGrade2: rgb(43, 57, 66);
+    --modalGlow: rgba(0,0,0,.5);
+    --overlay: rgba(0,0,0,0.6);
+}
