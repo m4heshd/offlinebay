@@ -1,6 +1,7 @@
 const electron = require('electron');
 const {ipcRenderer, clipboard, shell} = electron;
 const path = require('path');
+const fs = require('fs');
 const Datastore = require('nedb');
 
 let prefs = {
@@ -368,6 +369,11 @@ $('#mnuAllTrcks').on('click', function () {
 /* Preferences Window */
 $('#mnuPrefs').on('click', function () {
     setPrefsWindow();
+});
+
+/* Themes Window */
+$('#mnuThemes').on('click', function () {
+    loadThemes();
 });
 
 /* Torrent Search
@@ -1080,4 +1086,73 @@ function startAutoDump() {
 // Clear dmpTimer interval
 function stopAutoDump(){
     clearInterval(dmpTimer);
+}
+
+/* Themes
+----------*/
+function loadThemes() {
+    let themeDB = new Datastore({
+        filename: path.join(__dirname, 'data', 'themes.db'),
+        autoload: true
+    });
+
+    themeDB.find({}, function (err, themes) {
+        if (!err && themes) {
+            console.log(themes);
+            if (themes.length > 0) {
+                showThemesWin(themes);
+            }
+        } else {
+            popMsg('Unable to load themes from DB', 'danger')();
+        }
+    });
+}
+
+function showThemesWin(themes) {
+    let tile = '';
+    let styles = '';
+
+    for (let c = 0; c < themes.length; c++) {
+        let name = themes[c].name;
+        let palette = themes[c].palette;
+
+        styles += `.thm-${name}-bg {
+                        background: ${palette.bodyBack};
+                   }
+                   .thm-${name}-title {
+                        color: ${palette.txtclr};
+                   }
+                   .thm-${name}-btn {
+                       background: ${palette.compclr};
+                       color: ${palette.txtclr};
+                       box-shadow: 0 0 14px 1px ${palette.btnFocusGlow};
+                   }
+                   .thm-${name}-btn:hover {
+                       background: ${palette.btnBgHover};
+                       color: ${palette.btnTxtHover};
+                   }
+                   .thm-${name}-btn:not(:disabled):not(.disabled):active {
+                       background: ${palette.btnBorderHover};
+                       color: ${palette.btnTxtHover};
+                   }
+                   .thm-${name}-btn:focus, .thm-${name}-btn:not(:disabled):not(.disabled):active:focus {
+                       box-shadow: 0 0 0 0.2rem ${palette.btnFocusGlow};
+                   }`;
+
+        tile += `<div class="theme-prev-bg item-v-center thm-${name}-bg">
+                            <div class="theme-prev-content">
+                                <span class="thm-${name}-title">${themes[c].title}</span>
+                                <button class="btn-ui btn-themed btn-theme-apply thm-${name}-btn" type="button">
+                                    <i class="zmdi zmdi-palette btn-ico"></i>
+                                    Apply
+                                </button>
+                                <button class="btn-ui btn-themed btn-theme-del thm-${name}-btn" type="button">
+                                    <i class="zmdi zmdi-delete btn-ico"></i>
+                                </button>
+                            </div>
+                        </div> <!-- A theme tile -->`
+    }
+
+    $("#themeStyles").empty().text(styles);
+    $('#pnlThemeTiles').empty().append(tile);
 }

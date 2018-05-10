@@ -347,8 +347,6 @@ span, strong {
 }
 .theme-prev-bg {
     background: #2f6931;
-    /*display: grid;*/
-    /*grid-template-columns: auto;*/
     height: 130px;
     width: 200px;
     margin: 0 auto;
@@ -369,6 +367,7 @@ span, strong {
 .btn-theme-del {
     width: 30px !important;
     height: 30px !important;
+    box-shadow: none !important;
 }
 .btn-theme-del > i {
     padding: 0 !important;
