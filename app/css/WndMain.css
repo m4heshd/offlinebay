@@ -7,8 +7,8 @@ body {
     /*font-family: Roboto,sans-serif;*/
     font-size: 13px;
     line-height: 1.42857143;
-    color: var(--txtclr);
-    background-color: var(--bodyBack);
+    color: var(--bodyTxt);
+    background-color: var(--bodyBg);
     -webkit-user-select: none;
 }
 /* Table */
@@ -17,7 +17,7 @@ table {
     /*transform: rotateX(0deg);*/
 }
 thead > tr > th:hover {
-    background: var(--thHover);
+    background: var(--tblHeadHover);
 }
 thead {
     background: var(--compclr);
@@ -94,7 +94,7 @@ span, strong {
     height: 100%;
     width: 100%;
     background-color: var(--compclr);
-    color: var(--txtclr);
+    color: var(--bodyTxt);
     -webkit-app-region: no-drag;
 }
 .btn-ctl i {
@@ -120,8 +120,8 @@ span, strong {
     height: 30px;
     width: 100%;
     border-radius: 3px;
-    background-color: var(--mnuBg);
-    color: var(--txtclr);
+    background-color: var(--mnuBtnBg);
+    color: var(--bodyTxt);
     -webkit-app-region: no-drag;
 }
 .mnu-itm:focus, .mnu-itm:active {
@@ -129,7 +129,7 @@ span, strong {
     box-shadow: none;
 }
 .mnu-itm:active {
-    background: var(--bodyBack);
+    background: var(--bodyBg);
 }
 .mnu-itm[aria-expanded="true"] {
     background: linear-gradient(to bottom, var(--mnuGrade1), var(--mnuGrade2));
@@ -351,7 +351,7 @@ span, strong {
     width: 200px;
     margin: 0 auto;
     border-radius: 7px;
-    border: solid 1px var(--txtclr);
+    border: solid 1px var(--bodyTxt);
     text-align: center;
     justify-content: center;
 }
@@ -415,7 +415,7 @@ span, strong {
     border-radius: 4px;
     background-color: var(--compclr);
     font-size: 15px;
-    color: var(--txtclr);
+    color: var(--btnTxtClr);
 }
 .btn-ico {
     font-size: 20px;
@@ -425,20 +425,20 @@ span, strong {
 .btn-themed:hover {
     color: var(--btnTxtHover);
     background-color: var(--btnBgHover);
-    border-color: var(--btnBorderHover);
+    border-color: var(--btnActive);
 }
 .btn-themed:focus, .btn-themed.focus {
     box-shadow: 0 0 0 0.2rem var(--btnFocusGlow);
 }
 .btn-themed.disabled, .btn-themed:disabled {
-    color: var(--txtclr);
+    color: var(--bodyTxt);
     background-color: var(--btnBgDisable);
     border-color: var(--btnBorderDisable);
 }
 .btn-themed:not(:disabled):not(.disabled):active, .btn-themed:not(:disabled):not(.disabled).active,
 .show > .btn-themed.dropdown-toggle {
     color: var(--btnTxtHover);
-    background-color: var(--btnBorderHover);
+    background-color: var(--btnActive);
 }
 .btn-themed:not(:disabled):not(.disabled):active:focus, .btn-themed:not(:disabled):not(.disabled).active:focus,
 .show > .btn-themed.dropdown-toggle:focus {
@@ -454,17 +454,17 @@ span, strong {
     width: 100%;
     background-color: var(--compclr);
     font-size: 15px;
-    color: var(--txtclr);
+    color: var(--bodyTxt);
 }
 .txtbox:focus {
-    background: var(--compFocusBg);
+    background: var(--txtFocusBg);
     color: var(--txtFocustxt);
 }
 .txtbox::-webkit-input-placeholder {
-    color: var(--txtclr)
+    color: var(--bodyTxt)
 }
 .txtbox:focus::-webkit-input-placeholder {
-    color: var(--txtFocustxt)
+    color: var(--txtFocusPH)
 }
 .txtboxsm {
     height: 32px;
@@ -507,7 +507,7 @@ span, strong {
     grid-template-rows: 30px minmax(0px, auto);
 }
 .modal-content {
-    background: var(--bodyBack);
+    background: var(--bodyBg);
     box-shadow: 0 3px 15px var(--modalGlow);
 }
 .modal-titlebar {
@@ -575,7 +575,7 @@ span, strong {
     visibility: hidden;
     position: absolute;
     width: 120px;
-    background-color: var(--compFocusBg);
+    background-color: var(--txtFocusBg);
     color: var(--mnuTxt);
     text-align: center;
     padding: 5px 0;
@@ -594,7 +594,7 @@ span, strong {
     left: 50%;
     margin-left: -5px;
     border: 5px solid transparent;
-    border-top-color: var(--compFocusBg);
+    border-top-color: var(--txtFocusBg);
 }
 .show-tooltip:hover .tooltiptext {
     visibility: visible;
@@ -639,15 +639,15 @@ thead > tr > th:hover,
 }
 
 .top-search__input::-webkit-input-placeholder {
-    color: var(--txtclr)
+    color: var(--bodyTxt)
 }
 
 .top-search--focused .top-search__input {
-    background-color: var(--compFocusBg)
+    background-color: var(--txtFocusBg)
 }
 
 .top-search--focused .top-search__input + .top-search__reset {
-    color: var(--compFocusBg)
+    color: var(--txtFocusBg)
 }
 
 .top-search--focused .top-search__input + .top-search__reset:before {
@@ -672,7 +672,7 @@ thead > tr > th:hover,
 .top-search__reset {
     left: 0;
     font-size: 20px;
-    color: var(--txtclr);
+    color: var(--bodyTxt);
     top: 0;
     position: absolute;
     cursor: pointer;
