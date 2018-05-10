@@ -1117,14 +1117,14 @@ function showThemesWin(themes) {
         let palette = themes[c].palette;
 
         styles += `.thm-${name}-bg {
-                        background: ${palette.bodyBack};
+                        background: ${palette.bodyBg};
                    }
                    .thm-${name}-title {
-                        color: ${palette.txtclr};
+                        color: ${palette.bodyTxt};
                    }
                    .thm-${name}-btn {
                        background: ${palette.compclr};
-                       color: ${palette.txtclr};
+                       color: ${palette.btnTxtClr};
                        box-shadow: 0 0 14px 1px ${palette.btnFocusGlow};
                    }
                    .thm-${name}-btn:hover {
@@ -1132,7 +1132,7 @@ function showThemesWin(themes) {
                        color: ${palette.btnTxtHover};
                    }
                    .thm-${name}-btn:not(:disabled):not(.disabled):active {
-                       background: ${palette.btnBorderHover};
+                       background: ${palette.btnActive};
                        color: ${palette.btnTxtHover};
                    }
                    .thm-${name}-btn:focus, .thm-${name}-btn:not(:disabled):not(.disabled):active:focus {

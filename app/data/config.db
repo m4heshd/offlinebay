@@ -3,6 +3,6 @@
 {"type":"search","rs_count":2,"smart":true,"inst":false,"_id":"2"}
 {"type":"dump","updURL":"http://127.0.0.1/tpb/torrent_dump_full.csv.gz","updLast":"2017-01-07T11:44:34.000Z","updType":"off","updInt":20,"updStat":["complete","",""],"_id":"3"}
 {"type":"gen","sysTray":false,"useDHT":true,"_id":"4"}
-{"type":"win-state","maxed":false,"position":[247,127],"size":[1344,839],"_id":"0"}
-{"type":"win-state","maxed":false,"position":[247,127],"size":[1344,839],"_id":"0"}
+{"type":"win-state","maxed":false,"position":[238,96],"size":[1344,839],"_id":"0"}
+{"type":"win-state","maxed":false,"position":[238,96],"size":[1344,839],"_id":"0"}
 {"type":"search","rs_count":2,"smart":true,"inst":false,"_id":"2"}
