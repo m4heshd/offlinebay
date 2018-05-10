@@ -81,6 +81,12 @@
                     <span class="mnu-txt">Preferences</span>
                 </a>
             </li>
+            <li>
+                <a id="mnuThemes" href="#" data-toggle="modal" data-target="#mdlThemes">
+                    <i class="zmdi zmdi-palette mnu-ico"></i>
+                    <span class="mnu-txt">Themes</span>
+                </a>
+            </li>
         </ul>
     </div> <!-- Settings menu -->
     <div class="dropdown">
@@ -444,6 +450,59 @@
         </div>
     </div>
 </div> <!-- Preferences Modal -->
+
+<div class="modal fade" id="mdlThemes" role="dialog">
+    <div class="modal-dialog mdl-drag">
+        <!-- Modal content-->
+        <div class="modal-content mdl-themes">
+            <div class="modal-body modal-window">
+                <div class="modal-titlebar">
+                    <div class="modal-titlebar-txt">
+                        <i class="zmdi zmdi-palette mdl-ico"></i>
+                        <span>Themes</span>
+                    </div>
+                    <div>
+                        <button tabindex="-1" class="btn-ctl mdl-ctl btn-danger" type="button" data-dismiss="modal">
+                            <i class="zmdi zmdi-close"></i>
+                        </button> <!-- Close button -->
+                    </div>
+                </div>
+                <div class="themes-modal-content">
+                    <div class="themes-tiles">
+                        <div class="theme-prev-bg item-v-center">
+                            <div class="theme-prev-content">
+                                <span>Theme name</span>
+                                <button class="btn-ui btn-themed btn-theme-apply" type="button">
+                                    <i class="zmdi zmdi-palette btn-ico"></i>
+                                    Apply
+                                </button>
+                                <button class="btn-ui btn-themed btn-theme-del" type="button">
+                                    <i class="zmdi zmdi-delete btn-ico"></i>
+                                </button>
+                            </div>
+                        </div> <!-- A theme tile -->
+                    </div>
+                    <div class="themes-btns">
+                        <div></div>
+                        <div>
+                            <button id="btnImportTheme" class="btn-ui btn-themed" type="button">
+                                <i class="zmdi zmdi-plus-circle btn-ico"></i>
+                                Import
+                            </button>
+                        </div><!-- btnImportTheme -->
+                        <div>
+                            <button id="btnThemesOK" class="btn-ui btn-themed" type="button"
+                                    data-dismiss="modal">
+                                <i class="zmdi zmdi-check-circle btn-ico"></i>
+                                Ok
+                            </button>
+                        </div><!-- btnThemesOK -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- Trackers Modal -->
 
 <!-- OVERLAY -->
 <div id="overlay">

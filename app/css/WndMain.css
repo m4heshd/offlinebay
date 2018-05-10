@@ -327,6 +327,60 @@ span, strong {
     grid-column-gap: 10px;
 }
 
+/* Themes Modal */
+.mdl-themes {
+    height: 500px;
+}
+.themes-modal-content {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto 55px;
+    grid-row-gap: 20px;
+    padding: 20px 10px 10px;
+}
+.themes-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 20px;
+    padding: 20px 10px 10px;
+    overflow-y: auto;
+}
+.theme-prev-bg {
+    background: #2f6931;
+    /*display: grid;*/
+    /*grid-template-columns: auto;*/
+    height: 130px;
+    width: 200px;
+    margin: 0 auto;
+    border-radius: 7px;
+    border: solid 1px var(--txtclr);
+    text-align: center;
+    justify-content: center;
+}
+.theme-prev-content {
+    text-align: center;
+}
+.btn-theme-apply {
+    margin: 15px 0;
+    width: 120px !important;
+    display: block !important;
+    box-shadow: 0 0 14px 1px var(--btnFocusGlow);
+}
+.btn-theme-del {
+    width: 30px !important;
+    height: 30px !important;
+}
+.btn-theme-del > i {
+    padding: 0 !important;
+    margin-top: -13px !important;
+    font-size: 16px;
+}
+.themes-btns {
+    display: grid;
+    grid-template-columns: auto 120px 120px;
+    grid-column-gap: 10px;
+}
+
 /* Overlay */
 #overlay {
     display: grid;
