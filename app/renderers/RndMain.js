@@ -1198,6 +1198,7 @@ function applyTheme(thmName) {
                            --btnBgHover : ${palette.btnBgHover};
                            --btnFocusGlow : ${palette.btnFocusGlow};
                            --btnActive : ${palette.btnActive};
+                           --btnTxtDisable : ${palette.btnTxtDisable};
                            --btnBgDisable : ${palette.btnBgDisable};
                            --btnBorderDisable : ${palette.btnBorderDisable};
                            --chkChecked : ${palette.chkChecked};
@@ -1219,9 +1220,8 @@ function applyTheme(thmName) {
                            --mnuGlow: ${palette.mnuGlow};
                            --modalGlow: ${palette.modalGlow};
                            --overlay: ${palette.overlay};
+                           --olTxt: ${palette.olTxt};
                        }`;
-
-            let fs = require('fs');
 
             fs.writeFile(path.join(__dirname, 'css', 'theme.css'), css, function (err) {
                 if (!err) {
