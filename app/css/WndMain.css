@@ -404,6 +404,7 @@ span, strong {
 }
 
 #olText{
+    color: var(--olTxt);
     font-size: 40px;
 }
 
@@ -434,7 +435,7 @@ span, strong {
     box-shadow: 0 0 0 0.2rem var(--btnFocusGlow);
 }
 .btn-themed.disabled, .btn-themed:disabled {
-    color: var(--bodyTxt);
+    color: var(--btnTxtDisable);
     background-color: var(--btnBgDisable);
     border-color: var(--btnBorderDisable);
 }

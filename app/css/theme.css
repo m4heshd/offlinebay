@@ -12,6 +12,7 @@
                            --btnBgHover : #138496;
                            --btnFocusGlow : rgba(23, 162, 184, 0.5);
                            --btnActive : #117a8b;
+                           --btnTxtDisable : #b4bfc3;
                            --btnBgDisable : #4e4e4e;
                            --btnBorderDisable : #17a2b8;
                            --chkChecked : #edeff0;
@@ -33,4 +34,5 @@
                            --mnuGlow: rgba(0,0,0,.175);
                            --modalGlow: rgba(0,0,0,.5);
                            --overlay: rgba(0,0,0,0.6);
+                           --olTxt: #b4bfc3;
                        }
