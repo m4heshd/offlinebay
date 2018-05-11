@@ -13,7 +13,8 @@ let prefs = {
     updLast: '2017-01-07T11:44:34.000Z',
     updType: 'off',
     updInt: 20,
-    updStat: ['complete', '', '']
+    updStat: ['complete', '', ''],
+    theme: 'default'
 };
 
 /* DB functions
@@ -22,6 +23,10 @@ let prefs = {
 function loadPrefs() {
     let config = new Datastore({
         filename: path.join(__dirname, 'data', 'config.db'),
+        autoload: true
+    });
+    let themeDB = new Datastore({
+        filename: path.join(__dirname, 'data', 'themes', 'themes.db'),
         autoload: true
     });
 
@@ -71,6 +76,15 @@ function loadPrefs() {
 
         } else {
             popMsg('Unable to read preferences from config DB', 'danger')();
+        }
+    });
+
+    themeDB.findOne({applied: true}, function (err, theme) {
+        if (!err && theme) {
+            prefs.theme = theme.name;
+            setTitleImg(prefs.theme);
+        } else {
+            popMsg('Unable to load current theme from DB', 'danger')();
         }
     });
 }
@@ -1096,7 +1110,7 @@ $(".themes-tiles").on('click', '.btn-theme-apply', function () {
 
 function loadThemes() {
     let themeDB = new Datastore({
-        filename: path.join(__dirname, 'data', 'themes.db'),
+        filename: path.join(__dirname, 'data', 'themes', 'themes.db'),
         autoload: true
     });
 
@@ -1176,7 +1190,7 @@ function showThemesWin(themes) {
 
 function applyTheme(thmName) {
     let themeDB = new Datastore({
-        filename: path.join(__dirname, 'data', 'themes.db'),
+        filename: path.join(__dirname, 'data', 'themes', 'themes.db'),
         autoload: true
     });
 
@@ -1226,6 +1240,7 @@ function applyTheme(thmName) {
             fs.writeFile(path.join(__dirname, 'css', 'theme.css'), css, function (err) {
                 if (!err) {
                     $('#themeCSS').attr('href', 'css/theme.css');
+                    setTitleImg(thmName);
                     themeDB.update({applied: true}, { $set: { applied: false } }, function (err, numReplaced) {
                         if (err || numReplaced < 1) {
                             popMsg('Unable to update theme on DB', 'danger')();
@@ -1249,4 +1264,20 @@ function applyTheme(thmName) {
             popMsg('Unable to load the theme from DB', 'danger')();
         }
     });
+}
+
+function setTitleImg(thmName) {
+    let imgPath = path.join(__dirname, 'data', 'themes', 'assets', thmName, 'titlebar.png');
+    let defPath = path.join(__dirname, 'img', 'ob_text_logo_titlebar.png');
+    let comp = $('#imgTitleBar');
+    try {
+        if (fs.existsSync(imgPath)) {
+            comp.attr('src', imgPath);
+        } else {
+            comp.attr('src', defPath);
+        }
+    } catch (error) {
+        console.log(error);
+        popMsg('An error occurred locating title bar image', 'danger')();
+    }
 }
