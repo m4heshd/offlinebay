@@ -114,6 +114,7 @@ fieldset[disabled] .checkbox label {
     left: 0;
     border-width: 2px;
     border-style: solid;
+    box-shadow: 0 2px 2px 0 var(--compShadow1), 0 0 0 1px var(--compShadow2);
 }
 .checkbox input,
 .checkbox-inline input {
