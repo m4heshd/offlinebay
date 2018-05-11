@@ -369,6 +369,9 @@ span, strong {
     height: 30px !important;
     box-shadow: none !important;
 }
+.btn-theme-del.thm-default-btn {
+    visibility: hidden;
+}
 .btn-theme-del > i {
     padding: 0 !important;
     margin-top: -13px !important;

@@ -1090,6 +1090,10 @@ function stopAutoDump(){
 
 /* Themes
 ----------*/
+$(".themes-tiles").on('click', '.btn-theme-apply', function () {
+    applyTheme($(this).data('thm-name'));
+});
+
 function loadThemes() {
     let themeDB = new Datastore({
         filename: path.join(__dirname, 'data', 'themes.db'),
@@ -1098,7 +1102,6 @@ function loadThemes() {
 
     themeDB.find({}, function (err, themes) {
         if (!err && themes) {
-            console.log(themes);
             if (themes.length > 0) {
                 showThemesWin(themes);
             }
@@ -1131,6 +1134,11 @@ function showThemesWin(themes) {
                        background: ${palette.btnBgHover};
                        color: ${palette.btnTxtHover};
                    }
+                   .thm-${name}-btn.disabled, .thm-${name}-btn:disabled {
+                        color: ${palette.btnTxtClr};
+                        background-color: ${palette.btnBgDisable};
+                        border-color: ${palette.btnBorderDisable};
+                    }
                    .thm-${name}-btn:not(:disabled):not(.disabled):active {
                        background: ${palette.btnActive};
                        color: ${palette.btnTxtHover};
@@ -1139,12 +1147,21 @@ function showThemesWin(themes) {
                        box-shadow: 0 0 0 0.2rem ${palette.btnFocusGlow};
                    }`;
 
+        let btnTxt = 'Apply';
+        let btnIcon = 'zmdi-palette';
+        let btnDisable = '';
+        if (themes[c].applied){
+            btnTxt = 'Applied';
+            btnIcon = 'zmdi-check';
+            btnDisable = 'disabled';
+        }
+
         tile += `<div class="theme-prev-bg item-v-center thm-${name}-bg">
                             <div class="theme-prev-content">
                                 <span class="thm-${name}-title">${themes[c].title}</span>
-                                <button class="btn-ui btn-themed btn-theme-apply thm-${name}-btn" type="button">
-                                    <i class="zmdi zmdi-palette btn-ico"></i>
-                                    Apply
+                                <button class="btn-ui btn-themed btn-theme-apply thm-${name}-btn" type="button" data-thm-name="${name}" ${btnDisable}>
+                                    <i class="zmdi ${btnIcon} btn-ico"></i>
+                                    ${btnTxt}
                                 </button>
                                 <button class="btn-ui btn-themed btn-theme-del thm-${name}-btn" type="button">
                                     <i class="zmdi zmdi-delete btn-ico"></i>
@@ -1155,4 +1172,81 @@ function showThemesWin(themes) {
 
     $("#themeStyles").empty().text(styles);
     $('#pnlThemeTiles').empty().append(tile);
+}
+
+function applyTheme(thmName) {
+    let themeDB = new Datastore({
+        filename: path.join(__dirname, 'data', 'themes.db'),
+        autoload: true
+    });
+
+    themeDB.findOne({name: thmName}, function (err, theme) {
+        if (!err && theme) {
+            let palette = theme.palette;
+
+            let css = `/* Theme color variables
+                       -------------------------*/
+                       :root{
+                           --bodyTxt : ${palette.bodyTxt};
+                           --bodyBg : ${palette.bodyBg};
+                           --compclr : ${palette.compclr};
+                           --txtFocusBg : ${palette.txtFocusBg};
+                           --txtFocustxt : ${palette.txtFocustxt};
+                           --txtFocusPH : ${palette.txtFocusPH};
+                           --btnTxtClr : ${palette.btnTxtClr};
+                           --btnTxtHover : ${palette.btnTxtHover};
+                           --btnBgHover : ${palette.btnBgHover};
+                           --btnFocusGlow : ${palette.btnFocusGlow};
+                           --btnActive : ${palette.btnActive};
+                           --btnBgDisable : ${palette.btnBgDisable};
+                           --btnBorderDisable : ${palette.btnBorderDisable};
+                           --chkChecked : ${palette.chkChecked};
+                           --chkUnchecked : ${palette.chkUnchecked};
+                           --tblHeadBottomBorder : ${palette.tblHeadBottomBorder};
+                           --tblHeadHover: ${palette.tblHeadHover};
+                           --tblCellBorder : ${palette.tblCellBorder};
+                           --tblActiveRow : ${palette.tblActiveRow};
+                           --tblActiveRowHover: ${palette.tblActiveRowHover};
+                           --scrollBg : ${palette.scrollBg};
+                           --scrollBorder : ${palette.scrollBorder};
+                           --scrollThumb : ${palette.scrollThumb};
+                           --mnuBtnBg: ${palette.mnuBtnBg};
+                           --mnuBg: ${palette.mnuBg};
+                           --mnuTxt: ${palette.mnuTxt};
+                           --mnuItemHover: ${palette.mnuItemHover};
+                           --mnuGrade1: ${palette.mnuGrade1};
+                           --mnuGrade2: ${palette.mnuGrade2};
+                           --mnuGlow: ${palette.mnuGlow};
+                           --modalGlow: ${palette.modalGlow};
+                           --overlay: ${palette.overlay};
+                       }`;
+
+            let fs = require('fs');
+
+            fs.writeFile(path.join(__dirname, 'css', 'theme.css'), css, function (err) {
+                if (!err) {
+                    $('#themeCSS').attr('href', 'css/theme.css');
+                    themeDB.update({applied: true}, { $set: { applied: false } }, function (err, numReplaced) {
+                        if (err || numReplaced < 1) {
+                            popMsg('Unable to update theme on DB', 'danger')();
+                        } else {
+                            themeDB.update({name: thmName}, { $set: { applied: true } }, function (err, numReplaced) {
+                                if (err || numReplaced < 1) {
+                                    popMsg('Unable to update theme on DB', 'danger')();
+                                } else {
+                                    loadThemes();
+                                    popMsg('Theme \'' + theme.title + '\' has been applied', 'success')();
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    popMsg('Unable to write the theme to file', 'danger')();
+                }
+            });
+
+        } else {
+            popMsg('Unable to load the theme from DB', 'danger')();
+        }
+    });
 }
