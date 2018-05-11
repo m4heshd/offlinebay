@@ -4,6 +4,8 @@
                            --bodyTxt : #b4bfc3;
                            --bodyBg : #1e2a31;
                            --compclr : #2b3942;
+                           --compShadow1 : rgba(0,0,0,0.16);
+                           --compShadow2 : rgba(0,0,0,0.08);
                            --txtFocusBg : #edeff0;
                            --txtFocustxt : #22313a;
                            --txtFocusPH : #354c5a;

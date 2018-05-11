@@ -1043,8 +1043,8 @@ function popMsg(txt, type) {
                 enter: 'animated fadeInUp',
                 exit: 'animated fadeOutDown'
             },
-            template: '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0}" role="alert">\n' +
-            '    <button type="button" aria-hidden="true" class="close" data-notify="dismiss">&times;</button>\n' +
+            template: '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0} alert-or" role="alert">\n' +
+            '    <button type="button" aria-hidden="true" class="close close-or" data-notify="dismiss">&times;</button>\n' +
             '    <span data-notify="icon"></span> \n' +
             '    <span data-notify="title">{1}</span> \n' +
             '    <span data-notify="message" style="vertical-align: middle">{2}</span>\n' +
@@ -1108,6 +1108,7 @@ $(".themes-tiles").on('click', '.btn-theme-apply', function () {
     applyTheme($(this).data('thm-name'));
 });
 
+// Load all themes from DB
 function loadThemes() {
     let themeDB = new Datastore({
         filename: path.join(__dirname, 'data', 'themes', 'themes.db'),
@@ -1125,6 +1126,7 @@ function loadThemes() {
     });
 }
 
+// Create theme tiles on themes window
 function showThemesWin(themes) {
     let tile = '';
     let styles = '';
@@ -1188,6 +1190,7 @@ function showThemesWin(themes) {
     $('#pnlThemeTiles').empty().append(tile);
 }
 
+// Rewrite theme.css for selected theme
 function applyTheme(thmName) {
     let themeDB = new Datastore({
         filename: path.join(__dirname, 'data', 'themes', 'themes.db'),
@@ -1204,6 +1207,8 @@ function applyTheme(thmName) {
                            --bodyTxt : ${palette.bodyTxt};
                            --bodyBg : ${palette.bodyBg};
                            --compclr : ${palette.compclr};
+                           --compShadow1 : ${palette.compShadow1};
+                           --compShadow2 : ${palette.compShadow2};
                            --txtFocusBg : ${palette.txtFocusBg};
                            --txtFocustxt : ${palette.txtFocustxt};
                            --txtFocusPH : ${palette.txtFocusPH};
@@ -1266,6 +1271,7 @@ function applyTheme(thmName) {
     });
 }
 
+// Set theme's title bar image if it's available
 function setTitleImg(thmName) {
     let imgPath = path.join(__dirname, 'data', 'themes', 'assets', thmName, 'titlebar.png');
     let defPath = path.join(__dirname, 'img', 'ob_text_logo_titlebar.png');

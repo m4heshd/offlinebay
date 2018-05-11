@@ -65,6 +65,12 @@ span, strong {
     cursor: default;
 }
 
+.alert-or {
+    box-shadow: 0 0 8px 3px rgba(0,0,0,0.16);
+}
+.close-or {
+    transform: translate(0, -3px);
+}
 /* Grid Layout
 --------------------*/
 .item-v-center{
@@ -185,6 +191,7 @@ span, strong {
     margin-top: 20px;
     border-radius: 4px;
     background: var(--compclr);
+    box-shadow: 0 2px 2px 0 var(--compShadow1), 0 0 0 1px var(--compShadow2);
 }
 .btnOpenMag {
     grid-area: btnOpenMag;
@@ -346,7 +353,6 @@ span, strong {
     overflow-y: auto;
 }
 .theme-prev-bg {
-    background: #2f6931;
     height: 130px;
     width: 200px;
     margin: 0 auto;
@@ -367,7 +373,7 @@ span, strong {
 .btn-theme-del {
     width: 30px !important;
     height: 30px !important;
-    box-shadow: none !important;
+    box-shadow: 0 2px 2px 0 var(--compShadow1), 0 0 0 1px var(--compShadow2) !important;
 }
 .btn-theme-del.thm-default-btn {
     visibility: hidden;
@@ -420,6 +426,7 @@ span, strong {
     background-color: var(--compclr);
     font-size: 15px;
     color: var(--btnTxtClr);
+    box-shadow: 0 2px 2px 0 var(--compShadow1), 0 0 0 1px var(--compShadow2);
 }
 .btn-ico {
     font-size: 20px;
@@ -459,6 +466,7 @@ span, strong {
     background-color: var(--compclr);
     font-size: 15px;
     color: var(--bodyTxt);
+    box-shadow: 0 2px 2px 0 var(--compShadow1), 0 0 0 1px var(--compShadow2);
 }
 .txtbox:focus {
     background: var(--txtFocusBg);
@@ -628,6 +636,7 @@ thead > tr > th:hover,
     position: relative;
     margin: 2px 0;
     overflow: hidden;
+    box-shadow: 0 2px 2px 0 var(--compShadow1), 0 0 0 1px var(--compShadow2);
     /*display: inline;*/
 }
 
