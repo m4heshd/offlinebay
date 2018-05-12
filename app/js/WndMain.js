@@ -27,8 +27,17 @@ $(document).ready(function () {
         }).slideUp(200);
     });
 
-    /* Draggable Modal
+    /* Modals
     --------------------*/
+    /* Blur effect */
+    let mdls = $('.modal');
+    mdls.on('show.bs.modal', function () {
+        $('.body-container').css('filter', 'var(--olEffect)');
+    });
+    mdls.on('hide.bs.modal', function () {
+        $('.body-container').css('filter', '');
+    });
+    /* Draggable Modal */
     $('.mdl-drag .modal-content').resizable({
         //alsoResize: ".modal-dialog",
         minHeight: 300,

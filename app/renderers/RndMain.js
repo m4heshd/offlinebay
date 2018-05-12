@@ -895,6 +895,7 @@ function showOL(text) {
         visibility: 'visible',
         opacity: 1
     });
+    $('.body-container').css('filter', 'var(--olEffect)');
 }
 
 // Hide window overlay
@@ -903,6 +904,7 @@ function hideOL() {
         opacity: 0,
         visibility: 'hidden'
     });
+    $('.body-container').css('filter', '');
 }
 
 $('#overlay').on('click', function () {
@@ -1142,7 +1144,7 @@ function showThemesWin(themes) {
                         color: ${palette.bodyTxt};
                    }
                    .thm-${name}-btn {
-                       background: ${palette.compclr};
+                       background: ${palette.compClr};
                        color: ${palette.btnTxtClr};
                        box-shadow: 0 0 14px 1px ${palette.btnFocusGlow};
                    }
@@ -1206,7 +1208,7 @@ function applyTheme(thmName) {
                        :root{
                            --bodyTxt : ${palette.bodyTxt};
                            --bodyBg : ${palette.bodyBg};
-                           --compclr : ${palette.compclr};
+                           --compClr : ${palette.compClr};
                            --compShadow1 : ${palette.compShadow1};
                            --compShadow2 : ${palette.compShadow2};
                            --txtFocusBg : ${palette.txtFocusBg};
@@ -1239,6 +1241,7 @@ function applyTheme(thmName) {
                            --mnuGlow: ${palette.mnuGlow};
                            --modalGlow: ${palette.modalGlow};
                            --overlay: ${palette.overlay};
+                           --olEffect: ${palette.olEffect};
                            --olTxt: ${palette.olTxt};
                        }`;
 
