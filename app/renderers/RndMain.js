@@ -2,6 +2,7 @@ const electron = require('electron');
 const {ipcRenderer, clipboard, shell} = electron;
 const path = require('path');
 const fs = require('fs');
+const rimraf = require('rimraf');
 const Datastore = require('nedb');
 const AdmZip = require('adm-zip');
 
@@ -1110,6 +1111,9 @@ function stopAutoDump(){
 $(".themes-tiles").on('click', '.btn-theme-apply', function () {
     applyTheme($(this).data('thm-name'));
 });
+$(".themes-tiles").on('click', '.btn-theme-del', function () {
+    removeTheme($(this).data('thm-name'));
+});
 $("#btnImportTheme").on('click', function () {
     ipcRenderer.send('theme-import');
 });
@@ -1189,7 +1193,7 @@ function showThemesWin(themes) {
                                     <i class="zmdi ${btnIcon} btn-ico"></i>
                                     ${btnTxt}
                                 </button>
-                                <button class="btn-ui btn-themed btn-theme-del thm-${name}-btn" type="button">
+                                <button class="btn-ui btn-themed btn-theme-del thm-${name}-btn" type="button" data-thm-name="${name}">
                                     <i class="zmdi zmdi-delete btn-ico"></i>
                                 </button>
                             </div>
@@ -1266,6 +1270,7 @@ function applyTheme(thmName) {
                                     popMsg('Unable to update theme on DB', 'danger')();
                                 } else {
                                     loadThemes();
+                                    prefs.theme = thmName;
                                     popMsg('Theme \'' + theme.title + '\' has been applied', 'success')();
                                 }
                             });
@@ -1424,5 +1429,43 @@ function importTheme(thmPath) {
         } catch (error) {
             popMsg(error.toString(), 'danger')();
         }
+    }
+}
+
+// Remove themes
+function removeTheme(thmName) {
+    if (confirm('Are you sure you want to remove this theme?', 'Remove Theme')) {
+
+        let themeDB = new Datastore({
+            filename: path.join(__dirname, 'data', 'themes', 'themes.db'),
+            autoload: true
+        });
+
+        themeDB.remove({name: thmName}, {}, function (err, numRemoved) {
+            if (err || numRemoved < 1) {
+                popMsg('Unable to remove the theme from DB', 'danger')();
+            } else {
+                let assetsDir = path.join(__dirname, 'data', 'themes', 'assets', thmName);
+                if (fs.existsSync(assetsDir)) {
+                    rimraf(assetsDir, function (err) {
+                        if (err) {
+                            popMsg('Failed to remove the assets directory', 'warning')();
+                        }
+                    });
+                }
+                popMsg('Theme \'' + thmName + '\' was successfully removed', 'success')();
+                if (prefs.theme === thmName) {
+                    themeDB.update({name: 'default'}, { $set: { applied: true } }, function (err, numReplaced) {
+                        if (err || numReplaced < 1) {
+                            popMsg('Unable to switch to default theme (DB Error)', 'danger')();
+                        } else {
+                            applyTheme('default');
+                        }
+                    });
+                } else {
+                    loadThemes();
+                }
+            }
+        });
     }
 }
