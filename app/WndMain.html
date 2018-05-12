@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>OfflineBay by TechTac</title>
-    <link rel="stylesheet" href="../node_modules/material-design-iconic-font/dist/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet"
+          href="../node_modules/material-design-iconic-font/dist/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/jquery-ui.min.css">
     <link rel="stylesheet" href="css/clusterize.css">
@@ -14,231 +15,231 @@
     <style id='themeStyles'></style>
 </head>
 <body>
-
-<div class="grid-title">
-    <div class="app-title item-v-center">
-        <img id="imgTitleBar" tabindex="-1" src="img/ob_text_logo_titlebar.png">
-    </div> <!-- App title -->
-    <div></div>
-    <div>
-        <button id="btnMinimize" tabindex="-1" class="btn-ctl btn-themed" type="button">
-            <i class="zmdi zmdi-window-minimize" style="padding-bottom: 7px"></i>
-        </button> <!-- Minimize button -->
-    </div>
-    <div>
-        <button id="btnMaximize" tabindex="-1" class="btn-ctl btn-warning" type="button">
-            <i class="zmdi zmdi-window-maximize"></i>
-        </button> <!-- Maximize/Restore button -->
-    </div>
-    <div>
-        <button id="btnClose" tabindex="-1" class="btn-ctl btn-danger" type="button">
-            <i class="zmdi zmdi-close"></i>
-        </button> <!-- Close button -->
-    </div>
-</div> <!-- Title Bar Grid -->
-
-<div class="grid-menu">
-    <div class="dropdown">
-        <button class="mnu-itm" type="button" data-toggle="dropdown">Tools</button>
-        <ul class="dropdown-menu">
-            <li>
-                <a id="mnuImport" href="#">
-                    <i class="zmdi zmdi-archive mnu-ico"></i>
-                    <span class="mnu-txt">Import dump file</span>
-                </a>
-            </li>
-            <li>
-                <a id="mnuCheckUpdDump" href="#">
-                    <i class="zmdi zmdi-check mnu-ico"></i>
-                    <span class="mnu-txt">Check for updates</span>
-                </a>
-            </li>
-            <li>
-                <a id="mnuUpdDump" href="#">
-                    <i class="zmdi zmdi-play-for-work mnu-ico"></i>
-                    <span class="mnu-txt">Update dump file</span>
-                </a>
-            </li>
-            <li>
-                <a id="mnuUpdTrcks" href="#">
-                    <i class="zmdi zmdi-rotate-right mnu-ico"></i>
-                    <span class="mnu-txt">Update Trackers</span>
-                </a>
-            </li>
-            <li>
-                <a id="mnuAllTrcks" href="#" data-toggle="modal" data-target="#mdlTrackers">
-                    <i class="zmdi zmdi-format-list-bulleted mnu-ico"></i>
-                    <span class="mnu-txt">Show all Trackers</span>
-                </a>
-            </li>
-        </ul>
-    </div> <!-- Tools menu -->
-    <div class="dropdown">
-        <button class="mnu-itm" type="button" data-toggle="dropdown">Settings</button>
-        <ul class="dropdown-menu">
-            <li>
-                <a id="mnuPrefs" href="#" data-toggle="modal" data-target="#mdlPrefs">
-                    <i class="zmdi zmdi-wrench mnu-ico"></i>
-                    <span class="mnu-txt">Preferences</span>
-                </a>
-            </li>
-            <li>
-                <a id="mnuThemes" href="#" data-toggle="modal" data-target="#mdlThemes">
-                    <i class="zmdi zmdi-palette mnu-ico"></i>
-                    <span class="mnu-txt">Themes</span>
-                </a>
-            </li>
-        </ul>
-    </div> <!-- Settings menu -->
-    <div class="dropdown">
-        <button class="mnu-itm" type="button" data-toggle="dropdown">Help</button>
-        <ul class="dropdown-menu">
-            <li>
-                <a id="mnuContact" href="#">
-                    <i class="zmdi zmdi-comment-edit mnu-ico"></i>
-                    <span class="mnu-txt">Contact TechTac</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" data-toggle="modal" data-target="#mdlAbout">
-                    <i class="zmdi zmdi-info mnu-ico"></i>
-                    <span class="mnu-txt">About</span>
-                </a>
-            </li>
-        </ul>
-    </div> <!-- Help menu -->
-</div> <!-- Menu Grid -->
-
-<div class="grid-body" style="margin-top: 10px">
-    <div class="top-search txtSearch">
-        <input id="txtSearch" type="text" class="top-search__input" placeholder="Search torrents" autocomplete="off"
-               value="The.Big.Bang.Theory.S11E17.720p.HDTV.x264-AVS">
-        <i class="zmdi zmdi-search top-search__reset"></i>
-    </div> <!-- txtSearch -->
-    <div class="btnSearch" style="margin: 2px 0">
-        <button id="btnSearch" class="btn-ui btn-themed" type="button">
-            <i class="zmdi zmdi-search btn-ico"></i>
-            Search
-        </button>
-    </div> <!-- btnSearch -->
-    <div class="grid-search-tools">
-        <div class="checkbox item-v-center">
-            <label>
-                <input id="chkSmartSearch" type="checkbox" checked>
-                <i class="input-helper"></i>
-                Smart Search
-            </label>
-        </div> <!-- chkSmartSearch -->
-        <div class="checkbox item-v-center">
-            <label class="show-tooltip">
-                <span class="tooltiptext">Not Recommended</span>
-                <input id="chkInstSearch" type="checkbox">
-                <i class="input-helper"></i>
-                Instant
-            </label>
-        </div> <!-- chkInstSearch -->
-        <div class="item-v-center">
-            <span>Max Results:</span>
-        </div> <!-- lblResCount -->
+<div class="body-container">
+    <div class="grid-title">
+        <div class="app-title item-v-center">
+            <img id="imgTitleBar" tabindex="-1" src="img/ob_text_logo_titlebar.png">
+        </div> <!-- App title -->
+        <div></div>
         <div>
-            <input id="txtResCount" type="number" class="txtbox txtboxsm" placeholder="Enter amount"
-                   autocomplete="off">
-        </div> <!-- txtResCount -->
-        <div class="item-v-center">
-            <span style="margin-left: 20px">Filter:</span>
-        </div> <!-- lblFilter -->
+            <button id="btnMinimize" tabindex="-1" class="btn-ctl btn-themed" type="button">
+                <i class="zmdi zmdi-window-minimize" style="padding-bottom: 7px"></i>
+            </button> <!-- Minimize button -->
+        </div>
         <div>
-            <input id="txtFilter" type="text" class="txtbox txtboxsm" placeholder="Insert keywords"
-                   autocomplete="off">
-        </div> <!-- txtFilter -->
-    </div>
-    <div id="tblPane" class="tbl-grid clusterize-scroll">
-        <div class="sticky-top">
-            <table id="tblHead" class="table table-striped table-hover">
+            <button id="btnMaximize" tabindex="-1" class="btn-ctl btn-warning" type="button">
+                <i class="zmdi zmdi-window-maximize"></i>
+            </button> <!-- Maximize/Restore button -->
+        </div>
+        <div>
+            <button id="btnClose" tabindex="-1" class="btn-ctl btn-danger" type="button">
+                <i class="zmdi zmdi-close"></i>
+            </button> <!-- Close button -->
+        </div>
+    </div> <!-- Title Bar Grid -->
+
+    <div class="grid-menu">
+        <div class="dropdown">
+            <button class="mnu-itm" type="button" data-toggle="dropdown">Tools</button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a id="mnuImport" href="#">
+                        <i class="zmdi zmdi-archive mnu-ico"></i>
+                        <span class="mnu-txt">Import dump file</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="mnuCheckUpdDump" href="#">
+                        <i class="zmdi zmdi-check mnu-ico"></i>
+                        <span class="mnu-txt">Check for updates</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="mnuUpdDump" href="#">
+                        <i class="zmdi zmdi-play-for-work mnu-ico"></i>
+                        <span class="mnu-txt">Update dump file</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="mnuUpdTrcks" href="#">
+                        <i class="zmdi zmdi-rotate-right mnu-ico"></i>
+                        <span class="mnu-txt">Update Trackers</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="mnuAllTrcks" href="#" data-toggle="modal" data-target="#mdlTrackers">
+                        <i class="zmdi zmdi-format-list-bulleted mnu-ico"></i>
+                        <span class="mnu-txt">Show all Trackers</span>
+                    </a>
+                </li>
+            </ul>
+        </div> <!-- Tools menu -->
+        <div class="dropdown">
+            <button class="mnu-itm" type="button" data-toggle="dropdown">Settings</button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a id="mnuPrefs" href="#" data-toggle="modal" data-target="#mdlPrefs">
+                        <i class="zmdi zmdi-wrench mnu-ico"></i>
+                        <span class="mnu-txt">Preferences</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="mnuThemes" href="#" data-toggle="modal" data-target="#mdlThemes">
+                        <i class="zmdi zmdi-palette mnu-ico"></i>
+                        <span class="mnu-txt">Themes</span>
+                    </a>
+                </li>
+            </ul>
+        </div> <!-- Settings menu -->
+        <div class="dropdown">
+            <button class="mnu-itm" type="button" data-toggle="dropdown">Help</button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a id="mnuContact" href="#">
+                        <i class="zmdi zmdi-comment-edit mnu-ico"></i>
+                        <span class="mnu-txt">Contact TechTac</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mdlAbout">
+                        <i class="zmdi zmdi-info mnu-ico"></i>
+                        <span class="mnu-txt">About</span>
+                    </a>
+                </li>
+            </ul>
+        </div> <!-- Help menu -->
+    </div> <!-- Menu Grid -->
+
+    <div class="grid-body" style="margin-top: 10px">
+        <div class="top-search txtSearch">
+            <input id="txtSearch" type="text" class="top-search__input" placeholder="Search torrents" autocomplete="off"
+                   value="The.Big.Bang.Theory.S11E17.720p.HDTV.x264-AVS">
+            <i class="zmdi zmdi-search top-search__reset"></i>
+        </div> <!-- txtSearch -->
+        <div class="btnSearch" style="margin: 2px 0">
+            <button id="btnSearch" class="btn-ui btn-themed" type="button">
+                <i class="zmdi zmdi-search btn-ico"></i>
+                Search
+            </button>
+        </div> <!-- btnSearch -->
+        <div class="grid-search-tools">
+            <div class="checkbox item-v-center">
+                <label>
+                    <input id="chkSmartSearch" type="checkbox" checked>
+                    <i class="input-helper"></i>
+                    Smart Search
+                </label>
+            </div> <!-- chkSmartSearch -->
+            <div class="checkbox item-v-center">
+                <label class="show-tooltip">
+                    <span class="tooltiptext">Not Recommended</span>
+                    <input id="chkInstSearch" type="checkbox">
+                    <i class="input-helper"></i>
+                    Instant
+                </label>
+            </div> <!-- chkInstSearch -->
+            <div class="item-v-center">
+                <span>Max Results:</span>
+            </div> <!-- lblResCount -->
+            <div>
+                <input id="txtResCount" type="number" class="txtbox txtboxsm" placeholder="Enter amount"
+                       autocomplete="off">
+            </div> <!-- txtResCount -->
+            <div class="item-v-center">
+                <span style="margin-left: 20px">Filter:</span>
+            </div> <!-- lblFilter -->
+            <div>
+                <input id="txtFilter" type="text" class="txtbox txtboxsm" placeholder="Insert keywords"
+                       autocomplete="off">
+            </div> <!-- txtFilter -->
+        </div>
+        <div id="tblPane" class="tbl-grid clusterize-scroll">
+            <div class="sticky-top">
+                <table id="tblHead" class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th data-role="columnheader" data-type="date">Date Added</th>
+                        <th style="display: none">Hash</th>
+                        <th data-role="columnheader" data-type="name">Torrent Name</th>
+                        <th data-role="columnheader" data-type="size">Torrent Size</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+            <table id="tblMain" class="table table-striped table-hover">
                 <thead>
                 <tr>
-                    <th data-role="columnheader" data-type="date">Date Added</th>
+                    <th id="hdrDate">Date Added</th>
                     <th style="display: none">Hash</th>
-                    <th data-role="columnheader" data-type="name">Torrent Name</th>
-                    <th data-role="columnheader" data-type="size">Torrent Size</th>
+                    <th id="hdrName">Torrent Name</th>
+                    <th id="hdrSize">Torrent Size</th>
                 </tr>
                 </thead>
+                <tbody id="tblMainBody" class="clusterize-content">
+                </tbody>
             </table>
-        </div>
-        <table id="tblMain" class="table table-striped table-hover">
-            <thead>
-            <tr>
-                <th id="hdrDate">Date Added</th>
-                <th style="display: none">Hash</th>
-                <th id="hdrName">Torrent Name</th>
-                <th id="hdrSize">Torrent Size</th>
-            </tr>
-            </thead>
-            <tbody id="tblMainBody" class="clusterize-content">
-            </tbody>
-        </table>
-    </div> <!-- tblMain -->
-    <div class="btnOpenMag">
-        <button id="btnOpenMag" class="btn-ui btn-themed" type="button">
-            <i class="zmdi zmdi-cloud-download btn-ico"></i>
-            Open Magnet
-        </button>
-    </div> <!-- btnOpenMag -->
-    <div class="btnCopyMag">
-        <button id="btnCopyMag" class="btn-ui btn-themed" type="button">
-            <i class="zmdi zmdi-copy btn-ico"></i>
-            Copy Magnet
-        </button>
-    </div> <!-- btnCopyMag -->
-    <div class="btnHash">
-        <button id="btnHash" class="btn-ui btn-themed" type="button">
-            <i class="zmdi zmdi-label btn-ico"></i>
-            Copy Info Hash
-        </button>
-    </div> <!-- btnHash -->
-    <div class="btnGoogle">
-        <button id="btnGoogle" class="btn-ui btn-themed" type="button">
-            <i class="zmdi zmdi-google btn-ico"></i>
-            Google Torrent
-        </button>
-    </div> <!-- btnGoogle -->
-    <div id="pnlSeeds" class="seedPanel">
-        <div style="text-align: center">
-            <span>Seeds/Peers</span>
-        </div>
-        <div class="seeds" style="margin-top: 15px">
-            <i class="zmdi zmdi-account-add btn-ico"></i>
-            <span id="lblSeeds">5623</span>
-            <img src="img/dots.svg" class="imgDots">
-        </div>
-        <div class="seeds">
-            <i class="zmdi zmdi-accounts-alt btn-ico"></i>
-            <span id="lblPeers">1200</span>
-            <img src="img/dots.svg" class="imgDots">
-        </div>
-    </div> <!-- seedPanel -->
-    <div class="ttLogo">
-        <div style="text-align: center">
-            <strong style="font-size: 23px">By</strong>
-        </div>
-        <div class="tt-img">
-            <span class="img-helper"></span>
-            <a id="ttLogoMain" href="#">
-                <img id="tt-logo" src="img/tech_tac_alpha_127.png">
-            </a>
-        </div>
-    </div> <!-- TechTac Logo -->
-</div> <!-- Body Grid -->
+        </div> <!-- tblMain -->
+        <div class="btnOpenMag">
+            <button id="btnOpenMag" class="btn-ui btn-themed" type="button">
+                <i class="zmdi zmdi-cloud-download btn-ico"></i>
+                Open Magnet
+            </button>
+        </div> <!-- btnOpenMag -->
+        <div class="btnCopyMag">
+            <button id="btnCopyMag" class="btn-ui btn-themed" type="button">
+                <i class="zmdi zmdi-copy btn-ico"></i>
+                Copy Magnet
+            </button>
+        </div> <!-- btnCopyMag -->
+        <div class="btnHash">
+            <button id="btnHash" class="btn-ui btn-themed" type="button">
+                <i class="zmdi zmdi-label btn-ico"></i>
+                Copy Info Hash
+            </button>
+        </div> <!-- btnHash -->
+        <div class="btnGoogle">
+            <button id="btnGoogle" class="btn-ui btn-themed" type="button">
+                <i class="zmdi zmdi-google btn-ico"></i>
+                Google Torrent
+            </button>
+        </div> <!-- btnGoogle -->
+        <div id="pnlSeeds" class="seedPanel">
+            <div style="text-align: center">
+                <span>Seeds/Peers</span>
+            </div>
+            <div class="seeds" style="margin-top: 15px">
+                <i class="zmdi zmdi-account-add btn-ico"></i>
+                <span id="lblSeeds">5623</span>
+                <img src="img/dots.svg" class="imgDots">
+            </div>
+            <div class="seeds">
+                <i class="zmdi zmdi-accounts-alt btn-ico"></i>
+                <span id="lblPeers">1200</span>
+                <img src="img/dots.svg" class="imgDots">
+            </div>
+        </div> <!-- seedPanel -->
+        <div class="ttLogo">
+            <div style="text-align: center">
+                <strong style="font-size: 23px">By</strong>
+            </div>
+            <div class="tt-img">
+                <span class="img-helper"></span>
+                <a id="ttLogoMain" href="#">
+                    <img id="tt-logo" src="img/tech_tac_alpha_127.png">
+                </a>
+            </div>
+        </div> <!-- TechTac Logo -->
+    </div> <!-- Body Grid -->
 
-<div class="grid-stat-bar">
-    <div class="item-v-center">
-        <span id="txtStat">Ready...</span>
-    </div>
-    <div class="item-v-center">
-        <span id="txtStatRight">Ready...</span>
-    </div>
-</div> <!-- Status bar Grid -->
-
+    <div class="grid-stat-bar">
+        <div class="item-v-center">
+            <span id="txtStat">Ready...</span>
+        </div>
+        <div class="item-v-center">
+            <span id="txtStatRight">Ready...</span>
+        </div>
+    </div> <!-- Status bar Grid -->
+</div>
 
 <!-- MODALS -->
 <div class="modal fade" id="mdlAbout" role="dialog">

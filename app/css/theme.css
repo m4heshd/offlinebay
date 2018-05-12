@@ -3,7 +3,7 @@
                        :root{
                            --bodyTxt : #b4bfc3;
                            --bodyBg : #1e2a31;
-                           --compclr : #2b3942;
+                           --compClr : #2b3942;
                            --compShadow1 : rgba(0,0,0,0.16);
                            --compShadow2 : rgba(0,0,0,0.08);
                            --txtFocusBg : #edeff0;
@@ -36,5 +36,6 @@
                            --mnuGlow: rgba(0,0,0,.175);
                            --modalGlow: rgba(0,0,0,.5);
                            --overlay: rgba(0,0,0,0.6);
+                           --olEffect: blur(2px);
                            --olTxt: #b4bfc3;
                        }

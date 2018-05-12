@@ -1,15 +1,17 @@
 /* Global
 --------------*/
 body {
-    display: grid;
-    grid-template-rows: 30px 30px minmax(0px, auto) 40px;
-    height: 100vh;
     /*font-family: Roboto,sans-serif;*/
     font-size: 13px;
     line-height: 1.42857143;
     color: var(--bodyTxt);
     background-color: var(--bodyBg);
     -webkit-user-select: none;
+}
+.body-container {
+    display: grid;
+    grid-template-rows: 30px 30px minmax(0px, auto) 40px;
+    height: 100vh;
 }
 /* Table */
 table {
@@ -20,7 +22,7 @@ thead > tr > th:hover {
     background: var(--tblHeadHover);
 }
 thead {
-    background: var(--compclr);
+    background: var(--compClr);
 }
 th[data-role=columnheader] {
     cursor: pointer;
@@ -85,7 +87,7 @@ span, strong {
     grid-template-rows: 30px;
     grid-template-areas:
             "appTitle glue-title btnMin btnMax btnExit";
-    background-color: var(--compclr);
+    background-color: var(--compClr);
     -webkit-app-region: drag;
 }
 .app-icon {
@@ -99,7 +101,7 @@ span, strong {
     border: 0;
     height: 100%;
     width: 100%;
-    background-color: var(--compclr);
+    background-color: var(--compClr);
     color: var(--bodyTxt);
     -webkit-app-region: no-drag;
 }
@@ -190,7 +192,7 @@ span, strong {
     overflow-y: auto;
     margin-top: 20px;
     border-radius: 4px;
-    background: var(--compclr);
+    background: var(--compClr);
     box-shadow: 0 2px 2px 0 var(--compShadow1), 0 0 0 1px var(--compShadow2);
 }
 .btnOpenMag {
@@ -225,7 +227,7 @@ span, strong {
 .grid-stat-bar {
     display: grid;
     grid-template-columns: auto auto;
-    border-top: 1px solid var(--compclr);
+    border-top: 1px solid var(--compClr);
     margin: 0 12px;
 }
 #txtStat {
@@ -286,7 +288,7 @@ span, strong {
     grid-area: tbl;
     overflow-y: auto;
     border-radius: 4px;
-    background: var(--compclr);
+    background: var(--compClr);
 }
 .btnCopyTrck {
     grid-area: btnCopyTrck;
@@ -423,7 +425,7 @@ span, strong {
     width: 100%;
     padding: 10px;
     border-radius: 4px;
-    background-color: var(--compclr);
+    background-color: var(--compClr);
     font-size: 15px;
     color: var(--btnTxtClr);
     box-shadow: 0 2px 2px 0 var(--compShadow1), 0 0 0 1px var(--compShadow2);
@@ -463,7 +465,7 @@ span, strong {
     padding: 10px 10px 10px 10px;
     border-radius: 4px;
     width: 100%;
-    background-color: var(--compclr);
+    background-color: var(--compClr);
     font-size: 15px;
     color: var(--bodyTxt);
     box-shadow: 0 2px 2px 0 var(--compShadow1), 0 0 0 1px var(--compShadow2);
@@ -526,7 +528,7 @@ span, strong {
     display: grid;
     grid-template-columns: auto 30px;
     grid-template-rows: 30px;
-    border-bottom: var(--compclr) 1px solid;
+    border-bottom: var(--compClr) 1px solid;
     min-height: 35px;
     cursor: -webkit-grab;
     -webkit-app-region: no-drag;
@@ -646,7 +648,7 @@ thead > tr > th:hover,
     padding: 10px 20px 10px 50px;
     border-radius: 4px;
     width: 100%;
-    background-color: var(--compclr);
+    background-color: var(--compClr);
     font-size: 15px;
     color: var(--txtFocustxt)
 }
