@@ -3,6 +3,7 @@ const {ipcRenderer, clipboard, shell} = electron;
 const path = require('path');
 const fs = require('fs');
 const Datastore = require('nedb');
+const AdmZip = require('adm-zip');
 
 let prefs = {
     sysTray: false,
@@ -1109,6 +1110,13 @@ function stopAutoDump(){
 $(".themes-tiles").on('click', '.btn-theme-apply', function () {
     applyTheme($(this).data('thm-name'));
 });
+$("#btnImportTheme").on('click', function () {
+    ipcRenderer.send('theme-import');
+});
+
+ipcRenderer.on('init-theme-import', function (event, data) {
+    importTheme(data);
+}); // Fired after user opened a theme file
 
 // Load all themes from DB
 function loadThemes() {
@@ -1288,5 +1296,133 @@ function setTitleImg(thmName) {
     } catch (error) {
         console.log(error);
         popMsg('An error occurred locating title bar image', 'danger')();
+    }
+}
+
+// Import compressed theme file opened by the user
+function importTheme(thmPath) {
+    try {
+        let thmZip = new AdmZip(thmPath);
+        let thmFile = thmZip.readAsText('theme.json');
+        if (thmFile !== '') {
+            try {
+                let thmData = JSON.parse(thmFile);
+                validateTheme(thmData).then(function () {
+                    proceedImport(thmData, thmZip);
+                }).catch(function (err) {
+                    switch (err) {
+                        case 'name':
+                            popMsg('Invalid theme name. It cannot be empty', 'danger')();
+                            break;
+                        case 'title':
+                            popMsg('Invalid theme title. It cannot be empty', 'danger')();
+                            break;
+                        case 'regex':
+                            popMsg('Invalid theme name. It should only contain lowercase letters', 'danger')();
+                            break;
+                        case 'palette':
+                            popMsg('Failed to import. Theme doesn\'t contain proper variables', 'danger')();
+                            break;
+                        default:
+                            popMsg('Failed to import. An unknown error occurred', 'danger')();
+                    }
+                });
+            } catch (error) {
+                throw 'Failed to import. Invalid theme'
+            }
+        } else {
+            throw 'Failed to import. Invalid theme'
+        }
+    } catch (error) {
+        popMsg(error.toString(), 'danger')();
+    }
+
+    // Validate the theme.json file before importing
+    function validateTheme(thmData) {
+        return new Promise((resolve, reject) => {
+            let isNameOk = typeof thmData.name === 'string' && thmData.name !== '';
+            let isTitleOk = typeof thmData.title === 'string' && thmData.title !== '';
+
+            if (isNameOk) {
+                if (isTitleOk) {
+                    let nameCheck = new RegExp("[^a-z]");
+                    if (!nameCheck.test(thmData.name)) {
+                        let pltVars = ['bodyTxt', 'bodyBg', 'compClr', 'compShadow1', 'compShadow2', 'txtFocusBg', 'txtFocustxt', 'txtFocusPH', 'btnTxtClr', 'btnTxtHover', 'btnBgHover', 'btnFocusGlow', 'btnActive', 'btnTxtDisable', 'btnBgDisable', 'btnBorderDisable', 'chkChecked', 'chkUnchecked', 'tblHeadBottomBorder', 'tblHeadHover', 'tblCellBorder', 'tblActiveRow', 'tblActiveRowHover', 'scrollBg', 'scrollBorder', 'scrollThumb', 'mnuBtnBg', 'mnuBg', 'mnuTxt', 'mnuItemHover', 'mnuGrade1', 'mnuGrade2', 'mnuGlow', 'modalGlow', 'overlay', 'olEffect', 'olTxt'];
+                        for (let c = 0; c < pltVars.length; c++) {
+                            if (typeof thmData.palette[pltVars[c]] !== 'string') {
+                                reject('palette');
+                                break;
+                            }
+                        }
+                    } else {
+                        reject('regex');
+                    }
+                } else {
+                    reject('title');
+                }
+            } else {
+                reject('name');
+            }
+
+            resolve();
+        });
+    }
+
+    // Proceed to DB updates after validation
+    function proceedImport(thmData, thmZip) {
+        let thmName = thmData.name;
+        let themeDB = new Datastore({
+            filename: path.join(__dirname, 'data', 'themes', 'themes.db'),
+            autoload: true
+        });
+
+        themeDB.findOne({name: thmName}, function (err, theme) {
+            if (!err) {
+                if (theme) {
+                    if (confirm('Theme \'' + thmData.title + '\' already exists. Do you want to proceed and replace the theme?', 'Import Theme')) {
+                        themeDB.update({name: thmName}, {
+                            $set: {
+                                title: thmData.title,
+                                palette: thmData.palette
+                            }
+                        }, function (err, numReplaced) {
+                            if (err || numReplaced < 1) {
+                                popMsg('Unable to replace the theme on DB', 'danger')();
+                            } else {
+                                extractThemeAssets(thmData, thmZip);
+                            }
+                        });
+                    }
+                } else {
+                    themeDB.insert({
+                        name: thmData.name,
+                        title: thmData.title,
+                        applied: false,
+                        palette: thmData.palette
+                    }, function (err) {
+                        if (err) {
+                            popMsg('Unable to insert the theme to DB', 'danger')();
+                        } else {
+                            extractThemeAssets(thmData, thmZip);
+                        }
+                    });
+                }
+            } else {
+                popMsg('Unable to load themes from DB', 'danger')();
+            }
+        });
+    }
+
+    // Check if the titlebar.png is available and extract it into assets
+    function extractThemeAssets(thmData, thmZip) {
+        try {
+            if (thmZip.getEntry('titlebar.png') !== null) {
+                thmZip.extractEntryTo('titlebar.png', path.join(__dirname, 'data', 'themes', 'assets', thmData.name), false, true);
+            }
+            popMsg('Theme \'' + thmData.title + '\' imported successfully', 'success')();
+            loadThemes();
+        } catch (error) {
+            popMsg(error.toString(), 'danger')();
+        }
     }
 }

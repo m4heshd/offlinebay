@@ -292,6 +292,11 @@ ipcMain.on('upd-dump', function (event, data) {
     }
 }); // Handle update dump event
 
+/* Update dump */
+ipcMain.on('theme-import', function () {
+    popThemeImport();
+}); // Handle import theme event
+
 /* Notification senders
 ------------------------*/
 // Show blue background notification
@@ -646,5 +651,24 @@ function checkDumpUpd(type, dlURL) {
         if (type === 'check') {
             popWarn('An update process or import process is already running');
         }
+    }
+}
+
+/* Themes
+-----------*/
+// Show open dialog to import themes
+function popThemeImport() {
+    let dlg = dialog.showOpenDialog(
+        mainWindow,
+        {
+            properties: ['openFile'],
+            title: 'Open OfflineBay Theme (ZIP)',
+            filters: [
+                {name: 'Theme packages', extensions: ['zip']}
+            ]
+        });
+
+    if (typeof dlg !== "undefined") {
+        mainWindow.webContents.send('init-theme-import', dlg[0]);
     }
 }
