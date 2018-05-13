@@ -84,6 +84,7 @@ function loadPrefs() {
     themeDB.findOne({applied: true}, function (err, theme) {
         if (!err && theme) {
             prefs.theme = theme.name;
+            loadCustomCSS(prefs.theme);
             setTitleImg(prefs.theme);
         } else {
             popMsg('Unable to load current theme from DB', 'danger')();
@@ -1260,6 +1261,7 @@ function applyTheme(thmName) {
             fs.writeFile(path.join(__dirname, 'css', 'theme.css'), css, function (err) {
                 if (!err) {
                     $('#themeCSS').attr('href', 'css/theme.css');
+                    loadCustomCSS(thmName);
                     setTitleImg(thmName);
                     themeDB.update({applied: true}, { $set: { applied: false } }, function (err, numReplaced) {
                         if (err || numReplaced < 1) {
@@ -1301,6 +1303,21 @@ function setTitleImg(thmName) {
     } catch (error) {
         console.log(error);
         popMsg('An error occurred locating title bar image', 'danger')();
+    }
+}
+
+// Set theme's custom CSS if available
+function loadCustomCSS(thmName) {
+    let cssPath = path.join(__dirname, 'data', 'themes', 'assets', thmName, 'custom.css');
+    try {
+        if (fs.existsSync(cssPath)) {
+            $('#customCSS').attr('href', `data/themes/assets/${thmName}/custom.css`);
+        } else {
+            $('#customCSS').attr('href', '');
+        }
+    } catch (error) {
+        console.log(error);
+        popMsg('An error occurred locating custom CSS', 'danger')();
     }
 }
 
@@ -1418,11 +1435,14 @@ function importTheme(thmPath) {
         });
     }
 
-    // Check if the titlebar.png is available and extract it into assets
+    // Check if the assets are available and extract them into theme's assets directory
     function extractThemeAssets(thmData, thmZip) {
         try {
             if (thmZip.getEntry('titlebar.png') !== null) {
                 thmZip.extractEntryTo('titlebar.png', path.join(__dirname, 'data', 'themes', 'assets', thmData.name), false, true);
+            }
+            if (thmZip.getEntry('custom.css') !== null) {
+                thmZip.extractEntryTo('custom.css', path.join(__dirname, 'data', 'themes', 'assets', thmData.name), false, true);
             }
             popMsg('Theme \'' + thmData.title + '\' imported successfully', 'success')();
             loadThemes();
