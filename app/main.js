@@ -28,6 +28,7 @@ let scrapeOpts = [];
 let finalPrefs = false;
 let awaitingQuit = false;
 let awaitingScrape = false;
+let splashWindow;
 let mainWindow;
 let obTray;
 let version = 'N/A';
@@ -112,6 +113,7 @@ function saveSession() {
 
 // Load prefs from config DB and start OfflineBay
 function loadSession() {
+    showSplash();
     config.findOne({type: 'win-state'}, function (err, dbPref) {
         if (!err && dbPref) {
             prefs.maxed = dbPref.maxed;
@@ -120,7 +122,6 @@ function loadSession() {
         } else {
             setTimeout(popDbErr, 1500);
         }
-        startOB();
     })
 }
 
@@ -319,6 +320,34 @@ function waitProcess(event, _process, name) {
     _process.kill('SIGINT');
 }
 
+// Show splash window and load main window
+function showSplash() {
+    splashWindow = new BrowserWindow({
+        width: 300,
+        height: 300,
+        resizable: false,
+        show: false,
+        frame: false,
+        transparent: true,
+        alwaysOnTop: true
+    });
+
+    splashWindow.loadURL(url.format({
+        pathname: path.join(__dirname, 'WndSplash.html'),
+        protocol: 'file:',
+        slashes: true
+    }));
+
+    splashWindow.webContents.once('dom-ready', function () {
+        splashWindow.show();
+    });
+
+    splashWindow.once('show', function () {
+        splashWindow.webContents.send('fade');
+        startOB();
+    });
+}
+
 // Create the main window and handle events
 function startOB() {
     mainWindow = new BrowserWindow({
@@ -342,12 +371,18 @@ function startOB() {
         slashes: true
     }));
 
-    mainWindow.once('ready-to-show', function () {
+    mainWindow.webContents.once('dom-ready', function () {
         if (prefs.maxed) {
             mainWindow.maximize();
         }
         mainWindow.webContents.send('set-version', version);
         mainWindow.show();
+    });
+
+    mainWindow.once('show', function () {
+        if (splashWindow) {
+            splashWindow.destroy();
+        }
     });
 
     mainWindow.on('close', function (event) {
