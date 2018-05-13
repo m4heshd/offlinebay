@@ -45,7 +45,7 @@ fs.readFile(path.join(__dirname, '..', 'package.json'), 'utf8', function (err, d
 --------------------*/
 // Emitted if the window is waiting for child processes to exit
 process.on('cont-quit', function () {
-    if (!procSearch && !procImport && !procScrape) {
+    if (!procSearch && !procImport && !procScrape && !procUpd) {
         app.quit();
     }
 });
@@ -59,7 +59,7 @@ process.on('cont-scrape', function () {
 // process.on('uncaughtException', function (error) {
 //     console.log(error);
 //     if (mainWindow){
-//         mainWindow.webContents.send('import-failed');
+//         popErr('An unknown error occurred.');
 //     }
 // });
 
@@ -149,13 +149,6 @@ function setTrackers(trcks) {
         })
     });
 }
-
-// rndPrefs.sysTray = $('#chkTray').prop('checked');
-// rndPrefs.trckURL = $('#txtTrckURL').val();
-// rndPrefs.useDHT = $('#chkDHT').prop('checked');
-// rndPrefs.updURL = $('#txtDumpURL').val();
-// rndPrefs.updType = $('#rdoUpdType input[name="dmpUpdType"]:checked').val();
-// rndPrefs.updInt = parseInt($('#txtUpdInt').val());
 
 // Update preferences from renderer process
 function saveRndPrefs(rndPrefs) {
