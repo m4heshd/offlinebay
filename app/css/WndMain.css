@@ -13,6 +13,9 @@ body {
     grid-template-rows: 30px 30px minmax(0px, auto) 40px;
     height: 100vh;
 }
+button:focus, input:focus {
+    outline: none; !important;
+}
 /* Table */
 table {
     cursor: default;
@@ -66,7 +69,7 @@ th[data-role=columnheader]:hover:after {
 span, strong {
     cursor: default;
 }
-
+/* Notifications */
 .alert-or {
     box-shadow: 0 0 8px 3px rgba(0,0,0,0.16);
 }
@@ -111,7 +114,7 @@ span, strong {
 .btn-ctl:focus {
     border: 1px;
     outline-style: none;
-    box-shadow: none;
+    box-shadow: none !important;
 }
 /* Menu bar */
 .grid-menu {
