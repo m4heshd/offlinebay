@@ -50,7 +50,7 @@ process.on('cont-quit', function () {
         app.quit();
     }
 });
-// Emitted if the window is waiting for child processes to exit
+// Emitted if the window is waiting for one scrape process to finish to start the next
 process.on('cont-scrape', function () {
     if (!procScrape) {
         initScrape(scrapeOpts[0], scrapeOpts[1]);
@@ -222,15 +222,32 @@ ipcMain.on('show-win', function () {
     mainWindow.show();
     mainWindow.focus();
 }); // Show and focus mainWindow
+ipcMain.on('drag-enter', function () {
+    if (!procSearch && !procUpd && !procImport) {
+        mainWindow.webContents.send('show-drag-ol');
+    }
+}); // Validate 'dragenter' event on mainWindow
+ipcMain.on('drag-leave', function () {
+    if (!procSearch && !procUpd && !procImport) {
+        mainWindow.webContents.send('hide-ol');
+    }
+}); // Validate 'dragleave' event on mainWindow
 
 /* Import */
-ipcMain.on('pop-import', function (event) {
-    initImport(event, false, '', ''); // (event, isUpd, filePath, timestamp)
+ipcMain.on('pop-import', function () {
+    popImport();
 }); // Import dump file open dialog
+ipcMain.on('drop-import', function (event, data) {
+    if (!procSearch && !procUpd) {
+        doImport(false, data, ''); // (isUpd, filePath, timestamp)
+    } else {
+        popErr('Cannot import in the middle of another process');
+    }
+}); // Import files dragged and dropped to the mainWindow
 
 ipcMain.on('upd-import', function (event, data) {
     if (!procSearch) {
-        initImport(event, true, data[0], data[1]);
+        doImport(true, data[0], data[1]);
     } else {
         popWarn('Can\'t update the dump file in the middle of searching')
     }
@@ -286,7 +303,7 @@ ipcMain.on('upd-dump', function (event, data) {
     }
 }); // Handle update dump event
 
-/* Update dump */
+/* Themes */
 ipcMain.on('theme-import', function () {
     popThemeImport();
 }); // Handle import theme event
@@ -463,58 +480,42 @@ function setSysTray() {
     }
 }
 
-// Show open dialog and initiate import child process
-function initImport(event, isUpd, filePath, timestamp) {
-    if (!isUpd) {
-        let dlg = dialog.showOpenDialog(
-            mainWindow,
-            {
-                properties: ['openFile'],
-                title: 'Open dump file (CSV or GZ)',
-                filters: [
-                    {name: 'Dump Files', extensions: ['csv', 'gz']}
-                ]
-            });
+// Show open dialog for dump imports
+function popImport() {
+    let dlg = dialog.showOpenDialog(
+        mainWindow,
+        {
+            properties: ['openFile'],
+            title: 'Open dump file (CSV or GZ)',
+            filters: [
+                {name: 'Dump Files', extensions: ['csv', 'gz']}
+            ]
+        });
 
-        if (typeof dlg !== "undefined") {
-            if (!procImport) {
-                event.sender.send('import-start');
-                procImport = cp.fork(path.join(__dirname, 'main-functions', 'import-dump.js'), [false, dlg[0], ''], {
-                    cwd: __dirname
-                });
-                procImport.on('exit', function () {
-                    console.log('Import process ended');
-                    procImport = null;
-                    if (awaitingQuit) {
-                        process.emit('cont-quit');
-                    }
-                });
-                procImport.on('message', function (m) {
-                    mainWindow.webContents.send(m[0], m[1]);
-                });
-            } else {
-                popWarn('One Import process is already running');
+    if (typeof dlg !== "undefined") {
+        doImport(false, dlg[0], '');
+    }
+}
+
+// Perform dump import process (Update or manual)
+function doImport(isUpd, filePath, timestamp) {
+    if (!procImport) {
+        mainWindow.webContents.send('import-start');
+        procImport = cp.fork(path.join(__dirname, 'main-functions', 'import-dump.js'), [isUpd, filePath, timestamp], {
+            cwd: __dirname
+        });
+        procImport.on('exit', function () {
+            console.log('Import process ended');
+            procImport = null;
+            if (awaitingQuit) {
+                process.emit('cont-quit');
             }
-        }
+        });
+        procImport.on('message', function (m) {
+            mainWindow.webContents.send(m[0], m[1]);
+        });
     } else {
-        if (!procImport) {
-            event.sender.send('import-start');
-            procImport = cp.fork(path.join(__dirname, 'main-functions', 'import-dump.js'), [true, filePath, timestamp], {
-                cwd: __dirname
-            });
-            procImport.on('exit', function () {
-                console.log('Import process ended');
-                procImport = null;
-                if (awaitingQuit) {
-                    process.emit('cont-quit');
-                }
-            });
-            procImport.on('message', function (m) {
-                mainWindow.webContents.send(m[0], m[1]);
-            });
-        } else {
-            popWarn('One Import process is already running');
-        }
+        popWarn('One Import process is already running');
     }
 }
 

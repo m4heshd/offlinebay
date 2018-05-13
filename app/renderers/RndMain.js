@@ -95,9 +95,22 @@ loadPrefs();
 
 /* Window Settings
 --------------------*/
-// Prevent OfflineBay from accepting drag and dropped files by user
-document.addEventListener('dragover', event => event.preventDefault());
-document.addEventListener('drop', event => event.preventDefault());
+// Prevent OfflineBay window from routing to dropped files
+$(window).on('dragover', event => event.preventDefault());
+
+// Handle file Drag-and-drops
+$(window).on('dragbetterenter', function () {
+    ipcRenderer.send('drag-enter');
+}).on('dragbetterleave', function () {
+    ipcRenderer.send('drag-leave');
+}).on('drop', function (event) {
+    ipcRenderer.send('drop-import', event.originalEvent.dataTransfer.files[0].path);
+    event.preventDefault();
+});
+ipcRenderer.on('show-drag-ol', function () {
+    $("#olAnim").attr("src", "img/ball.svg");
+    showOL('Drop to import..');
+});
 
 /* Window controls
 --------------------*/
@@ -169,7 +182,6 @@ ipcRenderer.on('import-success', function (event, data) {
     popMsg('Dump file imported successfully', 'success')();
     $('#txtStat').text('Dump updated @ ' + moment().format('YYYY-MM-DD hh:mm:ss'));
     $('#txtStatRight').css('visibility', 'hidden');
-    setStatTxt('An update is available..');
     let ntf = new Notification('OfflineBay Dump update', {
         body: 'A new Dump update was imported',
         icon: path.join(__dirname, 'img', 'icon_noshadow_48.png')
@@ -233,9 +245,8 @@ ipcRenderer.on('upd-check-unavail', function (event, data) {
     if (data === 'check') {
         hideOL();
         popMsg('Your dump file is up to date', 'success')();
-    } else {
-        $('#txtStatRight').css('visibility', 'hidden');
     }
+    $('#txtStatRight').css('visibility', 'hidden');
 });
 // Fired after dump update is checked and only if the update type is 'notify'
 ipcRenderer.on('upd-check-notify', function () {
