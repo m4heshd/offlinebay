@@ -101,10 +101,7 @@ fieldset[disabled] .checkbox label {
 .radio-inline .input-helper:after {
     position: absolute;
     content: "";
-    -webkit-transition: all;
-    -o-transition: all;
     transition: all;
-    -webkit-transition-duration: 150ms;
     transition-duration: 150ms;
 }
 .checkbox .input-helper:before,
@@ -162,9 +159,6 @@ fieldset[disabled] .checkbox label {
 }
 .radio input:checked + .input-helper:after,
 .radio-inline input:checked + .input-helper:after {
-    -webkit-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
     transform: scale(1);
     background: var(--chkChecked);
 }
@@ -184,9 +178,6 @@ fieldset[disabled] .checkbox label {
     border-radius: 50%;
     top: 4px;
     left: 5px;
-    -webkit-transform: scale(0);
-    -ms-transform: scale(0);
-    -o-transform: scale(0);
     transform: scale(0);
 }
 .radio input:checked + .input-helper:before,
@@ -224,10 +215,7 @@ fieldset[disabled] .checkbox label {
     padding: 10px 20px;
     text-decoration: none;
     clear: both;
-    -webkit-transition: background-color;
-    -o-transition: background-color;
     transition: background-color;
-    -webkit-transition-duration: 300ms;
     transition-duration: 300ms;
 }
 .dropdown-menu>li>a:focus, .dropdown-menu>li>a:hover {
@@ -259,10 +247,7 @@ fieldset[disabled] .checkbox label {
 .table-hover > tbody > tr.active:hover > td,
 .table-hover > tbody > tr:hover > .active,
 .table-hover > tbody > tr.active:hover > th {
-    -webkit-transition: all;
-    -o-transition: all;
     transition: all;
-    -webkit-transition-duration: .3s;
     transition-duration: .3s;
     background-color: var(--tblActiveRowHover);
 }
