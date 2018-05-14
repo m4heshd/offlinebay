@@ -1,5 +1,8 @@
 /* Global
 --------------*/
+* {
+    -webkit-user-drag: none;
+}
 body {
     /*font-family: Roboto,sans-serif;*/
     font-size: 13px;
