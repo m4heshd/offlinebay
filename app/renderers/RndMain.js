@@ -951,6 +951,14 @@ $('#btnCopyAllTrck').on('click', function () {
 $('#btnSavePrefs').on('click', function () {
     savePrefs();
 });
+$('#btnResetUpd').on('click', function () {
+    if (confirm('Are you sure you want to reset current dump update timestamp?', 'Reset Dump update')) {
+        prefs.updLast = new Date('2003-01-01').toISOString();
+        $('#txtLastUpd').text('2003-01-01 00:00:00');
+        ipcRenderer.send('pref-change', ['updLast', prefs.updLast]);
+        ipcRenderer.send('save-upd-last');
+    }
+});
 
 // Set current values to preferences window components
 function setPrefsWindow(){
@@ -960,7 +968,7 @@ function setPrefsWindow(){
     $('#txtDumpURL').removeClass('txtinvalid').val(prefs.updURL);
     $('#rdoUpdType input[value="' + prefs.updType + '"]').prop('checked', true);
     $('#txtUpdInt').val(prefs.updInt);
-    $('#txtLastUpd').text(prefs.updLast);
+    $('#txtLastUpd').text(moment(prefs.updLast).format('YYYY-MM-DD hh:mm:ss'));
     $('#btnSavePrefs').prop('disabled',false);
 }
 

@@ -111,6 +111,19 @@ function saveSession() {
     });
 }
 
+// Update updLast on DB
+function saveUpdLast() {
+    return new Promise((resolve, reject) => {
+        config.update({type: 'dump'}, { $set: { updLast: prefs.updLast } }, function (err, numReplaced) {
+            if (err || numReplaced < 1) {
+                reject();
+            } else {
+                resolve();
+            }
+        })
+    });
+}
+
 // Load prefs from config DB and start OfflineBay
 function loadSession() {
     showSplash();
@@ -269,6 +282,13 @@ ipcMain.on('save-rnd-prefs', function (event, data) {
         popErr('Failed to save settings to the DB')
     });
 }); // Handle saving of preferences from renderer process
+ipcMain.on('save-upd-last', function (event, data) {
+    saveUpdLast().then(function () {
+        popSuccess('Dump update was Reset successfully');
+    }).catch(function () {
+        popErr('Failed to Reset update on DB')
+    });
+}); // Handle updLast update event
 
 /* Scrape */
 ipcMain.on('scrape-start', function (event, data) {
