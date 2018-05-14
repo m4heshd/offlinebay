@@ -5,6 +5,7 @@ const fs = require('fs');
 const rimraf = require('rimraf');
 const Datastore = require('nedb');
 const AdmZip = require('adm-zip');
+const moment = require('moment');
 
 let prefs = {
     sysTray: false,
