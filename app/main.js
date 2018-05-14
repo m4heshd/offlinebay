@@ -284,9 +284,18 @@ ipcMain.on('save-rnd-prefs', function (event, data) {
 }); // Handle saving of preferences from renderer process
 ipcMain.on('save-upd-last', function (event, data) {
     saveUpdLast().then(function () {
-        popSuccess('Dump update was Reset successfully');
+        if (data === 'reset') {
+            popSuccess('Dump update was Reset successfully');
+        }
     }).catch(function () {
-        popErr('Failed to Reset update on DB')
+        switch (data) {
+            case 'import':
+                popErr('Failed to update dump Timestamp on DB');
+                break;
+            case 'reset':
+                popErr('Failed to Reset update on DB');
+                break;
+        }
     });
 }); // Handle updLast update event
 

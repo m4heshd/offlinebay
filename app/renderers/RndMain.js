@@ -177,6 +177,7 @@ ipcRenderer.on('import-finalizing', function (event, txt) {
 ipcRenderer.on('import-success', function (event, data) {
     prefs.updLast = new Date(data).toISOString();
     ipcRenderer.send('pref-change', ['updLast', prefs.updLast]);
+    ipcRenderer.send('save-upd-last', 'import');
     prefs.updStat[0] = 'complete';
     hideOL();
     popMsg('Dump file imported successfully', 'success')();
@@ -956,7 +957,7 @@ $('#btnResetUpd').on('click', function () {
         prefs.updLast = new Date('2003-01-01').toISOString();
         $('#txtLastUpd').text('2003-01-01 00:00:00');
         ipcRenderer.send('pref-change', ['updLast', prefs.updLast]);
-        ipcRenderer.send('save-upd-last');
+        ipcRenderer.send('save-upd-last', 'reset');
     }
 });
 
