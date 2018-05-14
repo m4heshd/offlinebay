@@ -5,10 +5,11 @@ const path = require('path');
 const Datastore = require('nedb');
 const request = require('request');
 const fs = require('fs');
+const util = require('util');
+const moment = require('moment');
 
 const {app, BrowserWindow, ipcMain, dialog, Menu, Tray} = electron;
 
-app.commandLine.appendSwitch('remote-debugging-port', '9222');
 app.setAppUserModelId("OfflineBay"); // To support Windows notifications
 
 let prefs = {
@@ -18,7 +19,8 @@ let prefs = {
     rs_count: 100,
     smart: true,
     inst: false,
-    updLast: '2017-01-06T11:44:34.000Z'
+    updLast: '2017-01-06T11:44:34.000Z',
+    logToFile: true
 };
 let procImport;
 let procSearch;
@@ -32,6 +34,25 @@ let splashWindow;
 let mainWindow;
 let obTray;
 let version = 'N/A';
+
+// Log to file
+let logger = fs.createWriteStream(path.join(__dirname, 'data', 'logger.log'), {flags : 'w'});
+console.log = function () {
+    let data = '';
+    for (let c = 0; c < arguments.length; c++) {
+        if (c === arguments.length - 1) {
+            data += util.format(arguments[c]);
+        } else {
+            data += util.format(arguments[c]) + ' ';
+        }
+    }
+    if (prefs.logToFile) {
+        logger.write(`[${moment().format('YYYY-MM-DD hh:mm:ss')}] : ${data}\n`);
+        process.stdout.write(data);
+    } else {
+        process.stdout.write(data);
+    }
+};
 
 // Get current version from package.json
 fs.readFile(path.join(__dirname, '..', 'package.json'), 'utf8', function (err, data) {
@@ -221,6 +242,10 @@ app.on('will-quit', async function (event) {
 
 /* IPC Event handling
 ----------------------*/
+/* Logger */
+ipcMain.on('logger', function (event, data) {
+    console.log(data);
+}); // Handle console.logs from Renderer
 /* Window controls */
 ipcMain.on('app-close', function (event, data) {
     data ? mainWindow.hide() : app.quit();
@@ -438,7 +463,7 @@ function startOB() {
         if (procSearch) {
             waitProcess(event, procSearch, '\'SEARCH\'');
         } // Validation of any running child processes before closing (Search)
-        if (procSearch) {
+        if (procScrape) {
             waitProcess(event, procScrape, '\'SCRAPE\'');
         } // Validation of any running child processes before closing (Scrape)
         if (procUpd) {
@@ -531,7 +556,11 @@ function doImport(isUpd, filePath, timestamp) {
     if (!procImport) {
         mainWindow.webContents.send('import-start');
         procImport = cp.fork(path.join(__dirname, 'main-functions', 'import-dump.js'), [isUpd, filePath, timestamp], {
-            cwd: __dirname
+            cwd: __dirname,
+            silent: true
+        });
+        procImport.stdout.on('data', function (data) {
+            console.log(data.toString());
         });
         procImport.on('exit', function () {
             console.log('Import process ended');
@@ -552,7 +581,11 @@ function doImport(isUpd, filePath, timestamp) {
 function initSearch(query, count, smart, inst) {
     if (!procSearch) {
         procSearch = cp.fork(path.join(__dirname, 'main-functions', 'search.js'), [query, count, smart, inst], {
-            cwd: __dirname
+            cwd: __dirname,
+            silent: true
+        });
+        procSearch.stdout.on('data', function (data) {
+            console.log(data.toString());
         });
         procSearch.on('exit', function () {
             console.log('Search process ended');
@@ -576,7 +609,11 @@ function initScrape(hash, isDHT) {
     if (!procScrape) {
         mainWindow.webContents.send('scrape-init');
         procScrape = cp.fork(path.join(__dirname, 'main-functions', 'scrape.js'), [hash, isDHT], {
-            cwd: __dirname
+            cwd: __dirname,
+            silent: true
+        });
+        procScrape.stdout.on('data', function (data) {
+            console.log(data.toString());
         });
         procScrape.on('exit', function () {
             console.log('Scraping process ended');
@@ -633,7 +670,11 @@ function initUpdDump(type, dlURL) {
     if (!procSearch && !procImport) {
         if (!procUpd) {
             procUpd = cp.fork(path.join(__dirname, 'main-functions', 'upd-dump.js'), [type, dlURL], {
-                cwd: __dirname
+                cwd: __dirname,
+                silent: true
+            });
+            procUpd.stdout.on('data', function (data) {
+                console.log(data.toString());
             });
             procUpd.on('exit', function () {
                 console.log('Dump update process ended');
