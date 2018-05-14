@@ -9,7 +9,6 @@ const AdmZip = require('adm-zip');
 let prefs = {
     sysTray: false,
     useDHT: true,
-    // updURL: 'https://thepiratebay.org/static/dump/csv/torrent_dump_2007.csv.gz',
     trckURL: 'https://newtrackon.com/api/stable',
     updURL: 'http://127.0.0.1/tpb/torrent_dump_full.csv.gz',
     updLast: '2017-01-07T11:44:34.000Z',
@@ -18,6 +17,15 @@ let prefs = {
     updStat: ['complete', '', ''],
     theme: 'default'
 };
+
+/* Logging
+------------*/
+console.log = function (data) {
+    ipcRenderer.send('logger', data);
+}; // Send all console.logs to Main process
+window.onerror = function (msg, url, lineNo, columnNo, error) {
+    console.log('[MAIN_WINDOW] > ' + error.stack);
+}; // Send window errors to Main process
 
 /* DB functions
 --------------------*/
