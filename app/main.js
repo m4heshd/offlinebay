@@ -20,7 +20,7 @@ let prefs = {
     smart: true,
     inst: false,
     updLast: '2017-01-06T11:44:34.000Z',
-    logToFile: false
+    logToFile: true
 };
 let procImport;
 let procSearch;
@@ -36,18 +36,17 @@ let obTray;
 let version = 'N/A';
 
 // Log to file
-let logger = fs.createWriteStream(path.join(__dirname, 'data', 'logger.log'), {flags : 'w'});
+let logger = fs.createWriteStream(path.join(__dirname, 'data', 'logger.log'));
+logger.on('error', function (err) {
+    console.log(err);
+    logger = null;
+});
 console.log = function () {
-    let data = '';
-    for (let c = 0; c < arguments.length; c++) {
-        if (c === arguments.length - 1) {
-            data += util.format(arguments[c]);
-        } else {
-            data += util.format(arguments[c]) + ' ';
-        }
-    }
+    let data = util.format.apply(this, arguments) + '\n';
     if (prefs.logToFile) {
-        logger.write(`[${moment().format('YYYY-MM-DD hh:mm:ss')}] : ${data}\n`);
+        if (logger) {
+            logger.write(`[${moment().format('YYYY-MM-DD hh:mm:ss')}] : ${data}`);
+        }
         process.stdout.write(data);
     } else {
         process.stdout.write(data);
@@ -572,7 +571,7 @@ function doImport(isUpd, filePath, timestamp) {
             silent: true
         });
         procImport.stdout.on('data', function (data) {
-            console.log(data.toString());
+            console.log(data.toString().slice(0,-1));
         });
         procImport.on('exit', function () {
             console.log('Import process ended');
@@ -597,7 +596,7 @@ function initSearch(query, count, smart, inst) {
             silent: true
         });
         procSearch.stdout.on('data', function (data) {
-            console.log(data.toString());
+            console.log(data.toString().slice(0,-1));
         });
         procSearch.on('exit', function () {
             console.log('Search process ended');
@@ -625,7 +624,7 @@ function initScrape(hash, isDHT) {
             silent: true
         });
         procScrape.stdout.on('data', function (data) {
-            console.log(data.toString());
+            console.log(data.toString().slice(0,-1));
         });
         procScrape.on('exit', function () {
             console.log('Scraping process ended');
@@ -686,7 +685,7 @@ function initUpdDump(type, dlURL) {
                 silent: true
             });
             procUpd.stdout.on('data', function (data) {
-                console.log(data.toString());
+                console.log(data.toString().slice(0,-1));
             });
             procUpd.on('exit', function () {
                 console.log('Dump update process ended');
