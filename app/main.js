@@ -20,7 +20,7 @@ let prefs = {
     smart: true,
     inst: false,
     updLast: '2017-01-06T11:44:34.000Z',
-    logToFile: true
+    logToFile: false
 };
 let procImport;
 let procSearch;
@@ -153,6 +153,15 @@ function loadSession() {
             prefs.maxed = dbPref.maxed;
             prefs.position = dbPref.position;
             prefs.size = dbPref.size;
+
+            config.findOne({type: 'gen'}, function (err, dbPref) {
+                if (!err && dbPref) {
+                    prefs.logToFile = dbPref.logToFile;
+                    startOB();
+                } else {
+                    setTimeout(popDbErr, 1500);
+                }
+            })
         } else {
             setTimeout(popDbErr, 1500);
         }
@@ -191,7 +200,8 @@ function saveRndPrefs(rndPrefs) {
         config.update({type: 'gen'}, {
             $set: {
                 sysTray: rndPrefs.sysTray,
-                useDHT: rndPrefs.useDHT
+                useDHT: rndPrefs.useDHT,
+                logToFile: prefs.logToFile
             }
         }, function (err, numReplaced) {
             if (err || numReplaced < 1) {
@@ -246,6 +256,9 @@ app.on('will-quit', async function (event) {
 ipcMain.on('logger', function (event, data) {
     console.log(data);
 }); // Handle console.logs from Renderer
+ipcMain.on('get-logger-type', function (event) {
+    event.returnValue = prefs.logToFile;
+}); // Handle Get logger type request
 /* Window controls */
 ipcMain.on('app-close', function (event, data) {
     data ? mainWindow.hide() : app.quit();
@@ -415,7 +428,6 @@ function showSplash() {
 
     splashWindow.once('show', function () {
         splashWindow.webContents.send('fade');
-        startOB();
     });
 }
 

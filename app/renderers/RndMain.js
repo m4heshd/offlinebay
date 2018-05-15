@@ -973,6 +973,7 @@ $('#btnResetUpd').on('click', function () {
 // Set current values to preferences window components
 function setPrefsWindow(){
     $('#chkTray').prop('checked', prefs.sysTray);
+    $('#chkLogger').prop('checked', ipcRenderer.sendSync('get-logger-type'));
     $('#txtTrckURL').removeClass('txtinvalid').val(prefs.trckURL);
     $('#chkDHT').prop('checked', prefs.useDHT);
     $('#txtDumpURL').removeClass('txtinvalid').val(prefs.updURL);
@@ -990,6 +991,7 @@ function savePrefs(){
     prefs.updURL = $('#txtDumpURL').val();
     prefs.updType = $('#rdoUpdType input[name="dmpUpdType"]:checked').val();
     prefs.updInt = parseInt($('#txtUpdInt').val());
+    ipcRenderer.send('pref-change', ['logToFile', $('#chkLogger').prop('checked')]);
 
     ipcRenderer.send('save-rnd-prefs', prefs);
 
