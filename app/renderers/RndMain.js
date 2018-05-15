@@ -79,7 +79,6 @@ function loadPrefs() {
             prefs.updType = dmp.updType;
             prefs.updInt = dmp.updInt;
             prefs.updStat = dmp.updStat;
-            ipcRenderer.send('pref-change', ['updLast', dmp.updLast]);
 
             if (prefs.updType === 'auto' || prefs.updType === 'notify') {
                 startAutoDump();
@@ -185,8 +184,7 @@ ipcRenderer.on('import-finalizing', function (event, txt) {
 // Fired after import process is successfully finished
 ipcRenderer.on('import-success', function (event, data) {
     prefs.updLast = new Date(data).toISOString();
-    ipcRenderer.send('pref-change', ['updLast', prefs.updLast]);
-    ipcRenderer.send('save-upd-last', 'import');
+    ipcRenderer.send('save-upd-last', [prefs.updLast, 'import']);
     prefs.updStat[0] = 'complete';
     hideOL();
     popMsg('Dump file imported successfully', 'success')();
@@ -239,7 +237,7 @@ $('#mnuCheckUpdDump').on('click', function () {
     $("#olAnim").attr("src", "img/update_check.svg");
     showOL('Checking..');
     setStatTxt('Checking for updates..');
-    ipcRenderer.send('upd-dump', [prefs.updURL, 'check']); // [URL, <type>]
+    ipcRenderer.send('upd-dump', [prefs.updURL, 'check', prefs.updLast]); // [URL, <type>]
 });
 // Fired on system tray update check menu click
 ipcRenderer.on('upd-check-tray', function () {
@@ -248,7 +246,7 @@ ipcRenderer.on('upd-check-tray', function () {
         startAutoDump();
     }
     setStatTxt('Checking for updates..');
-    ipcRenderer.send('upd-dump', [prefs.updURL, 'tray']); // [URL, <type>]
+    ipcRenderer.send('upd-dump', [prefs.updURL, 'tray', prefs.updLast]); // [URL, <type>]
 });
 // Fired after dump update is checked and none available
 ipcRenderer.on('upd-check-unavail', function (event, data) {
@@ -965,8 +963,7 @@ $('#btnResetUpd').on('click', function () {
     if (confirm('Are you sure you want to reset current dump update timestamp?', 'Reset Dump update')) {
         prefs.updLast = new Date('2003-01-01').toISOString();
         $('#txtLastUpd').text('2003-01-01 00:00:00');
-        ipcRenderer.send('pref-change', ['updLast', prefs.updLast]);
-        ipcRenderer.send('save-upd-last', 'reset');
+        ipcRenderer.send('save-upd-last', [prefs.updLast, 'reset']);
     }
 });
 
@@ -1128,7 +1125,7 @@ function startAutoDump() {
             ipcRenderer.send('upd-import', [prefs.updStat[1], prefs.updStat[2]]);
         } else {
             setStatTxt('Checking for updates..');
-            ipcRenderer.send('upd-dump', [prefs.updURL, prefs.updType]); // [URL, <type>]
+            ipcRenderer.send('upd-dump', [prefs.updURL, prefs.updType, prefs.updLast]); // [URL, <type>]
         }
     }, (prefs.updInt * 60) * 1000);
 }

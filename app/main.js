@@ -19,7 +19,6 @@ let prefs = {
     rs_count: 100,
     smart: true,
     inst: false,
-    updLast: '2017-01-06T11:44:34.000Z',
     logToFile: true
 };
 let procImport;
@@ -132,9 +131,9 @@ function saveSession() {
 }
 
 // Update updLast on DB
-function saveUpdLast() {
+function saveUpdLast(updLast) {
     return new Promise((resolve, reject) => {
-        config.update({type: 'dump'}, { $set: { updLast: prefs.updLast } }, function (err, numReplaced) {
+        config.update({type: 'dump'}, { $set: { updLast: updLast } }, function (err, numReplaced) {
             if (err || numReplaced < 1) {
                 reject();
             } else {
@@ -320,12 +319,12 @@ ipcMain.on('save-rnd-prefs', function (event, data) {
     });
 }); // Handle saving of preferences from renderer process
 ipcMain.on('save-upd-last', function (event, data) {
-    saveUpdLast().then(function () {
-        if (data === 'reset') {
+    saveUpdLast(data[0]).then(function () {
+        if (data[1] === 'reset') {
             popSuccess('Dump update was Reset successfully');
         }
     }).catch(function () {
-        switch (data) {
+        switch (data[1]) {
             case 'import':
                 popErr('Failed to update dump Timestamp on DB');
                 break;
@@ -354,16 +353,16 @@ ipcMain.on('upd-dump', function (event, data) {
         case 'check':
         case 'notify':
             // console.log(type);
-            checkDumpUpd(type, data[0]);
+            checkDumpUpd(type, data[0], data[2]);
             break;
         case 'user':
             initUpdDump(type, data[0]);
             break;
         case 'tray':
             if (mainWindow.isMinimized() || !mainWindow.isVisible()) {
-                checkDumpUpd('notify', data[0]);
+                checkDumpUpd('notify', data[0], data[2]);
             } else {
-                checkDumpUpd('check', data[0]);
+                checkDumpUpd('check', data[0], data[2]);
             }
             break;
     }
@@ -710,7 +709,7 @@ function initUpdDump(type, dlURL) {
 }
 
 // Check for dump file updates
-function checkDumpUpd(type, dlURL) {
+function checkDumpUpd(type, dlURL, updLast) {
     if (!procUpd && !procImport) {
         let req = request({
             method: 'GET',
@@ -719,7 +718,7 @@ function checkDumpUpd(type, dlURL) {
 
         req.on('response', function (data) {
             if ((data.headers['content-type'].split('/')[0]) === 'application') {
-                let update = new Date(data.headers['last-modified']) - new Date(prefs.updLast);
+                let update = new Date(data.headers['last-modified']) - new Date(updLast);
                 if (update > 0) {
                     if (type === 'check') {
                         let res = dialog.showMessageBox(
