@@ -10,7 +10,7 @@ const moment = require('moment');
 
 const {app, BrowserWindow, ipcMain, dialog, Menu, Tray} = electron;
 
-app.setAppUserModelId("OfflineBay"); // To support Windows notifications
+app.setAppUserModelId(process.execPath); // To support Windows notifications
 
 let prefs = {
     maxed: false,

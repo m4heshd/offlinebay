@@ -412,6 +412,48 @@ $('#mnuThemes').on('click', function () {
     loadThemes();
 });
 
+/* Windows Shortcut */
+$('#mnuShortcut').on('click', function () {
+    if (process.platform === 'win32') {
+        if (confirm('You need a shortcut to OfflineBay on your start menu for Notifications to work.\nHit OK to create the shortcut now.', 'Windows shortcut helper')) {
+            let shortcut = path.join(process.env.APPDATA, 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'OfflineBay.lnk');
+            let res = shell.writeShortcutLink(shortcut, {
+                target: process.execPath,
+                appUserModelId: process.execPath,
+                icon: path.join(__dirname, 'img', 'icon.ico'),
+                iconIndex: 0
+            });
+            if (res) {
+                popMsg('Shortcut created successfully', 'success')();
+            } else {
+                popMsg('Failed to create the shortcut', 'danger')();
+            }
+        }
+    } else {
+        popMsg('You need to be on Windows to create a shortcut', 'warning')();
+    }
+});
+
+// Validate platform and validate shortcut if Windows
+if (process.platform === 'win32') {
+    let shortcut = path.join(process.env.APPDATA, 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'OfflineBay.lnk');
+    if (fs.existsSync(shortcut)) {
+        try {
+            let scDetails = shell.readShortcutLink(shortcut);
+            if (scDetails.appUserModelId !== process.execPath) {
+                popMsg('Your start menu shortcut is not valid anymore. Please go to <b>Settings > Windows shortcut</b>', 'warning')();
+            }
+        } catch (error) {
+            console.log(error);
+            popMsg('An error occured trying to validate the shortcut', 'danger')();
+        }
+    } else {
+        popMsg('Shortcut not found. Notification won\'t work anymore. Please go to <b>Settings > Windows shortcut</b>', 'warning')();
+    }
+} else {
+    $('#mnuItmShortcut').css('display', 'none');
+}
+
 /* Torrent Search
 ------------------*/
 /* Table */
