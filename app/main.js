@@ -53,13 +53,14 @@ console.log = function () {
 };
 
 // Get current version from package.json
-fs.readFile(path.join(__dirname, '..', 'package.json'), 'utf8', function (err, data) {
-    if (err) {
-        console.log(err);
-    } else {
-        version = JSON.parse(data).version;
+try {
+    const packageJSON = require(path.join(__dirname, '..', 'package.json'));
+    if (packageJSON) {
+        version = packageJSON.version;
     }
-});
+} catch (error) {
+    console.log(error);
+}
 
 /* Process handles
 --------------------*/
