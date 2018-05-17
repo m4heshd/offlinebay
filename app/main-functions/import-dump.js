@@ -169,6 +169,7 @@ function finalize(){
 
     fs.rename(stagePath, processed, function (err) {
         if (err){
+            console.log(err);
             process.send(['import-failed', 'finalize']); //mainWindow.webContents.send('import-failed', 'finalize');
         } else {
             if (isUpd) {
