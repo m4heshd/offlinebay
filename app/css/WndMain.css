@@ -764,3 +764,23 @@ thead > tr > th:hover,
     transform: scale(1.04);
     cursor: pointer;
 }
+
+/* Support notification
+------------------------*/
+.support-alert {
+    min-width: 470px;
+    max-width: 513px;
+}
+.support-body {
+    display: grid;
+    grid-template-columns: 90px auto;
+    grid-column-gap: 7px;
+}
+.support-body span {
+    font-size: 14px;
+    display: block;
+}
+.support-body span a:hover {
+    color: darkred !important;
+    cursor: pointer;
+}
