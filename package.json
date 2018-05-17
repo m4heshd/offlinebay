@@ -4,24 +4,26 @@
   "description": "Offline version of The Pirate Bay",
   "main": "app/main.js",
   "scripts": {
-    "start": "electron ./app/main.js",
+    "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "TechTac",
-  "license": "AGPL-3.0",
+  "license": "MIT",
   "dependencies": {
-    "adm-zip": "^0.4.9",
-    "bittorrent-dht": "^8.2.0",
-    "bittorrent-tracker": "^9.7.0",
-    "bootstrap": "^4.0.0",
-    "electron": "^1.8.4",
-    "jquery": "^3.3.1",
-    "material-design-iconic-font": "^2.2.0",
-    "moment": "^2.22.1",
-    "nedb": "^1.8.0",
-    "papaparse": "^4.3.7",
-    "popper.js": "^1.14.1",
-    "request": "^2.85.0",
-    "rimraf": "^2.6.2"
+    "adm-zip": "0.4.9",
+    "bittorrent-dht": "8.2.0",
+    "bittorrent-tracker": "9.7.0",
+    "bootstrap": "4.0.0",
+    "jquery": "3.3.1",
+    "material-design-iconic-font": "2.2.0",
+    "moment": "2.22.1",
+    "nedb": "1.8.0",
+    "papaparse": "4.3.7",
+    "popper.js": "1.14.1",
+    "request": "2.85.0",
+    "rimraf": "2.6.2"
+  },
+  "devDependencies": {
+    "electron": "1.8.4"
   }
 }
