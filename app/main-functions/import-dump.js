@@ -35,7 +35,6 @@ if (ext === '.gz') {
 function startCSV(){
     validate().then(function () {
         countFileLines(extract).then(function (count) {
-            console.log('Total line count : ', count);
             totalLines = count;
             startImport();
         }).catch(function (err) {
@@ -43,7 +42,6 @@ function startCSV(){
             console.log(err);
         });
     }).catch(function (err) {
-        // console.log('Invalid dump');
         switch (err) {
             case 0:
                 process.send(['import-failed', 'invalid']);// mainWindow.webContents.send('import-failed', 'invalid');
@@ -91,7 +89,6 @@ function startImport() {
                 .on("data", function (buffer) {
                     let idx = -1;
                     lineCount--;
-                    // console.log(buffer.toString());
                     let formattedLine = buffer.toString().replace(/(?!";)(?<!;)(?<!\\)"/g, '\\"');
                     stage.write(formattedLine);
                     do {
@@ -108,13 +105,11 @@ function startImport() {
                 })
                 .on("end", function () {
                     stage.close();
-                    console.log(lineCount);
                     if (lineCount === totalLines) {
                         finalize();
                     } else {
                         process.send(['import-failed', 'process']); //mainWindow.webContents.send('import-failed', 'process');
                     }
-                    console.log(process.uptime());
                 });
         });
     });
