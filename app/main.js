@@ -144,6 +144,15 @@ function saveUpdLast(updLast) {
     });
 }
 
+// Update last support message shown timestamp on DB
+function updSupMsgDate() {
+    config.update({type: 'gen'}, {$set: {supMsg: new Date().toISOString()}}, function (err, numReplaced) {
+        if (err || numReplaced < 1) {
+            console.log('An error occurred trying to update Support message timestamp');
+        }
+    })
+}
+
 // Load prefs from config DB and start OfflineBay
 function loadSession() {
     showSplash();
@@ -258,6 +267,7 @@ ipcMain.on('logger', function (event, data) {
 ipcMain.on('get-logger-type', function (event) {
     event.returnValue = prefs.logToFile;
 }); // Handle Get logger type request
+
 /* Window controls */
 ipcMain.on('app-close', function (event, data) {
     data ? mainWindow.hide() : app.quit();
@@ -373,6 +383,11 @@ ipcMain.on('upd-dump', function (event, data) {
 ipcMain.on('theme-import', function () {
     popThemeImport();
 }); // Handle import theme event
+
+/* Misc */
+ipcMain.on('update-sup-msg', function () {
+    updSupMsgDate();
+}); // Handle 'update support message timestamp' event
 
 /* Notification senders
 ------------------------*/

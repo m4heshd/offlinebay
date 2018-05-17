@@ -45,6 +45,13 @@ function loadPrefs() {
         if (!err && pref) {
             prefs.sysTray = pref.sysTray;
             prefs.useDHT = pref.useDHT;
+
+            if (new Date() - new Date(pref.supMsg) > 604800000){
+                setTimeout(function () {
+                    popSupportMsg();
+                    ipcRenderer.send('update-sup-msg');
+                }, 60000);
+            }
         } else {
             popMsg('Unable to read preferences from config DB', 'danger')();
         }
