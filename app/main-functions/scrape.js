@@ -9,7 +9,7 @@ process.on('uncaughtException', function (error) {
 });
 
 let args = process.argv.slice(2);
-let hash = base64toHEX(args[0]);
+let hash = args[0];
 let isDHT = (args[1] === 'true');
 let trackers = [];
 
@@ -92,14 +92,4 @@ function scrapeTrackers() {
     }).on('error', function (err) {
         console.log(err);
     });
-}
-
-function base64toHEX(base64) {
-    let raw = new Buffer(base64, 'base64').toString('binary');
-    let HEX = '';
-    for (let i = 0; i < raw.length; i++) {
-        let _hex = raw.charCodeAt(i).toString(16)
-        HEX += (_hex.length == 2 ? _hex : '0' + _hex);
-    }
-    return HEX.toUpperCase();
 }
