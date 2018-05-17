@@ -776,7 +776,7 @@ let bestTrackers = []; // To hold trackers sorted from best to worst
 // Event for double click on any row inside the body of tblMain
 $("#tblMainBody").on('dblclick', 'tr', function () {
     let hash = $(':nth-child(2)', this).html().trim();
-    ipcRenderer.send('scrape-start', [hash, prefs.useDHT]);
+    ipcRenderer.send('scrape-start', [getInfoHash(hash), prefs.useDHT]);
 
 });
 // Fired after validation for Scrape process
