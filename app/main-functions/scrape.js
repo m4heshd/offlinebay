@@ -43,6 +43,7 @@ function getTrackers() {
             if (!err && trck) {
                 resolve(trck.trackers);
             } else {
+                console.log(err);
                 reject();
             }
         })

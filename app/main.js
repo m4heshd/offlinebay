@@ -77,12 +77,14 @@ process.on('cont-scrape', function () {
     }
 });
 
-// process.on('uncaughtException', function (error) {
-//     console.log(error);
-//     if (mainWindow){
-//         popErr('An unknown error occurred.');
-//     }
-// });
+process.on('uncaughtException', function (error) {
+    console.log(error);
+    if (mainWindow){
+        popErr('An unknown error occurred');
+    } else {
+        app.quit();
+    }
+});
 
 /* DB functions
 ----------------*/
@@ -136,6 +138,7 @@ function saveUpdLast(updLast) {
     return new Promise((resolve, reject) => {
         config.update({type: 'dump'}, { $set: { updLast: updLast } }, function (err, numReplaced) {
             if (err || numReplaced < 1) {
+                console.log(err);
                 reject();
             } else {
                 resolve();
@@ -148,6 +151,7 @@ function saveUpdLast(updLast) {
 function updSupMsgDate() {
     config.update({type: 'gen'}, {$set: {supMsg: new Date().toISOString()}}, function (err, numReplaced) {
         if (err || numReplaced < 1) {
+            console.log(err);
             console.log('An error occurred trying to update Support message timestamp');
         }
     })
@@ -171,6 +175,7 @@ function loadSession() {
                 }
             })
         } else {
+            console.log(err);
             setTimeout(popDbErr, 1500);
         }
     })
@@ -183,6 +188,7 @@ function getTrackerEP() {
             if (!err && trck) {
                 resolve(trck.url);
             } else {
+                console.log(err);
                 reject();
             }
         })
@@ -194,6 +200,7 @@ function setTrackers(trcks) {
     return new Promise((resolve, reject) => {
         config.update({type: 'trackers'}, { $set: { trackers: trcks } }, function (err, numReplaced) {
             if (err || numReplaced < 1) {
+                console.log(err);
                 reject();
             } else {
                 resolve();
@@ -213,10 +220,12 @@ function saveRndPrefs(rndPrefs) {
             }
         }, function (err, numReplaced) {
             if (err || numReplaced < 1) {
+                console.log(err);
                 reject();
             } else {
                 config.update({type: 'trackers'}, {$set: {url: rndPrefs.trckURL}}, function (err, numReplaced) {
                     if (err || numReplaced < 1) {
+                        console.log(err);
                         reject();
                     } else {
                         config.update({type: 'dump'}, {
@@ -227,6 +236,7 @@ function saveRndPrefs(rndPrefs) {
                             }
                         }, function (err, numReplaced) {
                             if (err || numReplaced < 1) {
+                                console.log(err);
                                 reject();
                             } else {
                                 resolve();
@@ -669,6 +679,7 @@ function updTrackers(){
     getTrackerEP().then(function (url) {
         request.get(url, function (err, res, body) {
             if (err) {
+                console.log(err);
                 mainWindow.webContents.send('upd-trackers-failed', 'net');
             }
             else {

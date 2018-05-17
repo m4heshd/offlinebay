@@ -53,6 +53,7 @@ function loadPrefs() {
                 }, 60000);
             }
         } else {
+            console.log(err);
             popMsg('Unable to read preferences from config DB', 'danger')();
         }
     });
@@ -66,6 +67,7 @@ function loadPrefs() {
             ipcRenderer.send('pref-change', ['smart', pref.smart]);
             ipcRenderer.send('pref-change', ['inst', pref.inst]);
         } else {
+            console.log(err);
             popMsg('Unable to read preferences from config DB', 'danger')();
         }
     });
@@ -75,6 +77,7 @@ function loadPrefs() {
             prefs.trckURL = trck.url;
             allTrackers = trck.trackers;
         } else {
+            console.log(err);
             popMsg('Unable to read preferences from config DB', 'danger')();
         }
     });
@@ -92,6 +95,7 @@ function loadPrefs() {
             }
 
         } else {
+            console.log(err);
             popMsg('Unable to read preferences from config DB', 'danger')();
         }
     });
@@ -102,6 +106,7 @@ function loadPrefs() {
             loadCustomCSS(prefs.theme);
             setTitleImg(prefs.theme);
         } else {
+            console.log(err);
             popMsg('Unable to load current theme from DB', 'danger')();
         }
     });
@@ -873,6 +878,7 @@ $('#btnOpenMag').on('click', function () {
         let magnet = getMagnetLink(base64Hash, name);
         shell.openExternal(magnet, {}, function (err) {
             if (err) {
+                console.log(err);
                 popMsg('Unable to open the Magnet link', 'danger')();
             }else {
                 popMsg('Magnet link opened in default Torrent client', 'info')();
@@ -953,6 +959,7 @@ $('#ttTwitter').on('click', function () {
 function openLink(link) {
     shell.openExternal(link, {}, function (err) {
         if (err) {
+            console.log(err);
             popMsg('Unable to open the link', 'danger')();
         }
     });
@@ -1257,6 +1264,7 @@ function loadThemes() {
                 showThemesWin(themes);
             }
         } else {
+            console.log(err);
             popMsg('Unable to load themes from DB', 'danger')();
         }
     });
@@ -1386,10 +1394,12 @@ function applyTheme(thmName) {
                     setTitleImg(thmName);
                     themeDB.update({applied: true}, { $set: { applied: false } }, function (err, numReplaced) {
                         if (err || numReplaced < 1) {
+                            console.log(err);
                             popMsg('Unable to update theme on DB', 'danger')();
                         } else {
                             themeDB.update({name: thmName}, { $set: { applied: true } }, function (err, numReplaced) {
                                 if (err || numReplaced < 1) {
+                                    console.log(err);
                                     popMsg('Unable to update theme on DB', 'danger')();
                                 } else {
                                     loadThemes();
@@ -1400,11 +1410,13 @@ function applyTheme(thmName) {
                         }
                     });
                 } else {
+                    console.log(err);
                     popMsg('Unable to write the theme to file', 'danger')();
                 }
             });
 
         } else {
+            console.log(err);
             popMsg('Unable to load the theme from DB', 'danger')();
         }
     });
@@ -1477,6 +1489,7 @@ function importTheme(thmPath) {
             throw 'Failed to import. Invalid theme'
         }
     } catch (error) {
+        console.log(error);
         popMsg(error.toString(), 'danger')();
     }
 
@@ -1530,6 +1543,7 @@ function importTheme(thmPath) {
                             }
                         }, function (err, numReplaced) {
                             if (err || numReplaced < 1) {
+                                console.log(err);
                                 popMsg('Unable to replace the theme on DB', 'danger')();
                             } else {
                                 extractThemeAssets(thmData, thmZip);
@@ -1544,6 +1558,7 @@ function importTheme(thmPath) {
                         palette: thmData.palette
                     }, function (err) {
                         if (err) {
+                            console.log(err);
                             popMsg('Unable to insert the theme to DB', 'danger')();
                         } else {
                             extractThemeAssets(thmData, thmZip);
@@ -1551,6 +1566,7 @@ function importTheme(thmPath) {
                     });
                 }
             } else {
+                console.log(err);
                 popMsg('Unable to load themes from DB', 'danger')();
             }
         });
@@ -1568,6 +1584,7 @@ function importTheme(thmPath) {
             popMsg('Theme \'' + thmData.title + '\' imported successfully', 'success')();
             loadThemes();
         } catch (error) {
+            console.log(error);
             popMsg(error.toString(), 'danger')();
         }
     }
@@ -1584,12 +1601,14 @@ function removeTheme(thmName) {
 
         themeDB.remove({name: thmName}, {}, function (err, numRemoved) {
             if (err || numRemoved < 1) {
+                console.log(err);
                 popMsg('Unable to remove the theme from DB', 'danger')();
             } else {
                 let assetsDir = path.join(__dirname, 'data', 'themes', 'assets', thmName);
                 if (fs.existsSync(assetsDir)) {
                     rimraf(assetsDir, function (err) {
                         if (err) {
+                            console.log(err);
                             popMsg('Failed to remove the assets directory', 'warning')();
                         }
                     });
@@ -1598,6 +1617,7 @@ function removeTheme(thmName) {
                 if (prefs.theme === thmName) {
                     themeDB.update({name: 'default'}, { $set: { applied: true } }, function (err, numReplaced) {
                         if (err || numReplaced < 1) {
+                            console.log(err);
                             popMsg('Unable to switch to default theme (DB Error)', 'danger')();
                         } else {
                             applyTheme('default');
