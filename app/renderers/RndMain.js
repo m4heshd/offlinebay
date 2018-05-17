@@ -151,6 +151,26 @@ ipcRenderer.on('set-version', function (event, data) {
     $('#txtAppVersion').text('Software version : ' + data);
 }); // Set application version on about dialog
 
+// Validate platform and validate shortcut if Windows
+if (process.platform === 'win32') {
+    let shortcut = path.join(process.env.APPDATA, 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'OfflineBay.lnk');
+    if (fs.existsSync(shortcut)) {
+        try {
+            let scDetails = shell.readShortcutLink(shortcut);
+            if (scDetails.appUserModelId !== process.execPath) {
+                popMsg('Your start menu shortcut is not valid anymore. Please go to <b>Settings > Windows shortcut</b>', 'warning')();
+            }
+        } catch (error) {
+            console.log(error);
+            popMsg('An error occured trying to validate the shortcut', 'danger')();
+        }
+    } else {
+        popMsg('Shortcut not found. Notification won\'t work anymore. Please go to <b>Settings > Windows shortcut</b>', 'warning')();
+    }
+} else {
+    $('#mnuItmShortcut').css('display', 'none');
+}
+
 /* Menu bar
 -------------*/
 /* Import dump */
@@ -434,25 +454,10 @@ $('#mnuShortcut').on('click', function () {
     }
 });
 
-// Validate platform and validate shortcut if Windows
-if (process.platform === 'win32') {
-    let shortcut = path.join(process.env.APPDATA, 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'OfflineBay.lnk');
-    if (fs.existsSync(shortcut)) {
-        try {
-            let scDetails = shell.readShortcutLink(shortcut);
-            if (scDetails.appUserModelId !== process.execPath) {
-                popMsg('Your start menu shortcut is not valid anymore. Please go to <b>Settings > Windows shortcut</b>', 'warning')();
-            }
-        } catch (error) {
-            console.log(error);
-            popMsg('An error occured trying to validate the shortcut', 'danger')();
-        }
-    } else {
-        popMsg('Shortcut not found. Notification won\'t work anymore. Please go to <b>Settings > Windows shortcut</b>', 'warning')();
-    }
-} else {
-    $('#mnuItmShortcut').css('display', 'none');
-}
+/* Support */
+$('#mnuSupport').on('click', function () {
+    popSupportMsg();
+});
 
 /* Torrent Search
 ------------------*/
@@ -1132,6 +1137,45 @@ function popMsg(txt, type) {
         });
     }
 }
+
+// Pop up Support offlinebay alert
+function popSupportMsg() {
+    $.notify({}, {
+        type: 'light',
+        delay: 0,
+        z_index: 1051,
+        placement: {
+            from: 'bottom',
+            align: 'right'
+        },
+        animate: {
+            enter: 'animated fadeInUp',
+            exit: 'animated fadeOutDown'
+        },
+        template: '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0} alert-or support-alert" role="alert">\n' +
+        '    <button type="button" aria-hidden="true" class="close close-or" data-notify="dismiss">&times;</button>\n' +
+        '    <h2>Loving OfflineBay?</h2>\n' +
+        '    <h5>Give some support..</h5>\n' +
+        '    <div class="support-body">\n' +
+        '        <div>\n' +
+        '            <img src="img/heart.png">\n' +
+        '        </div>\n' +
+        '        <div class="item-v-center">\n' +
+        '            <div>\n' +
+        '                <span>BTC : <b><a class="btcLink">12d9qz6bzL6tiB4oeX595oEo9ENMTEzF5y</a></b></span>\n' +
+        '                <span>ETH : <b><a class="ethLink">0xe84CBc4B4C64c6800619942172F93dcfb1030972</a></b></span>\n' +
+        '                <span>BCH : <b><a class="bchLink">qqguu77ylq7p72m02ksv78jyzy86vtk6jqtrrc40r3</a></b></span>\n' +
+        '            </div>\n' +
+        '        </div>\n' +
+        '    </div>\n' +
+        '</div>'
+    });
+}
+
+$('body').on('click', '.btcLink, .ethLink, .bchLink', function () {
+    clipboard.writeText($(this).html());
+    popMsg('Address copied to clipboard', 'info')();
+});
 
 /* Status text on right side
 -----------------------------*/
