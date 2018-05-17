@@ -1,3 +1,5 @@
+/* QR9SkRpC1piyc/5wR87+vRl4oKxTFO28fjaeGeiafGCE1A== ;) */
+
 const cp = require('child_process');
 const electron = require('electron');
 const url = require('url');
