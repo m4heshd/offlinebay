@@ -86,8 +86,7 @@ function scrapeTrackers() {
 
     client.scrape();
 
-    client.on('scrape', function (data, err) {
-        // console.log(data.complete);
+    client.on('scrape', function (data) {
         process.send(['scrape-update', data]); //mainWindow.webContents.send('scrape-update', data);
     }).on('error', function (err) {
         console.log(err);

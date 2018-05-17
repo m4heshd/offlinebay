@@ -15,10 +15,6 @@ let inst = (args[3] === 'true');
 count = count > 0 ? count : 100;
 count = count > 10000 ? 10000 : count;
 
-// console.log(count);
-// console.log(query);
-// console.log(inst);
-
 let i = 1;
 let reg;
 let stream;
@@ -154,11 +150,9 @@ let finSearch = function () {
         process.send(['search-success', {
             resCount: --i,
             results: result
-            // names: names
         }]); //mainWindow.webContents.send('search-success');
     }
 
-    console.log(process.uptime());
     process.exit(0);
 };
 
@@ -168,13 +162,12 @@ function search() {
     stream = fs.createReadStream(path.join(process.cwd(), 'data', 'processed.csv'))
         .once('open', function () {
             papa.parse(stream, {
-                // fastMode: true,
                 delimiter: ';',
                 escapeChar: '\\',
                 header: true,
                 chunk: procData,
                 complete: finSearch,
-                error: function (error, file) {
+                error: function (error) {
                     process.send(['search-failed', 'process']); //mainWindow.webContents.send('search-failed', 'process');
                     console.log(error);
                 }

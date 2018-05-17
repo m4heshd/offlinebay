@@ -1137,16 +1137,16 @@ function popMsg(txt, type) {
                 enter: 'animated fadeInUp',
                 exit: 'animated fadeOutDown'
             },
-            template: '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0} alert-or" role="alert">\n' +
-            '    <button type="button" aria-hidden="true" class="close close-or" data-notify="dismiss">&times;</button>\n' +
-            '    <span data-notify="icon"></span> \n' +
-            '    <span data-notify="title">{1}</span> \n' +
-            '    <span data-notify="message" style="vertical-align: middle">{2}</span>\n' +
-            '    <div class="progress" data-notify="progressbar">\n' +
-            '        <div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">\n' +
-            '        </div>\n' +
-            '    </div>\n' +
-            '    <a href="{3}" target="{4}" data-notify="url"></a>\n' +
+            template: '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0} alert-or" role="alert">' +
+            '    <button type="button" aria-hidden="true" class="close close-or" data-notify="dismiss">&times;</button>' +
+            '    <span data-notify="icon"></span> ' +
+            '    <span data-notify="title">{1}</span> ' +
+            '    <span data-notify="message" style="vertical-align: middle">{2}</span>' +
+            '    <div class="progress" data-notify="progressbar">' +
+            '        <div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">' +
+            '        </div>' +
+            '    </div>' +
+            '    <a href="{3}" target="{4}" data-notify="url"></a>' +
             '</div>'
         });
     }
@@ -1166,22 +1166,22 @@ function popSupportMsg() {
             enter: 'animated fadeInUp',
             exit: 'animated fadeOutDown'
         },
-        template: '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0} alert-or support-alert" role="alert">\n' +
-        '    <button type="button" aria-hidden="true" class="close close-or" data-notify="dismiss">&times;</button>\n' +
-        '    <h2>Loving OfflineBay?</h2>\n' +
-        '    <h5>Give some support..</h5>\n' +
-        '    <div class="support-body">\n' +
-        '        <div>\n' +
-        '            <img src="img/heart.png">\n' +
-        '        </div>\n' +
-        '        <div class="item-v-center">\n' +
-        '            <div>\n' +
-        '                <span>BTC : <b><a class="btcLink">12d9qz6bzL6tiB4oeX595oEo9ENMTEzF5y</a></b></span>\n' +
-        '                <span>ETH : <b><a class="ethLink">0xe84CBc4B4C64c6800619942172F93dcfb1030972</a></b></span>\n' +
-        '                <span>BCH : <b><a class="bchLink">qqguu77ylq7p72m02ksv78jyzy86vtk6jqtrrc40r3</a></b></span>\n' +
-        '            </div>\n' +
-        '        </div>\n' +
-        '    </div>\n' +
+        template: '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0} alert-or support-alert" role="alert">' +
+        '    <button type="button" aria-hidden="true" class="close close-or" data-notify="dismiss">&times;</button>' +
+        '    <h2>Loving OfflineBay?</h2>' +
+        '    <h5>Give some support..</h5>' +
+        '    <div class="support-body">' +
+        '        <div>' +
+        '            <img src="img/heart.png">' +
+        '        </div>' +
+        '        <div class="item-v-center">' +
+        '            <div>' +
+        '                <span>BTC : <b><a class="btcLink">12d9qz6bzL6tiB4oeX595oEo9ENMTEzF5y</a></b></span>' +
+        '                <span>ETH : <b><a class="ethLink">0xe84CBc4B4C64c6800619942172F93dcfb1030972</a></b></span>' +
+        '                <span>BCH : <b><a class="bchLink">qqguu77ylq7p72m02ksv78jyzy86vtk6jqtrrc40r3</a></b></span>' +
+        '            </div>' +
+        '        </div>' +
+        '    </div>' +
         '</div>'
     });
 }
