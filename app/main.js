@@ -34,6 +34,8 @@ let awaitingScrape = false;
 let splashWindow;
 let mainWindow;
 let obTray;
+let appIcon = path.join(__dirname, 'img', 'icon.png');
+let trayIcon = path.join(__dirname, 'img', 'icon_32.png');
 let version = 'N/A';
 
 // Log to file
@@ -62,6 +64,18 @@ try {
     }
 } catch (error) {
     console.log(error);
+}
+
+// Set app & tray icons
+switch (process.platform) {
+    case 'win32':
+        appIcon = path.join(__dirname, 'img', 'icon.ico');
+        trayIcon = appIcon;
+        break;
+    case 'darwin':
+        appIcon = path.join(__dirname, 'img', 'icon.icns');
+        trayIcon = path.join(__dirname, 'img', 'icon_16.png');
+        break;
 }
 
 /* Process handles
@@ -439,7 +453,8 @@ function showSplash() {
         show: false,
         frame: false,
         transparent: true,
-        alwaysOnTop: true
+        alwaysOnTop: true,
+        icon: appIcon
     });
 
     splashWindow.loadURL(url.format({
@@ -471,7 +486,8 @@ function startOB() {
         backgroundColor: '#1e2a31',
         webPreferences: {
             experimentalFeatures: true
-        }
+        },
+        icon: appIcon
     });
 
     mainWindow.loadURL(url.format({
@@ -534,15 +550,7 @@ function startOB() {
 
 // Create system tray icon and functions
 function setSysTray() {
-    let trayICO;
-
-    if (process.platform === 'win32') {
-        trayICO = path.join(__dirname, 'img', 'icon.ico');
-    } else {
-        trayICO = path.join(__dirname, 'img', 'icon_16.png');
-    }
-
-    obTray = new Tray(trayICO);
+    obTray = new Tray(trayIcon);
     const trayMnu = Menu.buildFromTemplate([
         {label: 'OfflineBay ' + version, icon: path.join(__dirname, 'img', 'icon_16.png'), enabled: false},
         {type: 'separator'},
