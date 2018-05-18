@@ -248,7 +248,8 @@ function saveRndPrefs(rndPrefs) {
                             $set: {
                                 updURL: rndPrefs.updURL,
                                 updType: rndPrefs.updType,
-                                updInt: rndPrefs.updInt
+                                updInt: rndPrefs.updInt,
+                                keepDL: rndPrefs.keepDL
                             }
                         }, function (err, numReplaced) {
                             if (err || numReplaced < 1) {
@@ -325,15 +326,14 @@ ipcMain.on('pop-import', function () {
 }); // Import dump file open dialog
 ipcMain.on('drop-import', function (event, data) {
     if (!procSearch && !procUpd) {
-        doImport(false, data, ''); // (isUpd, filePath, timestamp)
+        doImport(false, data, '', false); // (isUpd, filePath, timestamp, keepDL)
     } else {
         popErr('Cannot import in the middle of another process');
     }
 }); // Import files dragged and dropped to the mainWindow
-
 ipcMain.on('upd-import', function (event, data) {
     if (!procSearch) {
-        doImport(true, data[0], data[1]);
+        doImport(true, data[0], data[1], data[2]);
     } else {
         popWarn('Can\'t update the dump file in the middle of searching')
     }
@@ -593,15 +593,15 @@ function popImport() {
         });
 
     if (typeof dlg !== "undefined") {
-        doImport(false, dlg[0], '');
+        doImport(false, dlg[0], '', false);
     }
 }
 
 // Perform dump import process (Update or manual)
-function doImport(isUpd, filePath, timestamp) {
+function doImport(isUpd, filePath, timestamp, keepDL) {
     if (!procImport) {
         mainWindow.webContents.send('import-start');
-        procImport = cp.fork(path.join(__dirname, 'main-functions', 'import-dump.js'), [isUpd, filePath, timestamp], {
+        procImport = cp.fork(path.join(__dirname, 'main-functions', 'import-dump.js'), [isUpd, filePath, timestamp, keepDL], {
             cwd: __dirname,
             silent: true
         });

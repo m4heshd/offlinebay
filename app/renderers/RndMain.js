@@ -16,6 +16,7 @@ let prefs = {
     updType: 'off',
     updInt: 20,
     updStat: ['complete', '', ''],
+    keepDL: false,
     theme: 'default'
 };
 
@@ -89,6 +90,7 @@ function loadPrefs() {
             prefs.updType = dmp.updType;
             prefs.updInt = dmp.updInt;
             prefs.updStat = dmp.updStat;
+            prefs.keepDL = dmp.keepDL;
 
             if (prefs.updType === 'auto' || prefs.updType === 'notify') {
                 startAutoDump();
@@ -355,7 +357,7 @@ ipcRenderer.on('upd-dump-update', function (event, data) {
 ipcRenderer.on('upd-dump-success', function (event, data) {
     prefs.updStat = ['downloaded', data[0], data[1]];
     setStatTxt('Update Downloaded..');
-    ipcRenderer.send('upd-import', data);
+    ipcRenderer.send('upd-import', [data[0], data[1], prefs.keepDL]);
 });
 // Fired on any dump update error
 ipcRenderer.on('upd-dump-failed', function (event, data) {
@@ -1037,6 +1039,7 @@ function setPrefsWindow(){
     $('#txtDumpURL').removeClass('txtinvalid').val(prefs.updURL);
     $('#rdoUpdType input[value="' + prefs.updType + '"]').prop('checked', true);
     $('#txtUpdInt').val(prefs.updInt);
+    $('#chkKeepDL').prop('checked', prefs.keepDL);
     $('#txtLastUpd').text(moment(prefs.updLast).format('YYYY-MM-DD hh:mm:ss'));
     $('#btnSavePrefs').prop('disabled',false);
 }
@@ -1049,6 +1052,7 @@ function savePrefs(){
     prefs.updURL = $('#txtDumpURL').val();
     prefs.updType = $('#rdoUpdType input[name="dmpUpdType"]:checked').val();
     prefs.updInt = parseInt($('#txtUpdInt').val());
+    prefs.keepDL = $('#chkKeepDL').prop('checked');
     ipcRenderer.send('pref-change', ['logToFile', $('#chkLogger').prop('checked')]);
 
     ipcRenderer.send('save-rnd-prefs', prefs);
@@ -1222,7 +1226,7 @@ function startAutoDump() {
     dmpTimer = setInterval(function () {
         if (prefs.updStat[0] === 'downloaded') {
             setStatTxt('Update Downloaded..');
-            ipcRenderer.send('upd-import', [prefs.updStat[1], prefs.updStat[2]]);
+            ipcRenderer.send('upd-import', [prefs.updStat[1], prefs.updStat[2], prefs.keepDL]);
         } else {
             setStatTxt('Checking for updates..');
             ipcRenderer.send('upd-dump', [prefs.updURL, prefs.updType, prefs.updLast]); // [URL, <type>]
