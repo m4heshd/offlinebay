@@ -76,42 +76,39 @@ function validate() {
 
 // Truncate the staging file if exist or create, Process the data and import.
 function startImport() {
-    fs.truncate(stagePath, 0, function (err) {
-        let stage = fs.createWriteStream(stagePath, {
-            flags: 'a'
-        }).on('error', function (err) {
-            stage.close();
-            console.log(err);
-            process.send(['import-failed', 'temp']);// mainWindow.webContents.send('import-failed', 'temp');
-        }).on('open', function () {
-            let lineCount = 1;
-            fs.createReadStream(extract)
-                .on("data", function (buffer) {
-                    let idx = -1;
-                    lineCount--;
-                    let formattedLine = buffer.toString().replace(/(?!";)(?<!;)(?<!\\)"/g, '\\"');
-                    stage.write(formattedLine);
-                    do {
-                        idx = buffer.indexOf(10, idx + 1);
-                        lineCount++;
-                    } while (idx !== -1);
-                    let progress = Math.round((lineCount / totalLines) * 100);
-                    process.send(['import-update', ['import', progress]]);
-                })
-                .on("error", function (err) {
-                    stage.close();
-                    console.log(err);
-                    process.send(['import-failed', 'read']);// mainWindow.webContents.send('import-failed', 'read');
-                })
-                .on("end", function () {
-                    stage.close();
-                    if (lineCount === totalLines) {
-                        finalize();
-                    } else {
-                        process.send(['import-failed', 'process']); //mainWindow.webContents.send('import-failed', 'process');
-                    }
-                });
-        });
+    let lineCount = 1;
+    let stage = fs.createWriteStream(stagePath).on('error', function (err) {
+        stage.close();
+        console.log(err);
+        process.send(['import-failed', 'temp']);// mainWindow.webContents.send('import-failed', 'temp');
+    }).on('open', function () {
+        fs.createReadStream(extract)
+            .on("data", function (buffer) {
+                let idx = -1;
+                lineCount--;
+                let formattedLine = buffer.toString().replace(/(?!";)(?<!;)(?<!\\)"/g, '\\"');
+                stage.write(formattedLine);
+                do {
+                    idx = buffer.indexOf(10, idx + 1);
+                    lineCount++;
+                } while (idx !== -1);
+                let progress = Math.round((lineCount / totalLines) * 100);
+                process.send(['import-update', ['import', progress]]);
+            })
+            .on("error", function (err) {
+                stage.close();
+                console.log(err);
+                process.send(['import-failed', 'read']);// mainWindow.webContents.send('import-failed', 'read');
+            })
+            .on("end", function () {
+                stage.close();
+            });
+    }).on("close", function () {
+        if (lineCount === totalLines) {
+            finalize();
+        } else {
+            process.send(['import-failed', 'process']); //mainWindow.webContents.send('import-failed', 'process');
+        }
     });
 }
 
