@@ -4,7 +4,7 @@
     -webkit-user-drag: none;
 }
 body {
-    /*font-family: Roboto,sans-serif;*/
+    font-family: 'Nunito', sans-serif;
     font-size: 13px;
     line-height: 1.42857143;
     color: var(--bodyTxt);
@@ -108,6 +108,7 @@ span, strong {
     width: 100%;
     background-color: var(--compClr);
     color: var(--bodyTxt);
+    font-family: fantasy;
     -webkit-app-region: no-drag;
 }
 .btn-ctl i {
@@ -332,7 +333,7 @@ span, strong {
 }
 .prefs-upd-int {
     display: grid;
-    grid-template-columns: 177px 60px 50px;
+    grid-template-columns: 178px 60px 50px;
     grid-column-gap: 5px;
 }
 .prefs-btns {
@@ -769,12 +770,15 @@ thead > tr > th:hover,
 ------------------------*/
 .support-alert {
     min-width: 470px;
-    max-width: 513px;
+    max-width: 524px;
 }
 .support-body {
     display: grid;
     grid-template-columns: 90px auto;
     grid-column-gap: 7px;
+}
+.support-alert h2, .support-alert h5 {
+    font-weight: 700;
 }
 .support-body span {
     font-size: 14px;
