@@ -16,6 +16,7 @@ let args = process.argv.slice(2);
 let isUpd = (args[0] === 'true');
 let filePath = args[1];
 let timestamp = args[2];
+let keepDL = (args[3] === 'true');
 let stagePath = path.join(process.cwd(), 'data', 'stage.csv');
 let extract = path.join(process.cwd(), 'data', 'downloads', 'torrent_dump_full.csv');
 let totalLines = 0;
@@ -165,11 +166,7 @@ function finalize(){
             process.send(['import-failed', 'finalize']); //mainWindow.webContents.send('import-failed', 'finalize');
         } else {
             if (isUpd) {
-                fs.unlink(filePath, function (err) {
-                    if (err) {
-                        console.log(err);
-                        process.send(['notify', ['Unable to remove downloaded file', 'danger']]); //mainWindow.webContents.send('notify', ['Unable to remove downloaded file', 'danger']);
-                    }
+                if (keepDL) {
                     fs.unlink(extract, function (err) {
                         if (err) {
                             console.log(err);
@@ -177,7 +174,21 @@ function finalize(){
                         }
                         process.send(['import-success', timestamp]);// mainWindow.webContents.send('import-success', timestamp);
                     });
-                });
+                } else {
+                    fs.unlink(filePath, function (err) {
+                        if (err) {
+                            console.log(err);
+                            process.send(['notify', ['Unable to remove downloaded file', 'danger']]); //mainWindow.webContents.send('notify', ['Unable to remove downloaded file', 'danger']);
+                        }
+                        fs.unlink(extract, function (err) {
+                            if (err) {
+                                console.log(err);
+                                process.send(['notify', ['Unable to remove extracted file', 'danger']]); //mainWindow.webContents.send('notify', ['Unable to remove downloaded file', 'danger']);
+                            }
+                            process.send(['import-success', timestamp]);// mainWindow.webContents.send('import-success', timestamp);
+                        });
+                    });
+                }
             } else {
                 // Last updated time will be the opened file's modified time if manually imported
                 let tstamp = new Date().toString();
