@@ -83,6 +83,7 @@ fieldset[disabled] .checkbox label {
     opacity: 0;
     filter: alpha(opacity=0);
     margin-top: 0;
+    transform: translate(0, -1.7px);
 }
 .checkbox.disabled,
 .radio.disabled,
@@ -129,6 +130,7 @@ fieldset[disabled] .checkbox label {
     width: 17px;
     height: 17px;
     border-radius: 2px;
+    transform: translate(0, -1.7px);
 }
 .checkbox .input-helper:after,
 .checkbox-inline .input-helper:after {
@@ -142,6 +144,7 @@ fieldset[disabled] .checkbox label {
     top: 1px;
     font-weight: bold;
     color: var(--bodyBg);
+    transform: translate(0, -1.7px);
 }
 .checkbox .input-helper:before,
 .checkbox-inline .input-helper:before {
@@ -261,7 +264,7 @@ fieldset[disabled] .checkbox label {
     border-bottom-width: 1px;
     border-bottom-color: var(--tblHeadBottomBorder);
     color: var(--bodyTxt);
-    font-weight: 500;
+    font-weight: 700;
 }
 .table--vmiddle th,
 .table--vmiddle td {
