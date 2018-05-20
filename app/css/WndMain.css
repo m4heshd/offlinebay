@@ -295,6 +295,7 @@ span, strong {
     overflow-y: auto;
     border-radius: 4px;
     background: var(--compClr);
+    box-shadow: 0 2px 2px 0 var(--compShadow1), 0 0 0 1px var(--compShadow2);
 }
 .btnCopyTrck {
     grid-area: btnCopyTrck;
@@ -595,7 +596,7 @@ span, strong {
     visibility: hidden;
     position: absolute;
     width: 120px;
-    background-color: var(--txtFocusBg);
+    background-color: var(--mnuBg);
     color: var(--mnuTxt);
     text-align: center;
     padding: 5px 0;
@@ -614,7 +615,7 @@ span, strong {
     left: 50%;
     margin-left: -5px;
     border: 5px solid transparent;
-    border-top-color: var(--txtFocusBg);
+    border-top-color: var(--mnuBg);
 }
 .show-tooltip:hover .tooltiptext {
     visibility: visible;
