@@ -11,13 +11,14 @@ let prefs = {
     sysTray: false,
     useDHT: true,
     trckURL: 'https://newtrackon.com/api/stable',
-    updURL: 'http://127.0.0.1/tpb/torrent_dump_full.csv.gz',
-    updLast: '2017-01-07T11:44:34.000Z',
+    updURL: 'https://thepiratebay.org/static/dump/csv/torrent_dump_full.csv.gz',
+    updLast: '2003-01-01T00:00:00.000Z',
     updType: 'off',
     updInt: 20,
     updStat: ['complete', '', ''],
     keepDL: false,
-    theme: 'default'
+    theme: 'default',
+    thmURL: 'https://www.google.com/search?q=OfflineBay%20themes'
 };
 
 /* Logging
@@ -96,6 +97,17 @@ function loadPrefs() {
                 startAutoDump();
             }
 
+        } else {
+            console.log(err);
+            popMsg('Unable to read preferences from config DB', 'danger')();
+        }
+    });
+
+    config.findOne({type: 'etc'}, function (err, etc) {
+        if (!err && etc) {
+            if (etc.thmURL && etc.thmURL.trim() !== '') {
+                prefs.thmURL = etc.thmURL;
+            }
         } else {
             console.log(err);
             popMsg('Unable to read preferences from config DB', 'danger')();
@@ -363,6 +375,7 @@ ipcRenderer.on('upd-dump-success', function (event, data) {
 ipcRenderer.on('upd-dump-failed', function (event, data) {
     if (data[1] === 'user') {
         hideOL();
+        $('#txtStatRight').css('visibility', 'hidden');
         switch (data[0]) {
             case 'file':
                 popMsg('Failed to download update. Unable to create the file', 'danger')();
@@ -1246,6 +1259,9 @@ $(".themes-tiles").on('click', '.btn-theme-apply', function () {
 });
 $(".themes-tiles").on('click', '.btn-theme-del', function () {
     removeTheme($(this).data('thm-name'));
+});
+$("#btnDLThemes").on('click', function () {
+    openLink(prefs.thmURL);
 });
 $("#btnImportTheme").on('click', function () {
     ipcRenderer.send('theme-import');

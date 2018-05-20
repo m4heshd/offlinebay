@@ -1,8 +1,9 @@
-{"type":"win-state","maxed":false,"position":[297,85],"size":[1257,865],"_id":"0"}
+{"type":"win-state","maxed":false,"position":[304,69],"size":[1287,865],"_id":"0"}
 {"type":"trackers","url":"https://newtrackon.com/api/stable","trackers":["http://tracker.tfile.me:80/announce","udp://tracker.torrent.eu.org:451/announce","udp://thetracker.org:80/announce","http://torrent.nwps.ws:80/announce","http://alpha.torrenttracker.nl:443/announce","http://0d.kebhana.mx:443/announce","udp://bt.xxx-tracker.com:2710/announce","udp://inferno.demonoid.pw:3418/announce","udp://tracker.justseed.it:1337/announce","udp://tracker.vanitycore.co:6969/announce","udp://open.stealth.si:80/announce","udp://tracker.coppersurfer.tk:6969/announce","udp://tracker.opentrackr.org:1337/announce","udp://tracker.cypherpunks.ru:6969/announce","udp://tracker.tiny-vps.com:6969/announce","http://retracker.mgts.by:80/announce","udp://retracker.lanta-net.ru:2710/announce","udp://public.popcorn-tracker.org:6969/announce","http://tracker.skyts.net:6969/announce","udp://ipv4.tracker.harry.lu:80/announce","http://tracker.city9x.com:2710/announce","udp://tracker.martlet.tk:6969/announce","http://retracker.telecom.by:80/announce","udp://9.rarbg.com:2710/announce"],"_id":"1"}
-{"type":"search","rs_count":2,"smart":true,"inst":false,"_id":"2"}
+{"type":"search","rs_count":100,"smart":true,"inst":false,"_id":"2"}
 {"type":"dump","updURL":"http://127.0.0.1/tpb/torrent_dump_full.csv.gz","updLast":"2018-04-23T16:44:44.000Z","updType":"off","updInt":20,"keepDL":true,"updStat":["complete","",""],"_id":"3"}
 {"type":"gen","sysTray":false,"logToFile":true,"useDHT":true,"supMsg":"2018-05-17T16:12:20.757Z","_id":"4"}
-{"type":"win-state","maxed":false,"position":[297,85],"size":[1257,865],"_id":"0"}
-{"type":"win-state","maxed":false,"position":[297,85],"size":[1257,865],"_id":"0"}
-{"type":"search","rs_count":2,"smart":true,"inst":false,"_id":"2"}
+{"type":"etc","thmURL":"https://www.google.com/search?q=OfflineBay%20themes","_id":"5"}
+{"type":"win-state","maxed":false,"position":[304,69],"size":[1287,865],"_id":"0"}
+{"type":"win-state","maxed":false,"position":[304,69],"size":[1287,865],"_id":"0"}
+{"type":"search","rs_count":100,"smart":true,"inst":false,"_id":"2"}
