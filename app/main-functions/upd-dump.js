@@ -63,6 +63,7 @@ function downloadDump(down_url, targetPath) {
                 let dTstamp = new Date(tstamp);
                 fs.futimesSync(final, dTstamp, dTstamp); // Set modified time of the downloaded file to the time from remote file
                 fs.fsyncSync(final); // This part is essential to ensure that file is completely written to the disk before extracting
+                fs.closeSync(final);
                 process.send(['upd-dump-success', [targetPath, tstamp]]); //mainWindow.webContents.send('upd-dump-success', [targetPath, tstamp]);
                 process.exit(0);
             }
