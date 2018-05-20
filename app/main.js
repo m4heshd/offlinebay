@@ -319,6 +319,11 @@ ipcMain.on('drag-leave', function () {
         mainWindow.webContents.send('hide-ol');
     }
 }); // Validate 'dragleave' event on mainWindow
+ipcMain.on('show-dev', function () {
+    if (mainWindow) {
+        mainWindow.openDevTools();
+    }
+}); // Hand show dev console event
 
 /* Import */
 ipcMain.on('pop-import', function () {

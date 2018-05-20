@@ -146,6 +146,13 @@ ipcRenderer.on('show-drag-ol', function () {
     showOL('Drop to import..');
 });
 
+// Shortcut key to open the dev console
+$(window).on('keyup', function (e) {
+    if (e.ctrlKey && e.shiftKey && e.keyCode === 68) {
+        ipcRenderer.send('show-dev');
+    }
+});
+
 /* Window controls
 --------------------*/
 // Fired on maximization of the main window
