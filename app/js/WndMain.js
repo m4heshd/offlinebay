@@ -54,6 +54,9 @@ $(document).ready(function () {
         if (!$(this).hasClass('active')) {
             $('#tblMain .active').removeClass('active');
             $(this).addClass('active');
+            $('.imgDots').css({
+                visibility: 'hidden'
+            });
             $('#pnlSeeds').css({
                 visibility: 'hidden'
             });

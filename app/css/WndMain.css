@@ -394,7 +394,7 @@ span, strong {
 }
 .themes-btns {
     display: grid;
-    grid-template-columns: auto 120px 120px;
+    grid-template-columns: auto 120px 120px 120px;
     grid-column-gap: 10px;
 }
 
