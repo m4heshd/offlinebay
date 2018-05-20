@@ -143,6 +143,7 @@ function decompressDump() {
             try {
                 let final = fs.openSync(extract, 'r+'); // This step is needed because 'fd' returned by the 'open' event will be null at this point.
                 fs.fsyncSync(final); // This part is essential because the disk cache won't be flushed before importing and processed file will end up with missing bytes
+                fs.closeSync(final);
                 startCSV();
             } catch (error) {
                 console.log(error);
@@ -157,6 +158,7 @@ function finalize(){
 
     let final = fs.openSync(stagePath, 'r+');
     fs.fsyncSync(final);
+    fs.closeSync(final);
 
     let processed = path.join(process.cwd(), 'data', 'processed.csv');
 
