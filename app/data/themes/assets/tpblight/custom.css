@@ -1,0 +1,15 @@
+.tbl-grid, .trackers-tbl {
+    background: #f6f1ee;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f2ece7;
+}
+
+thead {
+    background: #d2b9a6;
+}
+
+.table > thead > tr > th {
+    border-top: none;
+}
