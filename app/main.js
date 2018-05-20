@@ -454,7 +454,8 @@ function showSplash() {
         frame: false,
         transparent: true,
         alwaysOnTop: true,
-        icon: appIcon
+        icon: appIcon,
+        title: 'OfflineBay by TechTac'
     });
 
     splashWindow.loadURL(url.format({
@@ -487,7 +488,8 @@ function startOB() {
         webPreferences: {
             experimentalFeatures: true
         },
-        icon: appIcon
+        icon: appIcon,
+        title: 'OfflineBay by TechTac'
     });
 
     mainWindow.loadURL(url.format({
