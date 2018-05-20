@@ -12,8 +12,6 @@ const moment = require('moment');
 
 const {app, BrowserWindow, ipcMain, dialog, Menu, Tray} = electron;
 
-app.setAppUserModelId(process.execPath); // To support Windows notifications
-
 let prefs = {
     maxed: false,
     position: [0, 0],
@@ -22,7 +20,7 @@ let prefs = {
     smart: true,
     inst: false,
     logToFile: true
-};
+}; // Set initial Preferences
 let procImport;
 let procSearch;
 let procScrape;
@@ -37,6 +35,22 @@ let obTray;
 let appIcon = path.join(__dirname, 'img', 'icon.png');
 let trayIcon = path.join(__dirname, 'img', 'icon_32.png');
 let version = 'N/A';
+
+/* System handles
+------------------*/
+// Allow only a single instance of OfflineBay
+let shouldQuit = app.makeSingleInstance(function() {
+    if (mainWindow) {
+        mainWindow.show();
+        mainWindow.focus();
+    }
+});
+if (shouldQuit) {
+    app.quit();
+    return;
+}
+
+app.setAppUserModelId(process.execPath); // To support Windows notifications
 
 // Log to file
 let logger = fs.createWriteStream(path.join(__dirname, 'data', 'logger.log'));
