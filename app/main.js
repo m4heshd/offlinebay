@@ -38,11 +38,12 @@ let version = 'N/A';
 
 /* System handles
 ------------------*/
+let isMac = process.platform === 'darwin';
+
 // Allow only a single instance of OfflineBay
 let shouldQuit = app.makeSingleInstance(function() {
     if (mainWindow) {
-        mainWindow.show();
-        mainWindow.focus();
+        showWindow();
     }
 });
 if (shouldQuit) {
@@ -89,6 +90,7 @@ switch (process.platform) {
     case 'darwin':
         appIcon = path.join(__dirname, 'img', 'icon.icns');
         trayIcon = path.join(__dirname, 'img', 'icon_16.png');
+        app.dock.bounce('critical');
         break;
 }
 
@@ -311,7 +313,14 @@ ipcMain.on('get-logger-type', function (event) {
 
 /* Window controls */
 ipcMain.on('app-close', function (event, data) {
-    data ? mainWindow.hide() : app.quit();
+    if (data) {
+        mainWindow.hide();
+        if (isMac) {
+            app.dock.hide();
+        }
+    } else {
+        app.quit();
+    }
 }); // Close button control
 ipcMain.on('app-min', function () {
     mainWindow.minimize();
@@ -320,8 +329,7 @@ ipcMain.on('app-max', function () {
     mainWindow.isMaximized() ? mainWindow.restore() : mainWindow.maximize();
 }); // Maximize/Restore button control
 ipcMain.on('show-win', function () {
-    mainWindow.show();
-    mainWindow.focus();
+    showWindow();
 }); // Show and focus mainWindow
 ipcMain.on('drag-enter', function () {
     if (!procSearch && !procUpd && !procImport) {
@@ -569,6 +577,15 @@ function startOB() {
     setSysTray();
 }
 
+// Show and Focus mainWindow
+function showWindow(){
+    mainWindow.show();
+    mainWindow.focus();
+    if (isMac) {
+        app.dock.show();
+    }
+}
+
 // Create system tray icon and functions
 function setSysTray() {
     obTray = new Tray(trayIcon);
@@ -591,13 +608,19 @@ function setSysTray() {
         mainWindow.center();
     }
 
-    function showWindow(){
-        mainWindow.show();
-        mainWindow.focus();
-    }
-
     function updCheckRequest() {
         mainWindow.webContents.send('upd-check-tray');
+    }
+
+    if (isMac) {
+        const dockMnu = Menu.buildFromTemplate([
+            {label: 'OfflineBay ' + version, icon: path.join(__dirname, 'img', 'icon_16.png'), enabled: false},
+            {type: 'separator'},
+            {label: 'Show', click: showWindow},
+            {label: 'Center on screen', click: centerWindow},
+            {label: 'Check dump updates', click: updCheckRequest}
+        ]);
+        app.dock.setMenu(dockMnu);
     }
 }
 

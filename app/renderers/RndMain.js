@@ -327,6 +327,7 @@ ipcRenderer.on('upd-check-notify', function () {
 ipcRenderer.on('upd-check-failed', function (event, data) {
     if (data[1] === 'check') {
         hideOL();
+        $('#txtStatRight').css('visibility', 'hidden');
         switch (data[0]) {
             case 'download':
                 popMsg('Failed to check updates. Check your internet connection and URL', 'danger')();
@@ -382,7 +383,6 @@ ipcRenderer.on('upd-dump-success', function (event, data) {
 ipcRenderer.on('upd-dump-failed', function (event, data) {
     if (data[1] === 'user') {
         hideOL();
-        $('#txtStatRight').css('visibility', 'hidden');
         switch (data[0]) {
             case 'file':
                 popMsg('Failed to download update. Unable to create the file', 'danger')();
