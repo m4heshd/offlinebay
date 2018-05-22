@@ -644,9 +644,10 @@ thead > tr > th:hover,
 .top-search {
     position: relative;
     margin: 2px 0;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 2px 2px 0 var(--compShadow1), 0 0 0 1px var(--compShadow2);
     /*display: inline;*/
+    display: inline-block;
 }
 
 .top-search__input {
@@ -710,7 +711,7 @@ thead > tr > th:hover,
 .top-search__reset:after, .top-search__reset:before {
     position: absolute;
     left: 20px;
-    top: 15px
+    top: 14px
 }
 
 .top-search__reset:after {
@@ -788,4 +789,35 @@ thead > tr > th:hover,
 .support-body span a:hover {
     color: darkred !important;
     cursor: pointer;
+}
+
+/* Autocomplete
+----------------*/
+.autocomplete-items {
+    position: absolute;
+    display: table;
+    z-index: 8;
+    top: 100%;
+    left: 40px;
+    right: 0;
+    background-color: var(--txtFocusBg);
+    border-radius: 4px;
+    box-shadow: 0 6px 12px var(--mnuGlow);
+}
+.autocomplete-items div {
+    cursor: pointer;
+    color: var(--txtFocustxt);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all;
+    transition-duration: 300ms;
+    padding: 10px 50px 10px 10px;
+}
+.autocomplete-items div strong {
+    font-weight: 800;
+}
+.autocomplete-items div:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+.autocomplete-active {
+    background-color: rgba(0, 0, 0, 0.1);
 }
