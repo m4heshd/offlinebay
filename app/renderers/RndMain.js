@@ -18,7 +18,8 @@ let prefs = {
     updStat: ['complete', '', ''],
     keepDL: false,
     theme: 'default',
-    thmURL: 'https://www.google.com/search?q=OfflineBay%20themes'
+    thmURL: 'https://www.google.com/search?q=OfflineBay%20themes',
+    useAC: true
 };
 
 /* Logging
@@ -68,6 +69,11 @@ function loadPrefs() {
             ipcRenderer.send('pref-change', ['rs_count', pref.rs_count]);
             ipcRenderer.send('pref-change', ['smart', pref.smart]);
             ipcRenderer.send('pref-change', ['inst', pref.inst]);
+
+            prefs.useAC = pref.useAC;
+            searchHistory = pref.history;
+            searchHistory.reverse();
+            if (prefs.useAC) setAutocomplete();
         } else {
             console.log(err);
             popMsg('Unable to read preferences from config DB', 'danger')();
@@ -531,6 +537,10 @@ function startSearch() {
     });
 
     ipcRenderer.send('search-start', [query, count, smart, inst]);
+
+    if (prefs.useAC) {
+        addHistoryItm(query);
+    }
 }
 $('#btnSearch').on('click', function () {
     startSearch();
@@ -1669,13 +1679,14 @@ function removeTheme(thmName) {
 ----------------*/
 let searchHistory = [];
 
-function SetAutocomplete() {
+// Set key events and functions to txtSearch to perform autocomplete
+function setAutocomplete() {
     let comp = $('#txtSearch');
     let currentFocus;
 
     comp.on('input', function () {
         let dropdown;
-        let txt = $(this).val();
+        let txt = $(this).val().toLowerCase().trim();
 
         closeAllLists();
         if (!txt) { return false;}
@@ -1692,7 +1703,7 @@ function SetAutocomplete() {
 
         let count = 0;
         for (let c = 0; c < searchHistory.length; c++) {
-            let idx = searchHistory[c].toLowerCase().indexOf(txt.toLowerCase());
+            let idx = searchHistory[c].toLowerCase().indexOf(txt);
             if (idx > -1) {
                 let newItm = `<div data-txt="${searchHistory[c]}"><span>${searchHistory[c].substr(0, idx)}<strong>${searchHistory[c].substr(idx, txt.length)}</strong>${searchHistory[c].substr(idx + txt.length)}</span></div>`;
                 dropdown.append(newItm);
@@ -1752,4 +1763,20 @@ function SetAutocomplete() {
             closeAllLists();
         }
     })
+}
+
+// Add new item to the search history if it doesn't already exist
+function addHistoryItm(text) {
+    let exist = false;
+    let formatted = text.toLowerCase().trim();
+    for (let c = 0; c < searchHistory.length; c++) {
+        if (searchHistory[c].toLowerCase() === formatted){
+            exist = true;
+            break;
+        }
+    }
+    if (!exist) {
+        searchHistory.unshift(text.trim());
+        ipcRenderer.send('add-history-itm', text.trim());
+    }
 }

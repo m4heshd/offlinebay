@@ -179,6 +179,15 @@ function saveUpdLast(updLast) {
     });
 }
 
+// Add new search history item to the DB
+function addHistoryItm(txt) {
+    config.update({type: 'search'}, {$push: {history: txt}}, function (err, numReplaced) {
+        if (err || numReplaced < 1) {
+            console.log(err);
+        }
+    })
+}
+
 // Update last support message shown timestamp on DB
 function updSupMsgDate() {
     config.update({type: 'gen'}, {$set: {supMsg: new Date().toISOString()}}, function (err, numReplaced) {
@@ -370,6 +379,9 @@ ipcMain.on('upd-import', function (event, data) {
 ipcMain.on('search-start', function (event, data) {
     initSearch(data[0], data[1], data[2], data[3]);
 }); // Handle search event
+ipcMain.on('add-history-itm', function (event, data) {
+    addHistoryItm(data);
+}); // Handle add new history item event
 
 /* Preferences */
 ipcMain.on('pref-change', function (event, data) {
