@@ -540,10 +540,17 @@ $('#txtSearch').keypress(function (e) {
     if (e.which === 13) {
         startSearch();
     }
+}).keydown(function (e) {
+    if(e.which === 27) {
+        if (!$('.autocomplete-items').length) {
+            $(this).val('');
+            $(this).blur();
+        }
+    }
 });
 // txtResCount validation and Return key event
 $('#txtResCount').keypress(function (e) {
-    let charCode = (e.which) ? e.which : e.keyCode;
+    let charCode = e.which;
     if (charCode === 13) {
         startSearch();
     }
@@ -1656,4 +1663,93 @@ function removeTheme(thmName) {
             }
         });
     }
+}
+
+/* Autocomplete
+----------------*/
+let searchHistory = [];
+
+function SetAutocomplete() {
+    let comp = $('#txtSearch');
+    let currentFocus;
+
+    comp.on('input', function () {
+        let dropdown;
+        let txt = $(this).val();
+
+        closeAllLists();
+        if (!txt) { return false;}
+        currentFocus = -1;
+
+        dropdown = $(`<div id="${$(this).attr('id') + 'autocomplete-list'}" class="autocomplete-items"></div>`);
+        $(this).parent().append(dropdown);
+
+        dropdown.on('click', 'div', function () {
+            comp.val($(this).data('txt'));
+            closeAllLists();
+            comp.focus();
+        });
+
+        let count = 0;
+        for (let c = 0; c < searchHistory.length; c++) {
+            let idx = searchHistory[c].toLowerCase().indexOf(txt.toLowerCase());
+            if (idx > -1) {
+                let newItm = `<div data-txt="${searchHistory[c]}"><span>${searchHistory[c].substr(0, idx)}<strong>${searchHistory[c].substr(idx, txt.length)}</strong>${searchHistory[c].substr(idx + txt.length)}</span></div>`;
+                dropdown.append(newItm);
+                count++;
+            }
+            if (count > 4) break;
+        }
+        if (!count) {
+            closeAllLists();
+        }
+    });
+
+    comp.on('keydown', function (e) {
+        let x = $(`#${$(this).attr('id')}autocomplete-list`);
+        if (x[0]) x = x.find('div');
+        if (x.length) {
+            if (e.which === 40) {
+                e.preventDefault();
+                currentFocus++;
+                addActive(x);
+            } else if (e.which === 38) {
+                e.preventDefault();
+                currentFocus--;
+                addActive(x);
+            } else if (e.which === 13) {
+                e.preventDefault();
+                if (currentFocus > -1) {
+                    x[currentFocus].click();
+                } else {
+                    closeAllLists();
+                    startSearch();
+                }
+            }
+        }
+        if (e.which === 27) {
+            closeAllLists();
+        }
+    });
+
+    function addActive(x) {
+        removeActive(x);
+        if (currentFocus >= x.length) currentFocus = 0;
+        if (currentFocus < 0) currentFocus = (x.length - 1);
+        $(x[currentFocus]).addClass('autocomplete-active');
+    }
+
+    function removeActive(x) {
+        x.removeClass('autocomplete-active');
+    }
+
+    function closeAllLists() {
+        $('.autocomplete-items').remove();
+    }
+
+    $(document).on('click', function (e) {
+        if(!$(e.target).parents('.autocomplete-items')[0]){
+            closeAllLists();
+        }
+    })
 }
