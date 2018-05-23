@@ -321,8 +321,11 @@ span, strong {
 .prefs-opts {
     overflow-y: auto;
 }
+.prefs-opts hr {
+    border-top: 1px solid var(--compClr);
+}
 .prefs-section{
-    margin: 40px 0;
+    margin: 30px 0;
 }
 .prefs-itm {
     margin-top: 20px;

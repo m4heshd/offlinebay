@@ -188,6 +188,20 @@ function addHistoryItm(txt) {
     })
 }
 
+// Clear search history on DB
+function clearHistory() {
+    return new Promise((resolve, reject) => {
+        config.update({type: 'search'}, { $set: { history: [] } }, function (err, numReplaced) {
+            if (err || numReplaced < 1) {
+                console.log(err);
+                reject();
+            } else {
+                resolve();
+            }
+        })
+    });
+}
+
 // Update last support message shown timestamp on DB
 function updSupMsgDate() {
     config.update({type: 'gen'}, {$set: {supMsg: new Date().toISOString()}}, function (err, numReplaced) {
@@ -281,13 +295,24 @@ function saveRndPrefs(rndPrefs) {
                                 console.log(err);
                                 reject();
                             } else {
-                                resolve();
+                                config.update({type: 'search'}, {
+                                    $set: {
+                                        useAC: rndPrefs.useAC
+                                    }
+                                }, function (err, numReplaced) {
+                                    if (err || numReplaced < 1) {
+                                        console.log(err);
+                                        reject();
+                                    } else {
+                                        resolve();
+                                    }
+                                });
                             }
-                        })
+                        });
                     }
-                })
+                });
             }
-        })
+        });
     });
 }
 
@@ -382,6 +407,13 @@ ipcMain.on('search-start', function (event, data) {
 ipcMain.on('add-history-itm', function (event, data) {
     addHistoryItm(data);
 }); // Handle add new history item event
+ipcMain.on('clear-history', function () {
+    clearHistory().then(function () {
+        popSuccess('Search history was cleared successfully');
+    }).catch(function () {
+        popErr('Failed to clear search history on DB')
+    });
+}); // Handle clear search history event
 
 /* Preferences */
 ipcMain.on('pref-change', function (event, data) {
