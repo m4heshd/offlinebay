@@ -372,7 +372,8 @@
                                     Log to file
                                 </label>
                             </div> <!-- chkLogger -->
-                        </div>
+                        </div> <!-- General section -->
+                        <hr>
                         <div class="prefs-section">
                             <span class="font-weight-bold"><u>Trackers</u></span>
                             <div class="prefs-span-txt prefs-itm">
@@ -385,9 +386,26 @@
                                            autocomplete="off">
                                 </div>
                             </div>
-                        </div>
+                        </div> <!-- Trackers section -->
+                        <hr>
                         <div class="prefs-section">
-                            <span class="font-weight-bold"><u>Seeds/Peers</u></span>
+                            <span class="font-weight-bold"><u>Search</u></span>
+                            <div class="checkbox item-v-center prefs-itm">
+                                <label>
+                                    <input id="chkAC" type="checkbox" checked>
+                                    <i class="input-helper"></i>
+                                    Use Autocomplete
+                                </label>
+                            </div> <!-- chkAC -->
+                            <div class="prefs-itm">
+                                <button id="btnClearAC" class="btn-ui btn-themed" style="width: 120px" type="button">
+                                    Clear History
+                                </button>
+                            </div>
+                        </div> <!-- Search section -->
+                        <hr>
+                        <div class="prefs-section">
+                            <span class="font-weight-bold"><u>Seeds/Peers Discovery</u></span>
                             <div class="checkbox item-v-center prefs-itm">
                                 <label>
                                     <input id="chkDHT" type="checkbox" checked>
@@ -395,7 +413,8 @@
                                     Use DHT (DHT + Trackers)
                                 </label>
                             </div> <!-- chkDHT -->
-                        </div>
+                        </div> <!-- Seeds/Peers section -->
+                        <hr>
                         <div class="prefs-section">
                             <span class="font-weight-bold"><u>Dump Updates</u></span>
                             <div class="prefs-span-txt prefs-itm">
@@ -457,13 +476,13 @@
                                     <span id="txtLastUpd"></span>
                                 </div>
                             </div>
-                            <div class="prefs-span-txt prefs-itm">
+                            <div class="prefs-itm">
                                 <button id="btnResetUpd" class="btn-ui btn-themed" style="width: 120px" type="button">
                                     Reset Update
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </div> <!-- Dump updates section -->
                     <div class="prefs-btns">
                         <div></div>
                         <div>

@@ -73,7 +73,14 @@ function loadPrefs() {
             prefs.useAC = pref.useAC;
             searchHistory = pref.history;
             searchHistory.reverse();
-            if (prefs.useAC) setAutocomplete();
+            if (prefs.useAC) {
+                setAutocomplete();
+            } else {
+                unsetAutoComplete();
+            }
+            if (searchHistory.length > 2000) {
+                popMsg('Please consider clearing your search history. Go to<br><b>Settings > Preferences > Clear History</b>', 'warning')();
+            }
         } else {
             console.log(err);
             popMsg('Unable to read preferences from config DB', 'danger')();
@@ -197,14 +204,14 @@ if (process.platform === 'win32') {
         try {
             let scDetails = shell.readShortcutLink(shortcut);
             if (scDetails.appUserModelId !== process.execPath) {
-                popMsg('Your start menu shortcut is not valid anymore. Please go to <b>Settings > Windows shortcut</b>', 'warning')();
+                popMsg('Your start menu shortcut is not valid anymore. Please go to<br><b>Settings > Windows shortcut</b>', 'warning')();
             }
         } catch (error) {
             console.log(error);
             popMsg('An error occured trying to validate the shortcut', 'danger')();
         }
     } else {
-        popMsg('Shortcut not found. Notification won\'t work anymore. Please go to <b>Settings > Windows shortcut</b>', 'warning')();
+        popMsg('Shortcut not found. Notification won\'t work anymore. Please go to<br><b>Settings > Windows shortcut</b>', 'warning')();
     }
 } else {
     $('#mnuItmShortcut').css('display', 'none');
@@ -544,19 +551,6 @@ function startSearch() {
 }
 $('#btnSearch').on('click', function () {
     startSearch();
-});
-// txtSearch Return key event
-$('#txtSearch').keypress(function (e) {
-    if (e.which === 13) {
-        startSearch();
-    }
-}).keydown(function (e) {
-    if(e.which === 27) {
-        if (!$('.autocomplete-items').length) {
-            $(this).val('');
-            $(this).blur();
-        }
-    }
 });
 // txtResCount validation and Return key event
 $('#txtResCount').keypress(function (e) {
@@ -1029,10 +1023,6 @@ function hideOL() {
     $('.body-container').css('filter', '');
 }
 
-$('#overlay').on('click', function () {
-    hideOL();
-});
-
 /* All trackers window
 ------------------------*/
 $('#btnCopyTrck').on('click', function () {
@@ -1072,6 +1062,7 @@ function setPrefsWindow(){
     $('#chkTray').prop('checked', prefs.sysTray);
     $('#chkLogger').prop('checked', ipcRenderer.sendSync('get-logger-type'));
     $('#txtTrckURL').removeClass('txtinvalid').val(prefs.trckURL);
+    $('#chkAC').prop('checked', prefs.useAC);
     $('#chkDHT').prop('checked', prefs.useDHT);
     $('#txtDumpURL').removeClass('txtinvalid').val(prefs.updURL);
     $('#rdoUpdType input[value="' + prefs.updType + '"]').prop('checked', true);
@@ -1085,6 +1076,7 @@ function setPrefsWindow(){
 function savePrefs(){
     prefs.sysTray = $('#chkTray').prop('checked');
     prefs.trckURL = $('#txtTrckURL').val();
+    prefs.useAC = $('#chkAC').prop('checked');
     prefs.useDHT = $('#chkDHT').prop('checked');
     prefs.updURL = $('#txtDumpURL').val();
     prefs.updType = $('#rdoUpdType input[name="dmpUpdType"]:checked').val();
@@ -1098,6 +1090,12 @@ function savePrefs(){
         startAutoDump();
     } else {
         stopAutoDump();
+    }
+
+    if (prefs.useAC) {
+        setAutocomplete();
+    } else {
+        unsetAutoComplete();
     }
 }
 
@@ -1679,10 +1677,19 @@ function removeTheme(thmName) {
 ----------------*/
 let searchHistory = [];
 
+$('#btnClearAC').on('click', function () {
+    if (confirm('Are you sure you want to completely clear the search history?', 'Clear search history')) {
+        ipcRenderer.send('clear-history');
+        searchHistory = [];
+    }
+});
+
 // Set key events and functions to txtSearch to perform autocomplete
 function setAutocomplete() {
     let comp = $('#txtSearch');
     let currentFocus;
+
+    unsetAutoComplete();
 
     comp.on('input', function () {
         let dropdown;
@@ -1762,7 +1769,23 @@ function setAutocomplete() {
         if(!$(e.target).parents('.autocomplete-items')[0]){
             closeAllLists();
         }
-    })
+    });
+}
+
+// Turn off Autocomplete and rebind regular key events
+function unsetAutoComplete() {
+    $('#txtSearch').off('input keydown keypress').keypress(function (e) {
+        if (e.which === 13) {
+            startSearch();
+        }
+    }).keydown(function (e) {
+        if(e.which === 27) {
+            if (!$('.autocomplete-items').length) {
+                $(this).val('');
+                $(this).blur();
+            }
+        }
+    }); // txtSearch Return key and Esc key events
 }
 
 // Add new item to the search history if it doesn't already exist
