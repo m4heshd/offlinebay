@@ -19,7 +19,8 @@ let prefs = {
     rs_count: 100,
     smart: true,
     inst: false,
-    logToFile: true
+    logToFile: true,
+    confVer: "1.0"
 }; // Set initial Preferences
 let procImport;
 let procSearch;
@@ -484,6 +485,14 @@ ipcMain.on('theme-import', function () {
     popThemeImport();
 }); // Handle import theme event
 
+/* Import & Export settings */
+ipcMain.on('pop-exp-conf', function () {
+    popExpConf();
+}); // Handle export settings save dialog event
+ipcMain.on('pop-imp-conf', function () {
+    popImpConf();
+}); // Handle import settings open dialog event
+
 /* Misc */
 ipcMain.on('update-sup-msg', function () {
     updSupMsgDate();
@@ -945,4 +954,91 @@ function checkAppUpd(updURL) {
             }
         }
     );
+}
+
+/* Import & Export settings
+----------------------------*/
+// Pop save dialog and export settings
+function popExpConf() {
+    let dlg = dialog.showSaveDialog(
+        mainWindow,
+        {
+            title: 'Export settings as',
+            defaultPath: 'OBSettings.db',
+            filters: [
+                {name: 'Settings dump', extensions: ['db']}
+            ]
+        });
+
+    if (typeof dlg !== "undefined") {
+        try {
+            fs.createReadStream(path.join(__dirname, 'data', 'config.db')).pipe(fs.createWriteStream(dlg));
+            popSuccess('Settings were exported successfully');
+        } catch (error) {
+            console.log(error);
+            popErr('Failed to export. An error occurred');
+        }
+    }
+}
+
+// Pop open dialog, Validate and import settings
+function popImpConf() {
+    let dlg = dialog.showOpenDialog(
+        mainWindow,
+        {
+            properties: ['openFile'],
+            title: 'Open exported settings (DB)',
+            filters: [
+                {name: 'Settings dump', extensions: ['db']}
+            ]
+        });
+
+    if (typeof dlg !== "undefined") {
+        let expConf = new Datastore({
+            filename: dlg[0],
+            autoload: true
+        });
+
+        expConf.findOne({type: 'gen'}, function (err, pref) {
+            if (!err && pref) {
+                if (prefs.confVer === pref.confVer) {
+                    config.remove({}, {multi: true}, function (err, numRemoved) {
+                        if (err || numRemoved < 1) {
+                            popErr('Failed to import. An error occurred while clearing current settings');
+                        } else {
+                            expConf.find({}, function (err, pref) {
+                                if (!err && pref) {
+                                    config.insert(pref, function (err) {
+                                        if (err) {
+                                            popErr('Failed to import. An error occurred while replacing current settings');
+                                        } else {
+                                            popSuccess('Settings were imported successfully');
+                                            dialog.showMessageBox(
+                                                mainWindow,
+                                                {
+                                                    type: 'info',
+                                                    buttons: ['Ok'],
+                                                    title: 'App restart needed',
+                                                    message: 'Import is complete. OfflineBay will restart to apply new settings'
+                                                }, function () {
+                                                    app.relaunch();
+                                                    app.quit();
+                                                });
+                                        }
+                                    });
+                                } else {
+                                    popErr('Failed to import. An error occurred while retrieving new settings');
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    popErr('Unable to import. Exported settings version doesn\'t match the current version');
+                }
+            } else {
+                console.log(err, pref);
+                popErr('Unable to import. An error occurred trying to open the file');
+            }
+        })
+    }
 }

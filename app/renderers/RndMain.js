@@ -482,6 +482,17 @@ $('#mnuThemes').on('click', function () {
     loadThemes();
 });
 
+/* Export Settings */
+$('#mnuExpConf').on('click', function () {
+    ipcRenderer.send('pop-exp-conf');
+});
+
+/* Import Settings */
+$('#mnuImpConf').on('click', function () {
+    ipcRenderer.send('pop-imp-conf');
+});
+
+
 /* Windows Shortcut */
 $('#mnuShortcut').on('click', function () {
     if (process.platform === 'win32') {
@@ -600,6 +611,7 @@ ipcRenderer.on('search-update', function (event, data) {
 // Fired on search errors
 ipcRenderer.on('search-failed', function (event, data) {
     hideOL();
+    $('#txtStat').text('Search error occurred');
     switch (data) {
         case 'read':
             popMsg('Failed to read the dump file. Possible corruption or file doesn\'t exist', 'danger')();
