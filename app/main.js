@@ -231,7 +231,7 @@ function loadSession() {
             })
         } else {
             console.log(err);
-            setTimeout(popDbErr, 1500);
+            popDbErr();
         }
     })
 }
@@ -317,9 +317,7 @@ function saveRndPrefs(rndPrefs) {
 }
 
 function popDbErr() {
-    if (mainWindow) {
-        popErr('DB error occurred. Please re-install OfflineBay');
-    }
+    dialog.showErrorBox('Critical error', 'DB error occurred. Please re-install OfflineBay');
 }
 
 /* Main App handles
@@ -520,7 +518,7 @@ function waitProcess(event, _process, name) {
     _process.kill('SIGINT');
 }
 
-// Show splash window and load main window
+// Show splash window
 function showSplash() {
     splashWindow = new BrowserWindow({
         width: 300,
@@ -851,7 +849,7 @@ function checkDumpUpd(type, dlURL, updLast) {
                 let update = new Date(data.headers['last-modified']) - new Date(updLast);
                 if (update > 0) {
                     if (type === 'check') {
-                        let res = dialog.showMessageBox(
+                        dialog.showMessageBox(
                             mainWindow,
                             {
                                 type: 'question',
@@ -859,15 +857,15 @@ function checkDumpUpd(type, dlURL, updLast) {
                                 title: 'Update confirmation',
                                 message: 'An update is available. Do you want to proceed with the download?',
                                 cancelId: 1
+                            }, function (res) {
+                                if (res === 0) {
+                                    mainWindow.webContents.send('upd-dump-init', 'user');
+                                    initUpdDump('user', dlURL);
+                                } else {
+                                    mainWindow.webContents.send('hide-ol');
+                                    mainWindow.webContents.send('hide-stat');
+                                }
                             });
-
-                        if (res === 0) {
-                            mainWindow.webContents.send('upd-dump-init', 'user');
-                            initUpdDump('user', dlURL);
-                        } else {
-                            mainWindow.webContents.send('hide-ol');
-                            mainWindow.webContents.send('hide-stat');
-                        }
                     } else if (type === 'notify') {
                         mainWindow.webContents.send('upd-check-notify');
                     } else if (type === 'auto') {
@@ -925,7 +923,7 @@ function checkAppUpd(updURL) {
                     let stable = JSON.parse(body)["stable"];
                     if (stable > version) {
                         let link = JSON.parse(body)["stable-dl"];
-                        let res = dialog.showMessageBox(
+                        dialog.showMessageBox(
                             mainWindow,
                             {
                                 type: 'question',
@@ -933,11 +931,11 @@ function checkAppUpd(updURL) {
                                 title: 'OfflineBay update',
                                 message: 'You\'re using an old version of OfflineBay. New version ' + stable + ' is available.\nDo you want to visit the download page?',
                                 cancelId: 1
+                            }, function (res) {
+                                if (res === 0) {
+                                    mainWindow.webContents.send('open-link', link);
+                                }
                             });
-
-                        if (res === 0) {
-                            mainWindow.webContents.send('open-link', link);
-                        }
                     }
                 } catch (error) {
                     console.log(error);
