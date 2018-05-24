@@ -121,6 +121,9 @@ function loadPrefs() {
             if (etc.thmURL && etc.thmURL.trim() !== '') {
                 prefs.thmURL = etc.thmURL;
             }
+            setTimeout(function () {
+                ipcRenderer.send('app-upd-check', etc.appUpdURL);
+            }, 2000)
         } else {
             console.log(err);
             popMsg('Unable to read preferences from config DB', 'danger')();
@@ -997,6 +1000,10 @@ function openLink(link) {
         }
     });
 }
+
+ipcRenderer.on('open-link', function (event, data) {
+    openLink(data);
+});
 
 /* Overlay
 -------------*/

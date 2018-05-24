@@ -381,6 +381,11 @@ ipcMain.on('show-dev', function () {
     }
 }); // Hand show dev console event
 
+/* App Update */
+ipcMain.on('app-upd-check', function (event, data) {
+    checkAppUpd(data);
+}); // Handle check app updates event
+
 /* Import */
 ipcMain.on('pop-import', function () {
     popImport();
@@ -905,4 +910,41 @@ function popThemeImport() {
     if (typeof dlg !== "undefined") {
         mainWindow.webContents.send('init-theme-import', dlg[0]);
     }
+}
+
+/* App Updates
+---------------*/
+// Check for new OfflineBay versions
+function checkAppUpd(updURL) {
+    request({
+            method: 'GET',
+            uri: updURL
+        }, function (error, response, body) {
+            if (!error) {
+                try {
+                    let stable = JSON.parse(body)["stable"];
+                    if (stable > version) {
+                        let link = JSON.parse(body)["stable-dl"];
+                        let res = dialog.showMessageBox(
+                            mainWindow,
+                            {
+                                type: 'question',
+                                buttons: ['Yes', 'No'],
+                                title: 'OfflineBay update',
+                                message: 'You\'re using an old version of OfflineBay. New version ' + stable + ' is available.\nDo you want to visit the download page?',
+                                cancelId: 1
+                            });
+
+                        if (res === 0) {
+                            mainWindow.webContents.send('open-link', link);
+                        }
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            } else {
+                console.log(error);
+            }
+        }
+    );
 }
