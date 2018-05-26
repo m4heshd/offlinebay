@@ -57,7 +57,7 @@ function loadPrefs() {
             }
         } else {
             console.log(err);
-            popMsg('Unable to read preferences from config DB', 'danger')();
+            popMsg('Unable to read preferences from config DB', 'danger');
         }
     });
 
@@ -79,11 +79,11 @@ function loadPrefs() {
                 unsetAutoComplete();
             }
             if (searchHistory.length > 2000) {
-                popMsg('Please consider clearing your search history. Go to<br><b>Settings > Preferences > Clear History</b>', 'warning')();
+                popMsg('Please consider clearing your search history. Go to<br><b>Settings > Preferences > Clear History</b>', 'warning');
             }
         } else {
             console.log(err);
-            popMsg('Unable to read preferences from config DB', 'danger')();
+            popMsg('Unable to read preferences from config DB', 'danger');
         }
     });
 
@@ -93,7 +93,7 @@ function loadPrefs() {
             allTrackers = trck.trackers;
         } else {
             console.log(err);
-            popMsg('Unable to read preferences from config DB', 'danger')();
+            popMsg('Unable to read preferences from config DB', 'danger');
         }
     });
 
@@ -112,7 +112,7 @@ function loadPrefs() {
 
         } else {
             console.log(err);
-            popMsg('Unable to read preferences from config DB', 'danger')();
+            popMsg('Unable to read preferences from config DB', 'danger');
         }
     });
 
@@ -126,7 +126,7 @@ function loadPrefs() {
             }, 2000)
         } else {
             console.log(err);
-            popMsg('Unable to read preferences from config DB', 'danger')();
+            popMsg('Unable to read preferences from config DB', 'danger');
         }
     });
 
@@ -137,7 +137,7 @@ function loadPrefs() {
             setTitleImg(prefs.theme);
         } else {
             console.log(err);
-            popMsg('Unable to load current theme from DB', 'danger')();
+            popMsg('Unable to load current theme from DB', 'danger');
         }
     });
 }
@@ -207,14 +207,14 @@ if (process.platform === 'win32') {
         try {
             let scDetails = shell.readShortcutLink(shortcut);
             if (scDetails.appUserModelId !== process.execPath) {
-                popMsg('Your start menu shortcut is not valid anymore. Please go to<br><b>Settings > Windows shortcut</b>', 'warning')();
+                popMsg('Your start menu shortcut is not valid anymore. Please go to<br><b>Settings > Windows shortcut</b>', 'warning');
             }
         } catch (error) {
             console.log(error);
-            popMsg('An error occured trying to validate the shortcut', 'danger')();
+            popMsg('An error occured trying to validate the shortcut', 'danger');
         }
     } else {
-        popMsg('Shortcut not found. Notification won\'t work anymore. Please go to<br><b>Settings > Windows shortcut</b>', 'warning')();
+        popMsg('Shortcut not found. Notification won\'t work anymore. Please go to<br><b>Settings > Windows shortcut</b>', 'warning');
     }
 } else {
     $('#mnuItmShortcut').css('display', 'none');
@@ -256,7 +256,7 @@ ipcRenderer.on('import-success', function (event, data) {
     ipcRenderer.send('save-upd-last', [prefs.updLast, 'import']);
     prefs.updStat[0] = 'complete';
     hideOL();
-    popMsg('Dump file imported successfully', 'success')();
+    popMsg('Dump file imported successfully', 'success');
     $('#txtStat').text('Dump updated @ ' + moment().format('YYYY-MM-DD hh:mm:ss'));
     $('#txtStatRight').css('visibility', 'hidden');
     let ntf = new Notification('OfflineBay Dump update', {
@@ -273,31 +273,31 @@ ipcRenderer.on('import-failed', function (event, data) {
     hideOL();
     switch (data) {
         case 'read':
-            popMsg('Dump file import failed. Unable to read opened file', 'danger')();
+            popMsg('Dump file import failed. Unable to read opened file', 'danger');
             break;
         case 'temp':
-            popMsg('Dump file import failed. Unable to access the staging file', 'danger')();
+            popMsg('Dump file import failed. Unable to access the staging file', 'danger');
             break;
         case 'csv-create':
-            popMsg('Failed to extract dump. Unable to create csv file', 'danger')();
+            popMsg('Failed to extract dump. Unable to create csv file', 'danger');
             break;
         case 'gz-extract':
-            popMsg('Failed to extract dump. Unable to read downloaded file', 'danger')();
+            popMsg('Failed to extract dump. Unable to read downloaded file', 'danger');
             break;
         case 'after-extract':
-            popMsg('Failed to import. Unable to access extracted file', 'danger')();
+            popMsg('Failed to import. Unable to access extracted file', 'danger');
             break;
         case 'process':
-            popMsg('Dump file import failed. Didn\'t process correctly', 'danger')();
+            popMsg('Dump file import failed. Didn\'t process correctly', 'danger');
             break;
         case 'invalid':
-            popMsg('Dump file invalid. Mismatching header', 'danger')();
+            popMsg('Dump file invalid. Mismatching header', 'danger');
             break;
         case 'finalize':
-            popMsg('Dump file import failed. Unable to create the processed file', 'danger')();
+            popMsg('Dump file import failed. Unable to create the processed file', 'danger');
             break;
         default:
-            popMsg('Dump file import failed. Unspecified error.', 'danger')();
+            popMsg('Dump file import failed. Unspecified error.', 'danger');
     }
 });
 
@@ -321,7 +321,7 @@ ipcRenderer.on('upd-check-tray', function () {
 ipcRenderer.on('upd-check-unavail', function (event, data) {
     if (data === 'check') {
         hideOL();
-        popMsg('Your dump file is up to date', 'success')();
+        popMsg('Your dump file is up to date', 'success');
     }
     $('#txtStatRight').css('visibility', 'hidden');
 });
@@ -346,13 +346,13 @@ ipcRenderer.on('upd-check-failed', function (event, data) {
         $('#txtStatRight').css('visibility', 'hidden');
         switch (data[0]) {
             case 'download':
-                popMsg('Failed to check updates. Check your internet connection and URL', 'danger')();
+                popMsg('Failed to check updates. Check your internet connection and URL', 'danger');
                 break;
             case 'content':
-                popMsg('Failed to check updates. Try a mirror URL', 'danger')();
+                popMsg('Failed to check updates. Try a mirror URL', 'danger');
                 break;
             default:
-                popMsg('Failed to check updates. Unknown error', 'danger')();
+                popMsg('Failed to check updates. Unknown error', 'danger');
         }
     } else {
         switch (data[0]) {
@@ -401,16 +401,16 @@ ipcRenderer.on('upd-dump-failed', function (event, data) {
         hideOL();
         switch (data[0]) {
             case 'file':
-                popMsg('Failed to download update. Unable to create the file', 'danger')();
+                popMsg('Failed to download update. Unable to create the file', 'danger');
                 break;
             case 'download':
-                popMsg('Failed to download update. Check your internet connection and URL', 'danger')();
+                popMsg('Failed to download update. Check your internet connection and URL', 'danger');
                 break;
             case 'content':
-                popMsg('Failed to download update. File unavailable. Try a mirror URL', 'danger')();
+                popMsg('Failed to download update. File unavailable. Try a mirror URL', 'danger');
                 break;
             default:
-                popMsg('Failed to update dump. Unknown error', 'danger')();
+                popMsg('Failed to update dump. Unknown error', 'danger');
         }
     } else {
         switch (data[0]) {
@@ -438,7 +438,7 @@ $('#mnuUpdTrcks').on('click', function () {
 // Fired after trackers are successfully updated
 ipcRenderer.on('upd-trackers-success', function (event, data) {
     hideOL();
-    popMsg('Trackers were updated successfully', 'success')();
+    popMsg('Trackers were updated successfully', 'success');
     allTrackers = data;
     $('#txtStat').text('Trackers updated @ ' + moment().format('YYYY-MM-DD hh:mm:ss'));
 });
@@ -447,19 +447,19 @@ ipcRenderer.on('upd-trackers-failed', function (event, data) {
     hideOL();
     switch (data) {
         case 'ep':
-            popMsg('Failed to update trackers. Unable to retrieve URL from DB', 'danger')();
+            popMsg('Failed to update trackers. Unable to retrieve URL from DB', 'danger');
             break;
         case 'net':
-            popMsg('Failed to update trackers. Check your internet connection and URL', 'danger')();
+            popMsg('Failed to update trackers. Check your internet connection and URL', 'danger');
             break;
         case 'empty':
-            popMsg('Failed to update trackers. Response is empty', 'danger')();
+            popMsg('Failed to update trackers. Response is empty', 'danger');
             break;
         case 'update':
-            popMsg('Failed to update trackers. Unable to update the DB', 'danger')();
+            popMsg('Failed to update trackers. Unable to update the DB', 'danger');
             break;
         default:
-            popMsg('Failed to update trackers. Unknown error', 'danger')();
+            popMsg('Failed to update trackers. Unknown error', 'danger');
     }
 });
 
@@ -505,13 +505,13 @@ $('#mnuShortcut').on('click', function () {
                 iconIndex: 0
             });
             if (res) {
-                popMsg('Shortcut created successfully', 'success')();
+                popMsg('Shortcut created successfully', 'success');
             } else {
-                popMsg('Failed to create the shortcut', 'danger')();
+                popMsg('Failed to create the shortcut', 'danger');
             }
         }
     } else {
-        popMsg('You need to be on Windows to create a shortcut', 'warning')();
+        popMsg('You need to be on Windows to create a shortcut', 'warning');
     }
 });
 
@@ -614,13 +614,13 @@ ipcRenderer.on('search-failed', function (event, data) {
     $('#txtStat').text('Search error occurred');
     switch (data) {
         case 'read':
-            popMsg('Failed to read the dump file. Possible corruption or file doesn\'t exist', 'danger')();
+            popMsg('Failed to read the dump file. Possible corruption or file doesn\'t exist', 'danger');
             break;
         case 'process':
-            popMsg('Search error. Mismatching data in dump file', 'danger')();
+            popMsg('Search error. Mismatching data in dump file', 'danger');
             break;
         default:
-            popMsg('Search failed. Unspecified error.', 'danger')();
+            popMsg('Search failed. Unspecified error.', 'danger');
     }
 });
 // Fired at the end of search if user didn't check instant search
@@ -870,16 +870,16 @@ ipcRenderer.on('scrape-update-DHT', function () {
 });
 // Fired on errors when scraping
 ipcRenderer.on('scrape-failed', function () {
-    popMsg('Failed to read the dump file. Possible corruption or file doesn\'t exist', 'danger')();
+    popMsg('Failed to read the dump file. Possible corruption or file doesn\'t exist', 'danger');
 });
 // Fired on warnings when scraping
 ipcRenderer.on('scrape-warn', function (event, data) {
     switch (data){
         case 'empty':
-            popMsg('No Trackers found. Try updating trackers or re-installing OfflineBay', 'warning')();
+            popMsg('No Trackers found. Try updating trackers or re-installing OfflineBay', 'warning');
             break;
         case 'db':
-            popMsg('Unable to retrieve trackers from DB. Please re-install OfflineBay', 'warning')();
+            popMsg('Unable to retrieve trackers from DB. Please re-install OfflineBay', 'warning');
             break;
     }
 });
@@ -889,7 +889,7 @@ ipcRenderer.on('scrape-end', function () {
         visibility: 'hidden'
     });
     if (!seeds.length){
-        popMsg('Possible error trying to retrieve Seeds/Peers count. Check your internet connection', 'danger')();
+        popMsg('Possible error trying to retrieve Seeds/Peers count. Check your internet connection', 'danger');
     }
 });
 
@@ -900,9 +900,9 @@ $('#btnHash').on('click', function () {
     if (selected.length > 0) {
         let base64Hash = $(':nth-child(2)', selected).html().trim();
         clipboard.writeText(getInfoHash(base64Hash));
-        popMsg('Info Hash copied to clipboard', 'info')();
+        popMsg('Info Hash copied to clipboard', 'info');
     } else {
-        popMsg('Please select a torrent to get the Info Hash', 'warning')();
+        popMsg('Please select a torrent to get the Info Hash', 'warning');
     }
 });
 
@@ -912,9 +912,9 @@ $('#btnCopyMag').on('click', function () {
         let base64Hash = $(':nth-child(2)', selected).html().trim();
         let name = $(':nth-child(3)', selected).html().trim();
         clipboard.writeText(getMagnetLink(base64Hash, name));
-        popMsg('Magnet link copied to clipboard', 'info')();
+        popMsg('Magnet link copied to clipboard', 'info');
     } else {
-        popMsg('Please select a torrent to get the Magnet link', 'warning')();
+        popMsg('Please select a torrent to get the Magnet link', 'warning');
     }
 });
 
@@ -927,13 +927,13 @@ $('#btnOpenMag').on('click', function () {
         shell.openExternal(magnet, {}, function (err) {
             if (err) {
                 console.log(err);
-                popMsg('Unable to open the Magnet link', 'danger')();
+                popMsg('Unable to open the Magnet link', 'danger');
             }else {
-                popMsg('Magnet link opened in default Torrent client', 'info')();
+                popMsg('Magnet link opened in default Torrent client', 'info');
             }
         },);
     } else {
-        popMsg('Please select a torrent to open the Magnet link', 'warning')();
+        popMsg('Please select a torrent to open the Magnet link', 'warning');
     }
 });
 
@@ -943,9 +943,9 @@ $('#btnGoogle').on('click', function () {
         let base64Hash = $(':nth-child(2)', selected).html().trim();
         let search = 'http://www.google.com/search?q=' + urlencode(getInfoHash(base64Hash));
         openLink(search);
-        popMsg('Search opened in the browser', 'info')();
+        popMsg('Search opened in the browser', 'info');
     } else {
-        popMsg('Please select a torrent to Google search', 'warning')();
+        popMsg('Please select a torrent to Google search', 'warning');
     }
 });
 
@@ -964,7 +964,7 @@ function getMagnetLink(base64, name) {
                 withname = withname + '&tr=' + urlencode(allTrackers[c])
             }
         } else {
-            popMsg('No trackers were found. Magnet link won\'t contain any trackers. Try updating trackers', 'warning')();
+            popMsg('No trackers were found. Magnet link won\'t contain any trackers. Try updating trackers', 'warning');
         }
     }
     return withname;
@@ -1008,7 +1008,7 @@ function openLink(link) {
     shell.openExternal(link, {}, function (err) {
         if (err) {
             console.log(err);
-            popMsg('Unable to open the link', 'danger')();
+            popMsg('Unable to open the link', 'danger');
         }
     });
 }
@@ -1049,17 +1049,17 @@ $('#btnCopyTrck').on('click', function () {
     if (selected.length > 0) {
         let tracker = $('td', selected).html().trim();
         clipboard.writeText(tracker);
-        popMsg('Tracker copied to clipboard', 'info')();
+        popMsg('Tracker copied to clipboard', 'info');
     } else {
-        popMsg('Please select a Tracker to copy', 'warning')();
+        popMsg('Please select a Tracker to copy', 'warning');
     }
 });
 $('#btnCopyAllTrck').on('click', function () {
     if (allTrackers.length > 0) {
         clipboard.writeText(allTrackers.join('\n'));
-        popMsg('All Trackers copied to clipboard', 'info')();
+        popMsg('All Trackers copied to clipboard', 'info');
     } else {
-        popMsg('No Trackers to copy. Try updating Trackers', 'warning')();
+        popMsg('No Trackers to copy. Try updating Trackers', 'warning');
     }
 });
 
@@ -1176,38 +1176,36 @@ function isUrlValid(url) {
 -------------------------*/
 // Fired on 'notify' event with message text and type from the main process. Then shows a notification.
 ipcRenderer.on('notify', function (event, msg) {
-    popMsg(msg[0], msg[1])();
+    popMsg(msg[0], msg[1]);
 });
 
 // Notification popup closure
 function popMsg(txt, type) {
-    return function () {
-        $.notify({
-            message: txt
-        }, {
-            type: type,
-            z_index: 1051,
-            placement: {
-                from: 'bottom',
-                align: 'right'
-            },
-            animate: {
-                enter: 'animated fadeInUp',
-                exit: 'animated fadeOutDown'
-            },
-            template: '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0} alert-or" role="alert">' +
-            '    <button type="button" aria-hidden="true" class="close close-or" data-notify="dismiss">&times;</button>' +
-            '    <span data-notify="icon"></span> ' +
-            '    <span data-notify="title">{1}</span> ' +
-            '    <span data-notify="message" style="vertical-align: middle">{2}</span>' +
-            '    <div class="progress" data-notify="progressbar">' +
-            '        <div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">' +
-            '        </div>' +
-            '    </div>' +
-            '    <a href="{3}" target="{4}" data-notify="url"></a>' +
-            '</div>'
-        });
-    }
+    $.notify({
+        message: txt
+    }, {
+        type: type,
+        z_index: 1051,
+        placement: {
+            from: 'bottom',
+            align: 'right'
+        },
+        animate: {
+            enter: 'animated fadeInUp',
+            exit: 'animated fadeOutDown'
+        },
+        template: '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0} alert-or" role="alert">' +
+        '    <button type="button" aria-hidden="true" class="close close-or" data-notify="dismiss">&times;</button>' +
+        '    <span data-notify="icon"></span> ' +
+        '    <span data-notify="title">{1}</span> ' +
+        '    <span data-notify="message" style="vertical-align: middle">{2}</span>' +
+        '    <div class="progress" data-notify="progressbar">' +
+        '        <div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">' +
+        '        </div>' +
+        '    </div>' +
+        '    <a href="{3}" target="{4}" data-notify="url"></a>' +
+        '</div>'
+    });
 }
 
 // Pop up Support offlinebay alert
@@ -1246,7 +1244,7 @@ function popSupportMsg() {
 
 $('body').on('click', '.btcLink, .ethLink, .bchLink', function () {
     clipboard.writeText($(this).html());
-    popMsg('Address copied to clipboard', 'info')();
+    popMsg('Address copied to clipboard', 'info');
 });
 
 /* Status text on right side
@@ -1326,7 +1324,7 @@ function loadThemes() {
             }
         } else {
             console.log(err);
-            popMsg('Unable to load themes from DB', 'danger')();
+            popMsg('Unable to load themes from DB', 'danger');
         }
     });
 }
@@ -1456,29 +1454,29 @@ function applyTheme(thmName) {
                     themeDB.update({applied: true}, { $set: { applied: false } }, function (err, numReplaced) {
                         if (err || numReplaced < 1) {
                             console.log(err);
-                            popMsg('Unable to update theme on DB', 'danger')();
+                            popMsg('Unable to update theme on DB', 'danger');
                         } else {
                             themeDB.update({name: thmName}, { $set: { applied: true } }, function (err, numReplaced) {
                                 if (err || numReplaced < 1) {
                                     console.log(err);
-                                    popMsg('Unable to update theme on DB', 'danger')();
+                                    popMsg('Unable to update theme on DB', 'danger');
                                 } else {
                                     loadThemes();
                                     prefs.theme = thmName;
-                                    popMsg('Theme \'' + theme.title + '\' has been applied', 'success')();
+                                    popMsg('Theme \'' + theme.title + '\' has been applied', 'success');
                                 }
                             });
                         }
                     });
                 } else {
                     console.log(err);
-                    popMsg('Unable to write the theme to file', 'danger')();
+                    popMsg('Unable to write the theme to file', 'danger');
                 }
             });
 
         } else {
             console.log(err);
-            popMsg('Unable to load the theme from DB', 'danger')();
+            popMsg('Unable to load the theme from DB', 'danger');
         }
     });
 }
@@ -1496,7 +1494,7 @@ function setTitleImg(thmName) {
         }
     } catch (error) {
         console.log(error);
-        popMsg('An error occurred locating title bar image', 'danger')();
+        popMsg('An error occurred locating title bar image', 'danger');
     }
 }
 
@@ -1511,7 +1509,7 @@ function loadCustomCSS(thmName) {
         }
     } catch (error) {
         console.log(error);
-        popMsg('An error occurred locating custom CSS', 'danger')();
+        popMsg('An error occurred locating custom CSS', 'danger');
     }
 }
 
@@ -1528,19 +1526,19 @@ function importTheme(thmPath) {
                 }).catch(function (err) {
                     switch (err) {
                         case 'name':
-                            popMsg('Invalid theme name. It cannot be empty', 'danger')();
+                            popMsg('Invalid theme name. It cannot be empty', 'danger');
                             break;
                         case 'title':
-                            popMsg('Invalid theme title. It cannot be empty', 'danger')();
+                            popMsg('Invalid theme title. It cannot be empty', 'danger');
                             break;
                         case 'regex':
-                            popMsg('Invalid theme name. It should only contain lowercase letters', 'danger')();
+                            popMsg('Invalid theme name. It should only contain lowercase letters', 'danger');
                             break;
                         case 'palette':
-                            popMsg('Failed to import. Theme doesn\'t contain proper variables', 'danger')();
+                            popMsg('Failed to import. Theme doesn\'t contain proper variables', 'danger');
                             break;
                         default:
-                            popMsg('Failed to import. An unknown error occurred', 'danger')();
+                            popMsg('Failed to import. An unknown error occurred', 'danger');
                     }
                 });
             } catch (error) {
@@ -1551,7 +1549,7 @@ function importTheme(thmPath) {
         }
     } catch (error) {
         console.log(error);
-        popMsg(error.toString(), 'danger')();
+        popMsg(error.toString(), 'danger');
     }
 
     // Validate the theme.json file before importing
@@ -1605,7 +1603,7 @@ function importTheme(thmPath) {
                         }, function (err, numReplaced) {
                             if (err || numReplaced < 1) {
                                 console.log(err);
-                                popMsg('Unable to replace the theme on DB', 'danger')();
+                                popMsg('Unable to replace the theme on DB', 'danger');
                             } else {
                                 extractThemeAssets(thmData, thmZip);
                             }
@@ -1620,7 +1618,7 @@ function importTheme(thmPath) {
                     }, function (err) {
                         if (err) {
                             console.log(err);
-                            popMsg('Unable to insert the theme to DB', 'danger')();
+                            popMsg('Unable to insert the theme to DB', 'danger');
                         } else {
                             extractThemeAssets(thmData, thmZip);
                         }
@@ -1628,7 +1626,7 @@ function importTheme(thmPath) {
                 }
             } else {
                 console.log(err);
-                popMsg('Unable to load themes from DB', 'danger')();
+                popMsg('Unable to load themes from DB', 'danger');
             }
         });
     }
@@ -1642,11 +1640,11 @@ function importTheme(thmPath) {
             if (thmZip.getEntry('custom.css') !== null) {
                 thmZip.extractEntryTo('custom.css', path.join(__dirname, 'data', 'themes', 'assets', thmData.name), false, true);
             }
-            popMsg('Theme \'' + thmData.title + '\' imported successfully', 'success')();
+            popMsg('Theme \'' + thmData.title + '\' imported successfully', 'success');
             loadThemes();
         } catch (error) {
             console.log(error);
-            popMsg(error.toString(), 'danger')();
+            popMsg(error.toString(), 'danger');
         }
     }
 }
@@ -1663,23 +1661,23 @@ function removeTheme(thmName) {
         themeDB.remove({name: thmName}, {}, function (err, numRemoved) {
             if (err || numRemoved < 1) {
                 console.log(err);
-                popMsg('Unable to remove the theme from DB', 'danger')();
+                popMsg('Unable to remove the theme from DB', 'danger');
             } else {
                 let assetsDir = path.join(__dirname, 'data', 'themes', 'assets', thmName);
                 if (fs.existsSync(assetsDir)) {
                     rimraf(assetsDir, function (err) {
                         if (err) {
                             console.log(err);
-                            popMsg('Failed to remove the assets directory', 'warning')();
+                            popMsg('Failed to remove the assets directory', 'warning');
                         }
                     });
                 }
-                popMsg('Theme \'' + thmName + '\' was successfully removed', 'success')();
+                popMsg('Theme \'' + thmName + '\' was successfully removed', 'success');
                 if (prefs.theme === thmName) {
                     themeDB.update({name: 'default'}, { $set: { applied: true } }, function (err, numReplaced) {
                         if (err || numReplaced < 1) {
                             console.log(err);
-                            popMsg('Unable to switch to default theme (DB Error)', 'danger')();
+                            popMsg('Unable to switch to default theme (DB Error)', 'danger');
                         } else {
                             applyTheme('default');
                         }
