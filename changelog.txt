@@ -1,0 +1,33 @@
+v 2.0.0:
+- Programming language switched to Javascript (NodeJS) from Java
+- Functionality stabilized on all platforms
+- GUI Built on Electron framework (HTML + CSS + Js)
+- Splash screen
+- Smoother animations
+- DB switched to NoSQL (NeDB)
+- Made Open-source
+- Gzip dump import support
+- 85% Faster importing
+- Drag and Drop importing
+- Remote dump update support
+- Auto dump update support
+- System notifications support
+- System tray support
+- 15% Faster searching
+- Instant search feature
+- Search autocomplete support
+- Fixed table sorting
+- Faster filtering
+- Faster Seeds/Peers discovery
+- DHT support for scraping
+- Customizable tracker fetching URL
+- Best trackers selection for magnet links
+- Theming support
+- Customizable configurations (Preferences window)
+- Configurations import/export support
+- Google search button
+- Windows shortcut helper
+- Logging to file support
+
+v 1.0.2:
+- Initial Release
