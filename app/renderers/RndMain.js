@@ -966,6 +966,9 @@ function getMagnetLink(base64, name) {
         } else {
             popMsg('No trackers were found. Magnet link won\'t contain any trackers. Try updating trackers', 'warning');
         }
+        if (!bestTrackers.length > 0){
+            popMsg('Keep in mind that if you double-click on the torrent before download, app will select 5 best trackers for the magnet link', 'info');
+        }
     }
     return withname;
 }
