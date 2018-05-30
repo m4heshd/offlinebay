@@ -162,7 +162,7 @@ span, strong {
 .grid-body {
     display: grid;
     grid-template-columns: auto 180px;
-    grid-template-rows: 49px 47px 65px 55px 55px 55px 144px auto 163px;
+    grid-template-rows: 49px 47px 65px 55px 55px 55px 144px auto minmax(50px, 163px);
     grid-template-areas:
             "txtSearch btnSearch"
             "searchTools ."
@@ -758,12 +758,13 @@ thead > tr > th:hover,
 }
 .tt-img{
     height: 130px;
+    max-height: 80%;
     text-align: center;
 }
 .tt-img img{
-    width: 127px;
+    /*width: 127px;*/
     vertical-align:middle;
-    /*horiz-align: center;*/
+    max-height: 100%;
 }
 .tt-img img:hover {
     -webkit-transition: transform 0.3s ease;
