@@ -558,13 +558,24 @@ function showSplash() {
 
 // Create the main window and handle events
 function startOB() {
+    let curScreen = electron.screen.getDisplayNearestPoint({x: prefs.position[0], y: prefs.position[1]});
+
+    if (prefs.size[0] > curScreen.workAreaSize.width) {
+        prefs.size[0] = curScreen.workAreaSize.width;
+        prefs.position[0] = curScreen.bounds.x;
+    }
+    if (prefs.size[1] > curScreen.workAreaSize.height) {
+        prefs.size[1] = curScreen.workAreaSize.height;
+        prefs.position[1] = curScreen.bounds.y;
+    }
+
     mainWindow = new BrowserWindow({
         width: prefs.size[0],
         height: prefs.size[1],
         x: prefs.position[0],
         y: prefs.position[1],
         minWidth: 762,
-        minHeight: 757,
+        minHeight: 700,
         show: false,
         frame: false,
         backgroundColor: '#1e2a31',

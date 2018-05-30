@@ -335,6 +335,7 @@ ipcRenderer.on('upd-check-notify', function () {
     ntf.onclick = function (evt) {
         evt.preventDefault();
         ipcRenderer.send('show-win');
+        $("#olAnim").attr("src", "img/import.svg");
         showOL('Looking up..');
         ipcRenderer.send('upd-dump', [prefs.updURL, 'user']);
     }
