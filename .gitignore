@@ -2,6 +2,9 @@
 *.csv
 app/data/downloads/
 
+# Distribution
+dist
+
 # Logs
 logs
 *.log

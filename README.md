@@ -1,6 +1,7 @@
 <h1 align="center">
   <br>
 <img src="https://preview.ibb.co/iBeasd/banner_logo.png" alt="OfflineBay">
+  <br>
 OfflineBay by <a href="https://www.youtube.com/c/techtac">TechTac</a>
 </h1>
 
@@ -16,12 +17,12 @@ OfflineBay is a free and open-source tool created to hold and parse copies of to
 
 # Downloads
 
-OfflineBay is distributed as a portable application in favor of the majority. Download the corresponding package and extract the **RAR** file. All of the packages should have an executable (double-clickable) along with some other files. File named `OfflineBay.exe` or `OfflineBay.app` or `OfflineBay` would be the executable file.
+OfflineBay is distributed as a portable application in favor of the majority. Download the corresponding package and extract the **ZIP** file. All of the packages should have an executable (double-clickable) along with some other files. File named `OfflineBay.exe` or `OfflineBay.app` or `OfflineBay` would be the executable file.
 
 **NOTE:** Linux users may need to declare the file as an executable before running - `chmod +x OfflineBay`
 
-**Why RAR files?**
-Well, OfflineBay is created using [Electron](https://electronjs.org) and NodeJS. So the disk footprint could be a [little concerning](https://github.com/electron/electron/issues/2003). The best option to considerably reduce the package size was to use **RAR** compression since it performed better than any other archive format and it's the most popular among users next to **ZIP**.
+**Why downloads are larger than the previous version?**<br>
+Well, OfflineBay 2 is created using [Electron](https://electronjs.org) and NodeJS. So the disk footprint could be a [little concerning](https://github.com/electron/electron/issues/2003).  There is no way around this issue. This is one small compromise for a lot of improvements.
 
  - [All releases (with source)](#Release)
  - Windows (x86 & x64) - [Download](#DL)
@@ -30,6 +31,11 @@ Well, OfflineBay is created using [Electron](https://electronjs.org) and NodeJS.
  - Linux (x86) - [Download](#DL)
 
 **WARNING:** Since OfflineBay is now open-source you could stumble upon some modified versions of OfflineBay. If you get infected with malware by going off the proper channels, i won't take any blame for them.
+
+If you're looking for the older version of OfflineBay, Downloads are available [here](https://pirates-forum.org/Thread-Release-OfflineBay-1-0-2-Download-torrents-from-thePirateBay-offline).
+
+**How to remove OfflineBay?** <br>
+I personally believe that none of the applications should leave any residue in the removal process. Unlike other portable apps OfflineBay will not leave anything behind once you hit delete on the application folder. It's valid for all platforms. Everything will be removed including Dump files, configurations and error logs.
 
 # Build OfflineBay yourself
 
@@ -67,14 +73,9 @@ You can also support me on [Patreon](https://www.patreon.com/techtac) by becomin
 # Known issues
 
 **Linux:**
+
  - Splash window may have a [white background instead of transparency](https://github.com/electron/electron/issues/2170) [`unfixable/SW-HW dependent`]
  - DHT scraping may not work sometimes [`unable to trace the issue`]
-
-**MacOS:**
- - Splash window may not be shown at all [`unable to trace the issue`]
-
-**Windows:**
- - Windows users below Windows 8 will not have notifications support [`unfixable`]
 
 # Themes you say?
 
