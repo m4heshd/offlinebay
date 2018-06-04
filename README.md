@@ -9,7 +9,9 @@ Stable version: [**`2.0.0`**](https://github.com/techtacoriginal/offlinebay/rele
 
 OfflineBay is a free and open-source tool created to hold and parse copies of torrent archive dumps. So it allows you to search and download torrents offline. OfflineBay can parse CSV files with many torrenting related added features. The parsing is programmed to match the structure of dump files created by The Pirate Bay. But any group or organization can follow that same structure to create dump files to be used with OfflineBay.
 
-[PLEASE FOLLOW THIS VIDEO TUTORIAL BEFORE YOU START USING OFFLINEBAY](https://www.youtube.com/watch?v=nNjW_OUv-hE)
+**[PLEASE FOLLOW THIS VIDEO TUTORIAL BEFORE YOU START USING OFFLINEBAY](https://www.youtube.com/watch?v=nNjW_OUv-hE)**
+
+<a href="https://www.youtube.com/watch?v=nNjW_OUv-hE"><img src="https://image.ibb.co/gXeDCo/YT.png" alt="OfflineBay Video" border="0"></a>
 
 ### DISCLAIMER:
 > **OfflineBay is Free and Open-source software licensed under [MIT License](LICENSE). This software is created to parse CSV dump files created by a third party and any of the data other than this software is not provided by TechTac. Use the data at your own risk. TechTac will not be responsible for any of the data acquired using dump files. It is strongly advised not to use OfflineBay for any copyright infringing activities. OfflineBay will not hide or protect you from authorities if you engage in such activities.**
@@ -69,7 +71,7 @@ You can also support me on [Patreon](https://www.patreon.com/techtac) by becomin
 
 # Got an Issue?
 
-[Follow this link](https://github.com/techtacoriginal/offlinebay/issues) to submit your issues. Remember to be descriptive when submitting issues. Also remember that issues area is not meant to ask for help. If you need help or you have any other questions regarding OfflineBay you can simply fire up a conversation on the [Suprbay thread](#Suprbay).
+[Follow this link](https://github.com/techtacoriginal/offlinebay/issues) to submit your issues. Remember to be descriptive when submitting issues. Also remember that issues area is not meant to ask for help. If you need help or you have any other questions regarding OfflineBay you can simply fire up a conversation on the [Suprbay thread](https://pirates-forum.org/Thread-Release-OfflineBay-v2-Open-source-and-No-more-Java-dependency).
 # Known issues
 
 **Linux:**
