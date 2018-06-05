@@ -28,6 +28,21 @@ if (smart) {
     procData = inst ? regularInstSearch : regularSearch;
 }
 
+// Takes a database record and returns a search result object to be displayed
+function resultObjectTemplate(record) {
+    let size = formatBytes(record['SIZE(BYTES)'], 1);
+    let row = '<tr><td>' + record['#ADDED'] +
+        '</td><td class="d-none">' + record['HASH(B64)'] +
+        '</td><td>' + record['NAME'] +
+        '</td><td>' + size + '</td></tr>';
+    return {
+        added: record['#ADDED'],
+        name: record['NAME'],
+        size: size,
+        markup: row
+    };
+}
+
 function regularSearch(results, parser) {
     for (let c = 0; c < results.data.length; c++) {
         let record = results.data[c];
@@ -37,17 +52,7 @@ function regularSearch(results, parser) {
                 stream.close();
                 break;
             } else {
-                let size = formatBytes(record['SIZE(BYTES)'], 1);
-                let row = '<tr><td>' + record['#ADDED'] +
-                    '</td><td class="d-none">' + record['HASH(B64)'] +
-                    '</td><td>' + record['NAME'] +
-                    '</td><td>' + size + '</td></tr>';
-                result.push({
-                    added: record['#ADDED'],
-                    name: record['NAME'],
-                    size: size,
-                    markup: row
-                });
+                result.push(resultObjectTemplate(record));
                 i++;
             }
         }
@@ -64,17 +69,7 @@ function regularInstSearch(results, parser) {
                 stream.close();
                 break;
             } else {
-                let size = formatBytes(record['SIZE(BYTES)'], 1);
-                let row = '<tr><td>' + record['#ADDED'] +
-                    '</td><td class="d-none">' + record['HASH(B64)'] +
-                    '</td><td>' + record['NAME'] +
-                    '</td><td>' + size + '</td></tr>';
-                chunk.push({
-                    added: record['#ADDED'],
-                    name: record['NAME'],
-                    size: size,
-                    markup: row
-                });
+                chunk.push(resultObjectTemplate(record));
                 i++;
             }
         }
@@ -93,17 +88,7 @@ function smartSearch(results, parser) {
                 stream.close();
                 break;
             } else {
-                let size = formatBytes(record['SIZE(BYTES)'], 1);
-                let row = '<tr><td>' + record['#ADDED'] +
-                    '</td><td class="d-none">' + record['HASH(B64)'] +
-                    '</td><td>' + record['NAME'] +
-                    '</td><td>' + size + '</td></tr>';
-                result.push({
-                    added: record['#ADDED'],
-                    name: record['NAME'],
-                    size: size,
-                    markup: row
-                });
+                result.push(resultObjectTemplate(record));
                 i++;
             }
         }
@@ -120,17 +105,7 @@ function smartInstSearch(results, parser) {
                 stream.close();
                 break;
             } else {
-                let size = formatBytes(record['SIZE(BYTES)'], 1);
-                let row = '<tr><td>' + record['#ADDED'] +
-                    '</td><td class="d-none">' + record['HASH(B64)'] +
-                    '</td><td>' + record['NAME'] +
-                    '</td><td>' + size + '</td></tr>';
-                chunk.push({
-                    added: record['#ADDED'],
-                    name: record['NAME'],
-                    size: size,
-                    markup: row
-                });
+                chunk.push(resultObjectTemplate(record));
                 i++;
             }
         }
