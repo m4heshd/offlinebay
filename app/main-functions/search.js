@@ -20,123 +20,53 @@ let reg;
 let stream;
 let result = [];
 
-let procData = smartSearch;
-
-if (smart) {
-    procData = inst ? smartInstSearch : smartSearch;
-} else {
-    procData = inst ? regularInstSearch : regularSearch;
+// Takes a database record and returns a search result object to be displayed
+function resultObjectTemplate(record) {
+    let size = formatBytes(record['SIZE(BYTES)'], 1);
+    let row = '<tr><td>' + record['#ADDED'] +
+        '</td><td class="d-none">' + record['HASH(B64)'] +
+        '</td><td>' + record['NAME'] +
+        '</td><td>' + size + '</td></tr>';
+    return {
+        added: record['#ADDED'],
+        name: record['NAME'],
+        size: size,
+        markup: row
+    };
 }
 
-function regularSearch(results, parser) {
+// Returns true of false for DB record based on regular search terms
+function regularCondition(record) {
+    return record['NAME'] && record['NAME'].toUpperCase().indexOf(query.toUpperCase()) > -1;
+}
+
+// Returns true of false for DB record based on smart search terms
+function smartCondition(record) {
+    return reg.test(record['NAME']);
+}
+
+// Processes and searches each chunk of DB as it is read into memory
+function procData(results, parser) {
+    var condition = smart ? smartCondition : regularCondition;
+
     for (let c = 0; c < results.data.length; c++) {
         let record = results.data[c];
-        if (record['NAME'] && record['NAME'].toUpperCase().indexOf(query.toUpperCase()) > -1) {
+
+        if (condition(record)) {
             if (i > count) {
                 parser.abort();
                 stream.close();
                 break;
             } else {
-                let size = formatBytes(record['SIZE(BYTES)'], 1);
-                let row = '<tr><td>' + record['#ADDED'] +
-                    '</td><td class="d-none">' + record['HASH(B64)'] +
-                    '</td><td>' + record['NAME'] +
-                    '</td><td>' + size + '</td></tr>';
-                result.push({
-                    added: record['#ADDED'],
-                    name: record['NAME'],
-                    size: size,
-                    markup: row
-                });
+                result.push(resultObjectTemplate(record));
                 i++;
             }
         }
     }
-}
 
-function regularInstSearch(results, parser) {
-    let chunk = [];
-    for (let c = 0; c < results.data.length; c++) {
-        let record = results.data[c];
-        if (record['NAME'] && record['NAME'].toUpperCase().indexOf(query.toUpperCase()) > -1) {
-            if (i > count) {
-                parser.abort();
-                stream.close();
-                break;
-            } else {
-                let size = formatBytes(record['SIZE(BYTES)'], 1);
-                let row = '<tr><td>' + record['#ADDED'] +
-                    '</td><td class="d-none">' + record['HASH(B64)'] +
-                    '</td><td>' + record['NAME'] +
-                    '</td><td>' + size + '</td></tr>';
-                chunk.push({
-                    added: record['#ADDED'],
-                    name: record['NAME'],
-                    size: size,
-                    markup: row
-                });
-                i++;
-            }
-        }
-    }
-    if (chunk.length > 0) {
-        process.send(['search-update', chunk]); //mainWindow.webContents.send('search-update', chunk);
-    }
-}
-
-function smartSearch(results, parser) {
-    for (let c = 0; c < results.data.length; c++) {
-        let record = results.data[c];
-        if (reg.test(record['NAME'])) {
-            if (i > count) {
-                parser.abort();
-                stream.close();
-                break;
-            } else {
-                let size = formatBytes(record['SIZE(BYTES)'], 1);
-                let row = '<tr><td>' + record['#ADDED'] +
-                    '</td><td class="d-none">' + record['HASH(B64)'] +
-                    '</td><td>' + record['NAME'] +
-                    '</td><td>' + size + '</td></tr>';
-                result.push({
-                    added: record['#ADDED'],
-                    name: record['NAME'],
-                    size: size,
-                    markup: row
-                });
-                i++;
-            }
-        }
-    }
-}
-
-function smartInstSearch(results, parser) {
-    let chunk = [];
-    for (let c = 0; c < results.data.length; c++) {
-        let record = results.data[c];
-        if (reg.test(record['NAME'])) {
-            if (i > count) {
-                parser.abort();
-                stream.close();
-                break;
-            } else {
-                let size = formatBytes(record['SIZE(BYTES)'], 1);
-                let row = '<tr><td>' + record['#ADDED'] +
-                    '</td><td class="d-none">' + record['HASH(B64)'] +
-                    '</td><td>' + record['NAME'] +
-                    '</td><td>' + size + '</td></tr>';
-                chunk.push({
-                    added: record['#ADDED'],
-                    name: record['NAME'],
-                    size: size,
-                    markup: row
-                });
-                i++;
-            }
-        }
-    }
-    if (chunk.length > 0) {
-        process.send(['search-update', chunk]); //mainWindow.webContents.send('search-update', chunk);
+    if (inst && result.length > 0) {
+        process.send(['search-update', result]); //mainWindow.webContents.send('search-update', result);
+        result = [];
     }
 }
 
