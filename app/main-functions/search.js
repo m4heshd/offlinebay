@@ -113,7 +113,10 @@ function search() {
 
 function startSearch(text) {
     reg = new RegExp(regexify(text), 'i');
-    search();
+    if (text.length) {
+        search();
+    }
+    process.send(['search-failed', 'no-text']);
 }
 
 function escapeRegExp(text) {
