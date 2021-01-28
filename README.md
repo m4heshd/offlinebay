@@ -2,10 +2,10 @@
   <br>
 <img src="https://preview.ibb.co/iBeasd/banner_logo.png" alt="OfflineBay">
   <br>
-OfflineBay by <a href="https://www.youtube.com/c/techtac">TechTac</a>
+OfflineBay by <a href="https://github.com/m4heshd">m4heshd</a>
 </h1>
 
-Stable version: [**`2.0.0`**](https://github.com/techtacoriginal/offlinebay/releases/tag/2.0.0)
+Stable version: [**`2.0.0`**](https://github.com/m4heshd/offlinebay/releases/tag/2.0.0)
 
 OfflineBay is a free and open-source tool created to hold and parse copies of torrent archive dumps. So it allows you to search and download torrents offline. OfflineBay can parse CSV files with many torrenting related added features. The parsing is programmed to match the structure of dump files created by The Pirate Bay. But any group or organization can follow that same structure to create dump files to be used with OfflineBay.
 
@@ -14,7 +14,7 @@ OfflineBay is a free and open-source tool created to hold and parse copies of to
 <a href="https://www.youtube.com/watch?v=nNjW_OUv-hE"><img src="https://image.ibb.co/gXeDCo/YT.png" alt="OfflineBay Video" border="0"></a>
 
 ### DISCLAIMER:
-> **OfflineBay is Free and Open-source software licensed under [MIT License](LICENSE). This software is created to parse CSV dump files created by a third party and any of the data other than this software is not provided by TechTac. Use the data at your own risk. TechTac will not be responsible for any of the data acquired using dump files. It is strongly advised not to use OfflineBay for any copyright infringing activities. OfflineBay will not hide or protect you from authorities if you engage in such activities.**
+> **OfflineBay is Free and Open-source software licensed under [MIT License](LICENSE). This software is created to parse CSV dump files created by a third party and any of the data other than this software is not provided by m4heshd. Use the data at your own risk. m4heshd will not be responsible for any of the data acquired using dump files. It is strongly advised not to use OfflineBay for any copyright infringing activities. OfflineBay will not hide or protect you from authorities if you engage in such activities.**
 
 
 # Downloads
@@ -26,11 +26,11 @@ OfflineBay is distributed as a portable application in favor of the majority. Do
 **Why downloads are larger than the previous version?**<br>
 Well, OfflineBay 2 is created using [Electron](https://electronjs.org) and NodeJS. So the disk footprint could be a [little concerning](https://github.com/electron/electron/issues/2003).  There is no way around this issue. This is one small compromise for a lot of improvements.
 
- - [All releases (with source)](https://github.com/techtacoriginal/offlinebay/releases)
- - Windows (x86 & x64) - [Download](https://github.com/techtacoriginal/offlinebay/releases/download/2.0.0/OfflineBay-2.0.0-Windows.zip)
- - MacOS - [Download](https://github.com/techtacoriginal/offlinebay/releases/download/2.0.0/OfflineBay-2.0.0-MacOS.zip)
- - Linux (x64) - [Download](https://github.com/techtacoriginal/offlinebay/releases/download/2.0.0/OfflineBay-2.0.0-Linux-x64.zip)
- - Linux (x86) - [Download](https://github.com/techtacoriginal/offlinebay/releases/download/2.0.0/OfflineBay-2.0.0-Linux-x86.zip)
+ - [All releases (with source)](https://github.com/m4heshd/offlinebay/releases)
+ - Windows (x86 & x64) - [Download](https://github.com/m4heshd/offlinebay/releases/download/2.0.0/OfflineBay-2.0.0-Windows.zip)
+ - MacOS - [Download](https://github.com/m4heshd/offlinebay/releases/download/2.0.0/OfflineBay-2.0.0-MacOS.zip)
+ - Linux (x64) - [Download](https://github.com/m4heshd/offlinebay/releases/download/2.0.0/OfflineBay-2.0.0-Linux-x64.zip)
+ - Linux (x86) - [Download](https://github.com/m4heshd/offlinebay/releases/download/2.0.0/OfflineBay-2.0.0-Linux-x86.zip)
 
 **WARNING:** Since OfflineBay is now open-source you could stumble upon some modified versions of OfflineBay. If you get infected with malware by going off the proper channels, i won't take any blame for them.
 
@@ -54,24 +54,22 @@ Clone this repository, `cd` to that directory and run `npm run clean` before eve
 
 # Support OfflineBay project
 
-Involvement as a contributor by adding a few lines of code, fixing a bug, respond to issues, testing etc.. would be one of the most helpful methods you could support the project. If you're not a programmer but a creative person, you could definitely get involved in the GUI part of OfflineBay. [Follow this link to learn about theming for OfflineBay](https://github.com/techtacoriginal/offlinebay-themes).
+Involvement as a contributor by adding a few lines of code, fixing a bug, respond to issues, testing etc.. would be one of the most helpful methods you could support the project. If you're not a programmer but a creative person, you could definitely get involved in the GUI part of OfflineBay. [Follow this link to learn about theming for OfflineBay](https://github.com/m4heshd/offlinebay-themes).
 If you have some spare coins laying around, you could throw some this way to buy me a coffee..
 
- - **BTC:** 12d9qz6bzL6tiB4oeX595oEo9ENMTEzF5y
- - **ETH:** 0xe84CBc4B4C64c6800619942172F93dcfb1030972
- - **BCH:** qqguu77ylq7p72m02ksv78jyzy86vtk6jqtrrc40r3
+ - **BTC:** 1KpjcftYs8CnG7jVgmzSoKAVT7QGqisYBC
+ - **ETH:** 0x1EE4130876B4f0aD2303a98787fd3746DD0C84F4
+ - **BCH:** 1LsY4Ppvrfx21pzs7YaAC3ciLbdwUYj92q
 
-Since i'm also a video creator on YouTube, you can also give me some support by [Subscribing to my channel](https://www.youtube.com/c/techtac?sub_confirmation=1) and sharing some of my [videos](https://www.youtube.com/c/techtac/videos).
+[![Donate to m4heshd](https://i.ibb.co/3vQTMts/paypal-donate-icon-7.png)](https://www.paypal.me/mpwk?locale.x=en_US)
 
-<a href="https://www.youtube.com/c/techtac?sub_confirmation=1"><img src="https://image.ibb.co/ct1idJ/yt_sub.png" alt="Subscribe to TechTac" border="0"></a>
+Or you can buy me a "ko-fi" by clicking this button
 
-You can also support me on [Patreon](https://www.patreon.com/techtac) by becoming a Patron.
-
-<a href="https://www.patreon.com/techtac"><img src="https://image.ibb.co/iXg25y/patreon.png" alt="Be a Patron" border="0"></a>
+[![ko-fi](https://i.ibb.co/QmQknmc/ko-fi.png)](https://ko-fi.com/m4heshd)
 
 # Got an Issue?
 
-[Follow this link](https://github.com/techtacoriginal/offlinebay/issues) to submit your issues. Remember to be descriptive when submitting issues. Also remember that issues area is not meant to ask for help. If you need help or you have any other questions regarding OfflineBay you can simply fire up a conversation on the [Suprbay thread](https://pirates-forum.org/Thread-Release-OfflineBay-v2-Open-source-and-No-more-Java-dependency).
+[Follow this link](https://github.com/m4heshd/offlinebay/issues) to submit your issues. Remember to be descriptive when submitting issues. Also remember that issues area is not meant to ask for help. If you need help or you have any other questions regarding OfflineBay you can simply fire up a conversation on the [Suprbay thread](https://pirates-forum.org/Thread-Release-OfflineBay-v2-Open-source-and-No-more-Java-dependency).
 # Known issues
 
 **Linux:**
@@ -81,9 +79,9 @@ You can also support me on [Patreon](https://www.patreon.com/techtac) by becomin
 
 # Themes you say?
 
-You can create themes for OfflineBay just using CSS. [This repository](https://github.com/techtacoriginal/offlinebay-themes) is dedicated to OfflineBay themes. Visit there to learn more about creating themes.
+You can create themes for OfflineBay just using CSS. [This repository](https://github.com/m4heshd/offlinebay-themes) is dedicated to OfflineBay themes. Visit there to learn more about creating themes.
 
-If you're a regular user, you can also follow the [same repository](https://github.com/techtacoriginal/offlinebay-themes) to download themes.
+If you're a regular user, you can also follow the [same repository](https://github.com/m4heshd/offlinebay-themes) to download themes.
 
 # Changelog
 
