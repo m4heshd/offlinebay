@@ -23,7 +23,7 @@
     "material-design-iconic-font": "2.2.0",
     "moment": "2.22.1",
     "nedb": "1.8.0",
-    "papaparse": "4.3.7",
+    "papaparse": "5.2.0",
     "popper.js": "1.14.1",
     "request": "2.85.0",
     "rimraf": "2.6.2"
