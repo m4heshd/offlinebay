@@ -3,4 +3,4 @@
 {"type":"search","rs_count":100,"smart":true,"inst":false,"useAC":true,"history":[],"_id":"2"}
 {"type":"dump","updURL":"https://thepiratebay.org/static/dump/csv/torrent_dump_full.csv.gz","updLast":"2003-01-01T00:00:00.000Z","updType":"notify","updInt":10,"keepDL":true,"updStat":["complete","",""],"_id":"3"}
 {"type":"gen","sysTray":true,"logToFile":true,"useDHT":true,"supMsg":"2018-06-01T05:21:44.285Z","confVer":"1.0","_id":"4"}
-{"type":"etc","thmURL":"https://github.com/techtacoriginal/offlinebay-themes","appUpdURL":"https://raw.githubusercontent.com/techtacoriginal/ob_release/master/release.json","_id":"5"}
+{"type":"etc","thmURL":"https://github.com/m4heshd/offlinebay-themes","appUpdURL":"https://raw.githubusercontent.com/m4heshd/ob_release/master/release.json","_id":"5"}

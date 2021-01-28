@@ -8,7 +8,7 @@ let records = '{"type":"win-state","maxed":false,"position":[null,null],"size":[
     '{"type":"search","rs_count":100,"smart":true,"inst":false,"useAC":true,"history":[],"_id":"2"}\n' +
     '{"type":"dump","updURL":"https://thepiratebay.org/static/dump/csv/torrent_dump_full.csv.gz","updLast":"2003-01-01T00:00:00.000Z","updType":"notify","updInt":10,"keepDL":true,"updStat":["complete","",""],"_id":"3"}\n' +
     '{"type":"gen","sysTray":true,"logToFile":true,"useDHT":true,"supMsg":"' + new Date().toISOString() +'","confVer":"1.0","_id":"4"}\n' +
-    '{"type":"etc","thmURL":"https://github.com/techtacoriginal/offlinebay-themes","appUpdURL":"https://raw.githubusercontent.com/techtacoriginal/ob_release/master/release.json","_id":"5"}\n';
+    '{"type":"etc","thmURL":"https://github.com/m4heshd/offlinebay-themes","appUpdURL":"https://raw.githubusercontent.com/m4heshd/ob_release/master/release.json","_id":"5"}\n';
 
 fs.writeFile(path.join(__dirname, 'data', 'config.db'), records, function (err) {
     err ? console.error(err + '\nFailed to reset the DB\n') : console.log('Task completed successfully');
