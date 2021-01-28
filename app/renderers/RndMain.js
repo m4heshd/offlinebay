@@ -996,16 +996,16 @@ function urlencode(text) {
 /* External Links
 ------------------*/
 $('#ttLogoMain, #ttLogoAbout, #mnuContact').on('click', function () {
-    openLink('https://www.youtube.com/c/techtac?sub_confirmation=1');
+    openLink('https://twitter.com/m4heshd');
 });
 $('#ttPatreon').on('click', function () {
-    openLink('https://www.patreon.com/techtac');
+    openLink('https://www.paypal.me/mpwk?locale.x=en_US');
 });
 $('#ttFB').on('click', function () {
-    openLink('https://www.facebook.com/techtacoriginal');
+    openLink('https://www.facebook.com/m4heshd');
 });
 $('#ttTwitter').on('click', function () {
-    openLink('https://twitter.com/techtacoriginal');
+    openLink('https://twitter.com/m4heshd');
 });
 
 function openLink(link) {
@@ -1236,9 +1236,9 @@ function popSupportMsg() {
         '        </div>' +
         '        <div class="item-v-center">' +
         '            <div>' +
-        '                <span>BTC : <b><a class="btcLink">12d9qz6bzL6tiB4oeX595oEo9ENMTEzF5y</a></b></span>' +
-        '                <span>ETH : <b><a class="ethLink">0xe84CBc4B4C64c6800619942172F93dcfb1030972</a></b></span>' +
-        '                <span>BCH : <b><a class="bchLink">qqguu77ylq7p72m02ksv78jyzy86vtk6jqtrrc40r3</a></b></span>' +
+        '                <span>BTC : <b><a class="btcLink">1KpjcftYs8CnG7jVgmzSoKAVT7QGqisYBC</a></b></span>' +
+        '                <span>ETH : <b><a class="ethLink">0x1EE4130876B4f0aD2303a98787fd3746DD0C84F4</a></b></span>' +
+        '                <span>BCH : <b><a class="bchLink">1LsY4Ppvrfx21pzs7YaAC3ciLbdwUYj92q</a></b></span>' +
         '            </div>' +
         '        </div>' +
         '    </div>' +
